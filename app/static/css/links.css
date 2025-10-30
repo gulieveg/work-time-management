@@ -1,0 +1,14 @@
+.setup-password-link {
+    margin-bottom: 20px;
+    color: #007bff;
+    text-decoration: none;
+    float: left;
+}
+
+.setup-password-link:hover {
+    text-decoration: underline;
+}
+
+.setup-password-link:visited {
+    color: #007bff;
+}

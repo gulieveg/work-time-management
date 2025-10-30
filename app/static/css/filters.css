@@ -1,0 +1,44 @@
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-item label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.filter-item > div {
+    width: 100%;
+    position: relative;
+}
+
+.filter-item .fa {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+.filter-item input {
+    width: 100%;
+    padding: 9px 12px 9px 40px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    outline-width: 2px;
+    outline-color: black;
+    background-color: white;
+}
+
+.date-filters {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.date-filters input {
+    padding-left: 12px;
+}

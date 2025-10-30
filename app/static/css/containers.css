@@ -1,0 +1,135 @@
+.maintenance-container {
+    width: 640px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #ccc;
+    border-radius: 10px;
+    text-align: center;
+    margin: 240px auto 0 auto;
+    color: #333;
+}
+
+.login-container,
+.account-recovery-container,
+.error-container {
+    width: 440px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #ccc;
+    border-radius: 20px;
+    text-align: center;
+    margin: 200px auto 0 auto;
+    color: #333;
+}
+
+.error-container {
+    width: 640px;
+}
+
+.add-task-container {
+    position: relative;
+    width: 600px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #ccc;
+    border-radius: 20px;
+    margin: 70px auto;
+    margin-bottom: 0;
+    text-align: center;
+    color: #333;
+}
+
+.add-task-container hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 20px 0;
+}
+
+.edit-task-container {
+    width: 600px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #ccc;
+    border-radius: 20px;
+    margin: 100px auto;
+    margin-bottom: 0;
+    text-align: center;
+    color: #333;
+}
+
+.tasks-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.register-buttons-container,
+.add-task-buttons-container,
+.edit-task-buttons-container {
+    display: flex;
+    gap: 14px;
+}
+
+.header-buttons-container {
+    display: flex;
+    gap: 14px;
+}
+
+.table-buttons-container {
+    white-space: nowrap;
+}
+
+.table-buttons-container > * {
+    display: inline-block;
+    margin: 2px;
+}
+
+.filter-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px;
+}
+
+.filter-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.filter-container input[type="text"],
+.filter-container input[type="date"] {
+    height: 38px;
+    line-height: 38px;
+    box-sizing: border-box;
+}
+
+.hours-total-container {
+    position: fixed;
+    top: 100px;
+    right: 80px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 10px 14px;
+    border-radius: 24px;
+    color: white;
+    width: 160px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hours-total-container:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}

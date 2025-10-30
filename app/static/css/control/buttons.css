@@ -1,0 +1,92 @@
+.icon-button {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    height: 28px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.edit-button {
+    background-color: #4caf50;
+}
+.edit-button:hover {
+    background-color: #45a049;
+}
+.edit-button:active {
+    background-color: #388e3c;
+    transform: scale(0.9);
+}
+
+.delete-button {
+    background-color: #dc3545;
+}
+.delete-button:hover {
+    background-color: #c9303f;
+}
+.delete-button:active {
+    background-color: #a82834;
+    transform: scale(0.9);
+}
+
+.reset-password-button {
+    background-color: #007bff;
+}
+.reset-password-button:hover {
+    background-color: #0070e9;
+}
+.reset-password-button:active {
+    background-color: #005dbc;
+    transform: scale(0.9);
+}
+
+.actions-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.return-button {
+    background: #dc3545;
+    border: none;
+    padding: 12px;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+.return-button:hover {
+    background: #c9303f;
+}
+.return-button i {
+    margin-right: 8px;
+    text-align: center;
+}
+
+.default-button {
+    background-color: #4caf50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    gap: 14px;
+}
+.default-button:hover {
+    background-color: #45a049;
+}

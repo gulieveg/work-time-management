@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome/font-awesome.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/x-icon">
+        <title>{% block title %}{% endblock title %}</title>
+    </head>
+
+    <body data-is-factory-worker="{{ current_user.is_factory_worker }}">
+        <header class="header-content">
+            <a href="{{ url_for('tasks.tasks_table') }}">
+                <img class="company-banner" src="{{ url_for('static', filename='images/meridian.png') }}">
+            </a>
+            <div class="header-buttons-container">
+                {% if current_user.is_authenticated %}
+                    {% if current_user.permissions_level == "advanced" %}
+                        <div><a href="{{ url_for('control.dashboard.overview') }}" class="default-button">Панель управления</a></div>
+                    {% endif %}
+                    {% if current_user.permissions_level != "minimal" %}
+                        <div><a href="{{ url_for('tasks.add_task') }}" class="default-button">Добавить задания</a></div>
+                    {% endif %}
+                    <div><a href="{{ url_for('tasks.tasks_table') }}" class="default-button">Посмотреть все задания</a></div>
+                    <div><a href="{{ url_for('auth.logout') }}" class="default-button">Выход из системы</a></div>
+                {% endif %}
+            </div>
+        </header>
+
+        <div class="content">
+            {% block content %}{% endblock content %}
+        </div>
+
+        <footer class="footer-content">
+            &copy; АО НПФ Меридиан
+        </footer>
+
+        <script type="module" src="{{ url_for('static', filename='js/script.js') }}"></script>
+    </body>
+</html>
