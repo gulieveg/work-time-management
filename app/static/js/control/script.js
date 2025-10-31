@@ -4,9 +4,11 @@ import {
     configureFilterResetHandler,
     configurePasswordSwitchHandler,
     configureUserStatusSwitchHandler,
-    configureUserDeleteHandler
+    configureUserDeleteHandler,
+    configurePasswordToggle,
+    configureUserPrivilegesDropDownHandler
 } from "./events.js";
-import { configureOrderSuggestionInputs, configureSuggestionHandlers } from "./suggestions.js"
+import { configureSuggestionInputs, configureSuggestionHandlers } from "./suggestions.js"
 
 
 function scheduleFlashMessageHide() {
@@ -27,7 +29,7 @@ configureFilterResetHandler();
 configurePasswordSwitchHandler();
 configureUserStatusSwitchHandler();
 
-configureOrderSuggestionInputs();
+configureSuggestionInputs();
 configureUserDeleteHandler();
 
 configureSuggestionHandlers([
@@ -76,3 +78,6 @@ configureSuggestionHandlers([
         }
     }
 ]);
+
+configurePasswordToggle();
+configureUserPrivilegesDropDownHandler();

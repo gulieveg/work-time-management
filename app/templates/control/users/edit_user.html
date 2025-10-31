@@ -24,7 +24,7 @@
                     <input
                         type="text"
                         name="user_name"
-                        value="{{ request.form.get('user_name', '') }}"
+                        value="{{ user_name }}"
                         class="user-name"
                         placeholder="ФИО пользователя"
                         autocomplete="off"
@@ -40,7 +40,7 @@
                     <input
                         type="text"
                         name="user_department"
-                        value="{{ request.form.get('user_department', '') }}"
+                        value="{{ user_department }}"
                         class="user-department"
                         placeholder="Подразделение пользователя"
                         autocomplete="off"
@@ -56,7 +56,7 @@
                     <input
                         type="text"
                         name="user_login"
-                        value="{{ request.form.get('user_login', '') }}"
+                        value="{{ user_login }}"
                         class="user-login"
                         placeholder="Логин пользователя"
                         autocomplete="off"
@@ -69,18 +69,19 @@
                 <label class="dropdown-title">Уровень привилегий</label>
                 <input type="checkbox" id="toggle-dropdown">
 
-                {% set selected_privilege = request.form.get("user_privilege") %}
+                {% set selected_privilege = request.form.get("user_permissions_level") %}
+                {% set is_selected = selected_privilege is not none and selected_privilege != "" %}
 
                 {% set privileges = {
                     "minimal": "Минимальный",
-                    "standart": "Стандартный",
+                    "standard": "Стандартный",
                     "advanced": "Расширенный",
                 } %}
 
                 <label for="toggle-dropdown" class="dropdown-label" id="dropdown-privilege-text">
                     <div>
-                        <i class="fa fa-shield-alt"></i>
-                        <span>{{ privileges.get(selected_privilege, "Уровень привилегий пользователя") }}</span>
+                        <i class="fa fa-star"></i>
+                        <span class="selected">{{ privileges.get(selected_privilege, privileges[user_permissions_level]) }}</span>
                     </div>
                     <i class="fa fa-chevron-down dropdown-icon"></i>
                 </label>
@@ -91,7 +92,7 @@
                     <label data-value="advanced">Расширенный</label>
                 </div>
 
-                <input type="hidden" name="user_privilege" id="user_privilege_input" value="{{ selected_privilege or '' }}">
+                <input type="hidden" name="user_permissions_level" value="{{ selected_privilege or 'standard' }}">
             </div>
 
             <div class="form-group">
@@ -109,18 +110,19 @@
                     <input
                         type="password"
                         name="user_password"
-                        value="{{ request.form.get('user_password', '') }}"
                         class="user-password"
                         placeholder="Пароль пользователя"
                         autocomplete="off"
                     />
+                <i class="fa fa-eye toggle-password"></i>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Производственный сотрудник</label>
                 <label class="switch">
-                    <input type="checkbox" name="is_factory_worker" autocomplete="off">
+                    <input type="checkbox" name="is_factory_worker" autocomplete="off"
+                        {% if is_user_factory_worker %}checked{% endif %}>
                     <span class="slider"></span>
                 </label>
             </div>
@@ -128,7 +130,8 @@
             <div class="form-group">
                 <label>Активен</label>
                 <label class="switch">
-                    <input type="checkbox" name="is_enabled" autocomplete="off">
+                    <input type="checkbox" name="is_enabled" autocomplete="off"
+                        {% if is_user_account_enabled %}checked{% endif %}>
                     <span class="slider"></span>
                 </label>
             </div>

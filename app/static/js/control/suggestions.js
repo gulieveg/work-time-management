@@ -1,7 +1,7 @@
 import { configureInputField, updateField } from "./utils.js";
 
 
-export function configureOrderSuggestionInputs() {
+export function configureSuggestionInputs() {
     const fields = [];
 
     const selectorsMap = [
@@ -9,8 +9,6 @@ export function configureOrderSuggestionInputs() {
         [".order-number", ".order-number-suggestions", "/control/orders/numbers"],
         [".user-name", ".user-name-suggestions", "/control/users/names"],
         [".user-login", ".user-login-suggestions", "/control/users/logins"],
-        // [".employee-name", ".employee-name-suggestions", "/employees/names"],
-        // [".employee-personnel-number", ".employee-personnel-number-suggestions", "/employees/personnel-numbers"],
     ];
 
     selectorsMap.forEach(([inputSelector, suggestionsListSelector, url]) => {

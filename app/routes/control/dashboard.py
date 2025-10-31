@@ -1,7 +1,7 @@
 from typing import Dict
 
 from flask import Blueprint, render_template
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from app.db import DatabaseManager
 from app.utils import permission_required
@@ -15,6 +15,7 @@ db_manager: DatabaseManager = DatabaseManager()
 @permission_required(["advanced"])
 def overview() -> str:
     context: Dict[str, int] = {
+        "user_name": current_user.name,
         "total_orders": db_manager.orders.get_total_order_count(),
         "total_employees": db_manager.employees.get_total_employee_count(),
         "total_tasks": db_manager.tasks.get_total_task_count(),

@@ -21,7 +21,7 @@ def load_user(user_id: str) -> Optional[User]:
     user_data: Optional[Tuple[str]] = db_manager.users.get_user_data_by_id(user_id)
     if user_data is None:
         return None
-    return User(*user_data)
+    return User(**user_data)
 
 
 def load_settings() -> Dict[str, Union[bool, str, int]]:

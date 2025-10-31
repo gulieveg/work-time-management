@@ -115,7 +115,7 @@ export function configureUserDeleteHandler() {
     let formToSubmit = null;
 
     document.addEventListener("click", (event) => {
-        const deleteButton = event.target.closest(".delete-user-button");
+        const deleteButton = event.target.closest(".delete-button");
         if (deleteButton) {
             event.preventDefault();
             formToSubmit = deleteButton.closest("form");
@@ -140,5 +140,61 @@ export function configureUserDeleteHandler() {
 
     window.addEventListener("click", (e) => {
         if (e.target === modal) closeModal();
+    });
+}
+
+
+export function configurePasswordToggle() {
+    const togglePasswords = document.querySelectorAll(".toggle-password");
+
+    togglePasswords.forEach(toggle => {
+        toggle.addEventListener("click", function () {
+            const passwordInput = this.previousElementSibling;
+
+            if (passwordInput && (passwordInput.type === "password" || passwordInput.type === "text")) {
+                const type = passwordInput.type === "password" ? "text" : "password";
+                passwordInput.type = type;
+                this.classList.toggle("fa-eye");
+                this.classList.toggle("fa-eye-slash");
+            }
+        });
+    });
+}
+
+
+export function configureUserPrivilegesDropDownHandler() {
+    document.querySelectorAll(".dropdown").forEach(dropdown => {
+        const hiddenInput = dropdown.querySelector("input[type='hidden']");
+        const labelText = dropdown.querySelector(".dropdown-label span");
+        const options = dropdown.querySelectorAll(".dropdown-content label");
+        const toggleCheckbox = dropdown.querySelector("input[type='checkbox']");
+
+        if (!hiddenInput || !labelText || !options.length || !toggleCheckbox) return;
+
+        options.forEach(option => {
+            option.addEventListener("click", () => {
+                const value = option.getAttribute("data-value");
+                const text = option.textContent;
+
+                hiddenInput.value = value;
+
+                labelText.textContent = text;
+                labelText.classList.add("selected");
+
+                toggleCheckbox.checked = false;
+            });
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!dropdown.contains(event.target)) {
+                toggleCheckbox.checked = false;
+            }
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+                toggleCheckbox.checked = false;
+            }
+        });
     });
 }

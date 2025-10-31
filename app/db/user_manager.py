@@ -6,7 +6,14 @@ from .db_connection import DatabaseConnection
 
 class UserManager(DatabaseConnection):
     def add_user(
-        self, name: str, department: str, login: str, password: str, is_enabled: int, is_factory_worker: int
+        self,
+        name: str,
+        department: str,
+        login: str,
+        password: str,
+        permissions_level: str,
+        is_enabled: int,
+        is_factory_worker: int,
     ) -> None:
         password_hash: Optional[str] = None
 
@@ -14,13 +21,23 @@ class UserManager(DatabaseConnection):
             password_hash: str = hashlib.sha256(password.encode()).hexdigest()
 
         query: str = """
-            INSERT INTO users (name, department, login, password_hash, is_enabled, is_factory_worker)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO users (
+                name,
+                department,
+                login,
+                password_hash,
+                permissions_level,
+                is_enabled,
+                is_factory_worker
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         """
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (name, department, login, password_hash, is_enabled, is_factory_worker))
+                cursor.execute(
+                    query, (name, department, login, password_hash, permissions_level, is_enabled, is_factory_worker)
+                )
                 connection.commit()
 
     def delete_user(self, user_id: int) -> None:
@@ -123,7 +140,15 @@ class UserManager(DatabaseConnection):
 
                 user_data: Optional[Tuple[str]] = cursor.fetchone()
                 if user_data:
-                    return user_data
+                    return {
+                        "user_id": user_data[0],
+                        "user_name": user_data[1],
+                        "user_department": user_data[2],
+                        "user_login": user_data[3],
+                        "user_permissions_level": user_data[4],
+                        "is_user_factory_worker": user_data[5],
+                        "is_user_account_enabled": user_data[6],
+                    }
 
     def get_user_data_by_login(self, login: str) -> Optional[Tuple[str]]:
         query: str = """
@@ -138,7 +163,15 @@ class UserManager(DatabaseConnection):
 
                 user_data: Optional[Tuple[str]] = cursor.fetchone()
                 if user_data:
-                    return user_data
+                    return {
+                        "user_id": user_data[0],
+                        "user_name": user_data[1],
+                        "user_department": user_data[2],
+                        "user_login": user_data[3],
+                        "user_permissions_level": user_data[4],
+                        "is_user_factory_worker": user_data[5],
+                        "is_user_account_enabled": user_data[6],
+                    }
 
     def get_users(
         self,

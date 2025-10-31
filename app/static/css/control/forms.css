@@ -1,24 +1,23 @@
 .form-group {
-    width: 100%;
-    margin-bottom: 20px;
     position: relative;
+    width: 100%;
+    max-width: 600px;
+    min-width: 200px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
-    font-weight: bold;
-    margin-bottom: 5px;
     display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
 }
 
 .form-group div {
-    width: 100%;
     position: relative;
 }
 
 .form-group input {
     width: 100%;
-    max-width: 600px;
-    min-width: 200px;
     padding: 14px 12px 14px 40px;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -35,10 +34,16 @@
     color: #888;
 }
 
+.form-group .toggle-password {
+    left: auto;
+    right: 12px;
+    cursor: pointer;
+}
+
 .form-buttons {
     display: flex;
-    gap: 10px;
     flex-wrap: wrap;
+    gap: 10px;
     max-width: 600px;
 }
 

@@ -67,7 +67,7 @@ def add_order() -> str:
 def edit_order(order_id: int) -> Union[str, Response]:
     order: Tuple[str] = db_manager.orders.get_order_by_id(order_id)
 
-    context: Dict[str, Union[str, int]] = {
+    context: Dict[str, str] = {
         "order_number": order["order_number"],
         "order_name": order["order_name"],
     }

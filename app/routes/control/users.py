@@ -57,6 +57,7 @@ def add_user() -> str:
         user_department: str = request.form.get("user_department")
         user_login: str = request.form.get("user_login")
         user_password: str = request.form.get("user_password")
+        user_permissions_level: str = request.form.get("user_permissions_level")
 
         if db_manager.users.is_login_available(login=user_login):
             flash(message=MESSAGES["users"]["user_login_taken"], category="warning")
@@ -70,6 +71,7 @@ def add_user() -> str:
             "department": user_department,
             "login": user_login,
             "password": user_password,
+            "permissions_level": user_permissions_level,
             "is_factory_worker": is_factory_worker,
             "is_enabled": is_enabled,
         }
@@ -85,12 +87,16 @@ def add_user() -> str:
 @login_required
 @permission_required(["advanced"])
 def edit_user(user_id: int) -> Union[str, Response]:
-    user: Tuple[str] = db_manager.users.get_user_data_by_id(user_id)
+    user_data: Tuple[str] = db_manager.users.get_user_data_by_id(user_id)
 
-    # context: Dict[str, Union[str, int]] = {
-    #     "order_number": order["order_number"],
-    #     "order_name": order["order_name"],
-    # }
+    context: Dict[str, str] = {
+        "user_name": user_data["user_name"],
+        "user_department": user_data["user_department"],
+        "user_login": user_data["user_login"],
+        "user_permissions_level": user_data["user_permissions_level"],
+        "is_user_factory_worker": user_data["is_user_factory_worker"],
+        "is_user_account_enabled": user_data["is_user_account_enabled"],
+    }
 
     # if request.method == "POST":
     #     order_number: str = request.form["order_number"]
@@ -104,7 +110,7 @@ def edit_user(user_id: int) -> Union[str, Response]:
     #     db_manager.orders.update_order(**args)
     #     flash(message=MESSAGES["orders"]["order_updated"], category="info")
     #     return redirect(url_for("control.orders.edit_order", order_id=order_id))
-    return render_template("control/users/edit_user.html")
+    return render_template("control/users/edit_user.html", **context)
 
 
 @users_bp.route("/delete/<int:user_id>", methods=["POST"])
