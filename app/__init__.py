@@ -1,6 +1,6 @@
 import datetime
 import json
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, Optional, Union
 
 from decouple import config
 from flask import Flask
@@ -17,8 +17,8 @@ db_manager: DatabaseManager = DatabaseManager()
 
 
 @login_manager.user_loader
-def load_user(user_id: str) -> Optional[User]:
-    user_data: Optional[Tuple[str]] = db_manager.users.get_user_data_by_id(user_id)
+def load_user(user_id: int) -> Optional[User]:
+    user_data: Optional[Dict[str, Union[str, int]]] = db_manager.users.get_user_data_by_id(user_id)
     if user_data is None:
         return None
     return User(**user_data)

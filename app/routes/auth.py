@@ -25,8 +25,8 @@ def login() -> Union[str, Response]:
             flash(message=MESSAGES["auth"]["invalid_credentials"], category="error")
             return render_template("auth/login.html", login=login, password=password)
 
-        user_data: Tuple[str] = db_manager.users.get_user_data_by_login(login)
-        user: User = User(*user_data)
+        user_data: Dict[str, Union[str, int]] = db_manager.users.get_user_data_by_login(login)
+        user: User = User(**user_data)
         login_user(user)
 
         session.permanent = True

@@ -1,5 +1,5 @@
 import hashlib
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple, Dict, Union
 
 from .db_connection import DatabaseConnection
 
@@ -127,9 +127,9 @@ class UserManager(DatabaseConnection):
                 cursor.execute(query, (is_active, user_id))
                 connection.commit()
 
-    def get_user_data_by_id(self, user_id: str) -> Optional[Tuple[str]]:
+    def get_user_data_by_id(self, user_id: int) -> Optional[Dict[str, Union[str, int]]]:
         query: str = """
-            SELECT id, name, department, login, permissions_level, is_enabled, is_factory_worker
+            SELECT id, name, department, login, permissions_level, is_factory_worker, is_enabled
             FROM users
             WHERE id = ?
         """
@@ -139,6 +139,7 @@ class UserManager(DatabaseConnection):
                 cursor.execute(query, (user_id,))
 
                 user_data: Optional[Tuple[str]] = cursor.fetchone()
+                print(user_data)
                 if user_data:
                     return {
                         "user_id": user_data[0],
@@ -150,9 +151,9 @@ class UserManager(DatabaseConnection):
                         "is_user_account_enabled": user_data[6],
                     }
 
-    def get_user_data_by_login(self, login: str) -> Optional[Tuple[str]]:
+    def get_user_data_by_login(self, login: str) -> Optional[Dict[str, Union[str, int]]]:
         query: str = """
-            SELECT id, name, login, department, permissions_level, is_enabled, is_factory_worker
+            SELECT id, name, login, department, permissions_level, is_factory_worker, is_enabled
             FROM users
             WHERE login = ?
         """

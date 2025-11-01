@@ -87,7 +87,7 @@ def add_user() -> str:
 @login_required
 @permission_required(["advanced"])
 def edit_user(user_id: int) -> Union[str, Response]:
-    user_data: Tuple[str] = db_manager.users.get_user_data_by_id(user_id)
+    user_data: Dict[str, Union[str, int]] = db_manager.users.get_user_data_by_id(user_id)
 
     context: Dict[str, str] = {
         "user_name": user_data["user_name"],
