@@ -1,5 +1,5 @@
 import hashlib
-from typing import Any, List, Optional, Tuple, Dict, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from .db_connection import DatabaseConnection
 
@@ -12,8 +12,8 @@ class UserManager(DatabaseConnection):
         login: str,
         password: str,
         permissions_level: str,
-        is_enabled: int,
-        is_factory_worker: int,
+        is_user_factory_worker: bool,
+        is_user_account_enabled: bool,
     ) -> None:
         password_hash: Optional[str] = None
 
@@ -27,8 +27,8 @@ class UserManager(DatabaseConnection):
                 login,
                 password_hash,
                 permissions_level,
-                is_enabled,
-                is_factory_worker
+                is_factory_worker,
+                is_enabled
             )
             VALUES (?, ?, ?, ?, ?, ?, ?)
         """
@@ -36,7 +36,16 @@ class UserManager(DatabaseConnection):
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    query, (name, department, login, password_hash, permissions_level, is_enabled, is_factory_worker)
+                    query,
+                    (
+                        name,
+                        department,
+                        login,
+                        password_hash,
+                        permissions_level,
+                        is_user_factory_worker,
+                        is_user_account_enabled,
+                    ),
                 )
                 connection.commit()
 
@@ -46,6 +55,52 @@ class UserManager(DatabaseConnection):
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(query, (user_id,))
+                connection.commit()
+
+    def update_user(
+        self,
+        user_id: int,
+        user_name: str,
+        user_department: str,
+        user_login: str,
+        user_password: str,
+        user_permissions_level: str,
+        is_user_factory_worker: str,
+        is_user_account_enabled: str,
+    ) -> None:
+        user_password_hash: Optional[str] = None
+
+        if user_password and user_password.strip():
+            user_password_hash: str = hashlib.sha256(user_password.encode()).hexdigest()
+
+        query: str = """
+            UPDATE users
+            SET
+                name = ?,
+                department = ?,
+                login = ?,
+                password_hash = ?,
+                permissions_level = ?,
+                is_factory_worker = ?,
+                is_enabled = ?
+            WHERE id = ?
+        """
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    query,
+                    (
+                        user_name,
+                        user_department,
+                        user_login,
+                        user_password_hash,
+                        user_permissions_level,
+                        is_user_factory_worker,
+                        is_user_account_enabled,
+                        user_id,
+                    ),
+                )
                 connection.commit()
 
     def register_user(self, login: str, password: str) -> None:
@@ -139,7 +194,6 @@ class UserManager(DatabaseConnection):
                 cursor.execute(query, (user_id,))
 
                 user_data: Optional[Tuple[str]] = cursor.fetchone()
-                print(user_data)
                 if user_data:
                     return {
                         "user_id": user_data[0],

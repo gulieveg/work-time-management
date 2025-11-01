@@ -63,8 +63,8 @@ def add_user() -> str:
             flash(message=MESSAGES["users"]["user_login_taken"], category="warning")
             return render_template("control/users/add_user.html")
 
-        is_factory_worker: bool = bool(request.form.get("is_factory_worker"))
-        is_enabled: bool = bool(request.form.get("is_enabled"))
+        is_user_factory_worker: bool = request.form.get("is_user_factory_worker") is not None
+        is_user_account_enabled: bool = request.form.get("is_user_account_enabled") is not None
 
         args: Dict[str, str] = {
             "name": user_name,
@@ -72,10 +72,9 @@ def add_user() -> str:
             "login": user_login,
             "password": user_password,
             "permissions_level": user_permissions_level,
-            "is_factory_worker": is_factory_worker,
-            "is_enabled": is_enabled,
+            "is_user_factory_worker": is_user_factory_worker,
+            "is_user_account_enabled": is_user_account_enabled,
         }
-
         db_manager.users.add_user(**args)
 
         flash(message=MESSAGES["users"]["user_added"], category="info")
@@ -98,18 +97,28 @@ def edit_user(user_id: int) -> Union[str, Response]:
         "is_user_account_enabled": user_data["is_user_account_enabled"],
     }
 
-    # if request.method == "POST":
-    #     order_number: str = request.form["order_number"]
-    #     order_name: str = request.form["order_name"]
+    if request.method == "POST":
+        user_name: str = request.form.get("user_name")
+        user_department: str = request.form.get("user_department")
+        user_login: str = request.form.get("user_login")
+        user_password: str = request.form.get("user_password")
+        user_permissions_level: str = request.form.get("user_permissions_level")
+        is_user_factory_worker: bool = request.form.get("is_user_factory_worker") is not None
+        is_user_account_enabled: bool = request.form.get("is_user_account_enabled") is not None
 
-    #     args: Dict[str, Union[str, int]] = {
-    #         "order_id": order_id,
-    #         "order_number": order_number,
-    #         "order_name": order_name,
-    #     }
-    #     db_manager.orders.update_order(**args)
-    #     flash(message=MESSAGES["orders"]["order_updated"], category="info")
-    #     return redirect(url_for("control.orders.edit_order", order_id=order_id))
+        args: Dict[str, Union[str, bool]] = {
+            "user_id": user_id,
+            "user_name": user_name,
+            "user_department": user_department,
+            "user_login": user_login,
+            "user_password": user_password,
+            "user_permissions_level": user_permissions_level,
+            "is_user_factory_worker": is_user_factory_worker,
+            "is_user_account_enabled": is_user_account_enabled,
+        }
+        db_manager.users.update_user(**args)
+        flash(message=MESSAGES["users"]["user_updated"], category="info")
+        return redirect(url_for("control.users.edit_user", user_id=user_id))
     return render_template("control/users/edit_user.html", **context)
 
 
