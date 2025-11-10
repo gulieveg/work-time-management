@@ -15,8 +15,8 @@ db_manager: DatabaseManager = DatabaseManager()
 @login_required
 @permission_required(["advanced"])
 def employees_table() -> Response:
-    employee_name: str = request.form.get("employee_name")
-    employee_number: str = request.form.get("employee_number")
+    employee_name: str = request.args.get("employee_name")
+    employee_number: str = request.args.get("employee_number")
 
     args: Dict[str, str] = {
         "employee_name": employee_name,
@@ -59,3 +59,17 @@ def get_employee_numbers() -> Response:
     query: str = request.args.get("query", "")
     employee_numbers: List[str] = db_manager.employees.get_employee_numbers_by_partial_match(query)
     return jsonify(employee_numbers)
+
+
+@employees_bp.route("/<string:employee_number>/name", methods=["GET"])
+@login_required
+def get_employee_name(employee_number: str) -> Response:
+    employee_name: str = db_manager.employees.get_employee_name_by_number(employee_number)
+    return jsonify({"employee_name": employee_name})
+
+
+@employees_bp.route("/<string:employee_name>/number", methods=["GET"])
+@login_required
+def get_employee_number(employee_name: str) -> Response:
+    employee_number: str = db_manager.employees.get_employee_number_by_name(employee_name)
+    return jsonify({"employee_number": employee_number})

@@ -203,4 +203,38 @@ class EmployeeManager(DatabaseConnection):
 
     def get_employee_names_by_partial_match(self, query: str) -> List[str]:
         query_string: str = "SELECT name FROM employees WHERE name LIKE ?"
-        ...
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query_string, ("%" + query + "%",))
+                employee_names: List[str] = [data[0] for data in cursor.fetchall()]
+                return employee_names
+
+    def get_employee_numbers_by_partial_match(self, query: str) -> List[str]:
+        query_string: str = "SELECT personnel_number FROM employees WHERE personnel_number LIKE ?"
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query_string, ("%" + query + "%",))
+                employee_numbers: List[str] = [data[0] for data in cursor.fetchall()]
+                return employee_numbers
+
+    def get_employee_name_by_number(self, employee_number: str) -> Optional[str]:
+        query: str = "SELECT name FROM employees WHERE personnel_number = ?"
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, (employee_number,))
+
+                row: Optional[Tuple[str]] = cursor.fetchone()
+                return row and row[0]
+
+    def get_employee_number_by_name(self, employee_name: str) -> Optional[str]:
+        query: str = "SELECT personnel_number FROM employees WHERE name = ?"
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, (employee_name,))
+
+                row: Optional[Tuple[str]] = cursor.fetchone()
+                return row and row[0]

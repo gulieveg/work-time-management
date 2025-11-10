@@ -76,7 +76,29 @@ configureSuggestionHandlers([
             fieldName: "user_login",
             urlPart: "login"
         }
-    }
+    },
+    {
+        inputSelector: ".employee-name",
+        suggestionsSelector: ".employee-name-suggestions",
+        resourceType: "employees",
+        urlPart: "name",
+        updateTarget: {
+            inputSelector: ".employee-number",
+            fieldName: "employee_number",
+            urlPart: "number"
+        }
+    },
+    {
+        inputSelector: ".employee-number",
+        suggestionsSelector: ".employee-number-suggestions",
+        resourceType: "employees",
+        urlPart: "number",
+        updateTarget: {
+            inputSelector: ".employee-name",
+            fieldName: "employee_name",
+            urlPart: "name"
+        }
+    },
 ]);
 
 configurePasswordToggle();
