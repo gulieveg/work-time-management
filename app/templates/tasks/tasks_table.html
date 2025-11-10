@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Все задания{% endblock title %}
+
+{% block content %}
+    <div class="tasks-container">
+        <form method="GET" action="{{ url_for('tasks.tasks_table') }}">
+            <div class="filter-container">
+                <div class="dropdown">
+                    <label class="dropdown-title">Фильтр по наименованию подразделения</label>
+                    <input type="checkbox" id="toggle-dropdown">
+
+                    {% set selected_departments = request.args.getlist("departments[]") %}
+
+                    <label for="toggle-dropdown" class="dropdown-label" id="dropdown-text">
+                        <span id="dropdown-selected-text">
+                            {% if selected_departments %}
+                                {{ selected_departments | join(", ") }}
+                            {% else %}
+                                Все
+                            {% endif %}
+                        </span>
+                        <i class="fa-solid fa-chevron-down dropdown-icon"></i>
+                    </label>
+
+                    <div class="dropdown-content" id="dropdown-list">
+                        {% for department in departments %}
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="departments[]"
+                                    value="{{ department }}"
+                                    {% if department in selected_departments %}checked{% endif %}>
+                                {{ department }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="filter-item">
+                    <label>Фильтр по дате</label>
+                    <div class="date-filters">
+                        <input
+                            type="date"
+                            name="start_date"
+                            value="{{ request.args.get('start_date', today) }}"
+                            style="cursor: pointer;"
+                        />
+                        <span style="margin: 10px;">по</span>
+                        <input
+                            type="date"
+                            name="end_date"
+                            value="{{ request.args.get('end_date', today) }}"
+                            style="cursor: pointer;"
+                        />
+                    </div>
+                </div>
+
+                <div class="filter-item">
+                    <label>Фильтр по ФИО сотрудника</label>
+                    <div>
+                        <i class="fa fa-user"></i>
+                        <input type="text" name="employee_data" value="{{ request.args.get('employee_data', '') }}"
+                            class="employee-data" placeholder="ФИО работника" autocomplete="off">
+                        <div class="employee-data-suggestions suggestions-list"></div>
+                    </div>
+                </div>
+
+                <div class="filter-item">
+                    <label>Фильтр по номеру заказа</label>
+                    <div>
+                        <i class="fa fa-hashtag"></i>
+                        <input type="text" name="order_number" value="{{ request.args.get('order_number', '') }}"
+                            class="order-number" placeholder="Номер заказа" autocomplete="off">
+                        <div class="order-number-suggestions suggestions-list"></div>
+                    </div>
+                </div>
+
+                <div class="filter-item">
+                    <label>Фильтр по типу операции</label>
+                    <div>
+                        <i class="fa fa-hammer"></i>
+                        <input type="text" name="operation_type" value="{{ request.args.get('operation_type', '') }}"
+                            class="operation-type" placeholder="Тип операции" autocomplete="off">
+                        <div class="operation-type-suggestions suggestions-list"></div>
+                    </div>
+                </div>
+
+                <div class="filter-item">
+                    <label>Фильтр по наименованию заказа</label>
+                    <div>
+                        <i class="fa fa-cogs"></i>
+                        <input type="text" name="order_name" value="{{ request.args.get('order_name', '') }}"
+                            class="order-name" placeholder="Наименование заказа" autocomplete="off">
+                        <div class="order-name-suggestions suggestions-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-buttons-container">
+                <button type="button" class="reset-filters-button">
+                    <i class="fas fa-eraser"></i>Сбросить фильтры
+                </button>
+                <button type="submit" class="apply-filters-button">
+                    <i class="fas fa-play"></i>Применить фильтры
+                </button>
+                <button type="submit" name="export" value="true" class="export-report-button">
+                    <i class="fas fa-arrow-down"></i>Выгрузить отчет
+                </button>
+            </div>
+        </form>
+
+        <div class="sticky-header-spacer"></div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="border: none;">&#8470;</th>
+                    <th>ФИО сотрудника</th>
+                    <th>Таб. номер</th>
+                    <th>Роль сотрудника</th>
+                    <th>Наименование подразделения</th>
+                    <th>Тип операции / Вид работы</th>
+                    <th>Часы</th>
+                    <th>Номер заказа</th>
+                    <th>Наименование заказа</th>
+                    {% if current_user.permissions_level != "minimal" %}
+                        <th>Дата операции</th>
+                        <th style="border: none;">Действия</th>
+                    {% else %}
+                        <th style="border: none;">Дата операции</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ task["employee_name"] | default("-", true) }}</td>
+                        <td>{{ task["personnel_number"] | default("-", true) }}</td>
+                        <td>{{ task["employee_category"] | default("-", true) }}</td>
+                        <td>{{ task["department"] | default("-", true) }}</td>
+                        <td>{{ task["operation_type"] | default("-", true) }}</td>
+                        <td class="hours" data-hours="{{ task['hours'] | default(0) }}">{{ task["hours"] | default("-", true) }}</td>
+                        <td>{{ task["order_number"] | default("-", true) }}</td>
+                        <td>{{ task["order_name"] | default("-", true) }}</td>
+                        <td>{{ task["operation_date"] | default("-", true) }}</td>
+                        {% if current_user.permissions_level != "minimal" %}
+                            <td class="table-buttons-container">
+                                <form method="GET" action="{{ url_for('tasks.edit_task', task_id=task['id']) }}">
+                                    {% for param in request.args %}
+                                        {% for value in request.args.getlist(param) %}
+                                            <input type="hidden" name="{{ param }}" value="{{ value }}">
+                                        {% endfor %}
+                                    {% endfor %}
+                                    <button type="submit" class="icon-button edit-table-task-button tooltip">
+                                        <i class="fas fa-edit"></i>
+                                        <span class="tooltiptext">Редактировать задание</span>
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ url_for('tasks.delete_task', task_id=task['id']) }}">
+                                    {% for param in request.args %}
+                                        {% for value in request.args.getlist(param) %}
+                                            <input type="hidden" name="{{ param }}" value="{{ value }}">
+                                        {% endfor %}
+                                    {% endfor %}
+                                    <button type="submit" class="icon-button delete-table-task-button tooltip">
+                                        <i class="fas fa-trash"></i>
+                                        <span class="tooltiptext">Удалить задание</span>
+                                    </button>
+                                </form>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="hours-total-container">
+        <i class="fas fa-clock"></i>
+        <span class="hours-total">0.00</span>
+        <button class="reset-hours-total-button">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <button class="scroll-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div class="modal-container">
+        <div class="modal-content">
+            <span class="close-modal-button"><i class="fas fa-times"></i></span>
+            <p class="modal-text">Вы уверены, что хотите удалить задание?</p>
+            <div class="modal-buttons">
+                <button id="confirm-delete-task" class="btn btn-danger">Удалить</button>
+                <button id="cancel-delete-task" class="btn btn-secondary">Отмена</button>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация{% endblock title %}
+
+{% block content %}
+    <div class="login-container">
+        <p class="paragraph">Регистрация</p>
+        <form method="POST">
+            <div class="form-group">
+                <i class="fa fa-user" style="left: 14px;"></i>
+                <input
+                    type="text"
+                    name="login"
+                    placeholder="Логин"
+                    value="{{ login | default('') }}"
+                    autocomplete="off"
+                    required
+                />
+            </div>
+            <div class="form-group">
+                <i class="fa fa-lock" style="left: 14px;"></i>
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Пароль"
+                    value="{{ password | default('') }}"
+                    autocomplete="off"
+                    required
+                />
+                <i class="fa fa-eye toggle-password"></i>
+            </div>
+            <div class="form-group">
+                <i class="fa fa-lock" style="left: 14px;"></i>
+                <input
+                    type="password"
+                    name="password_confirm"
+                    placeholder="Повторите пароль"
+                    value="{{ password_confirm | default('') }}"
+                    autocomplete="off"
+                    required
+                />
+                <i class="fa fa-eye toggle-password"></i>
+            </div>
+            <div class="register-buttons-container">
+                <button type="submit" class="default-button register-button">Завершить регистрацию</button>
+                <a href="{{ url_for('auth.login') }}" class="default-button cancel-register-button">Отменить</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="flashed-messages" style="width: 480px;">
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+            <div class="{{ category }}" id="message">
+                <p>{{ message }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

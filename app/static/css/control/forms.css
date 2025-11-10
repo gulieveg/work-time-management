@@ -1,0 +1,54 @@
+.form-group {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    min-width: 200px;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.form-group div {
+    position: relative;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 12px 14px 40px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    outline-width: 2px;
+    outline-color: black;
+}
+
+.form-group .fa {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+.form-group .toggle-password {
+    left: auto;
+    right: 12px;
+    cursor: pointer;
+}
+
+.form-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-width: 600px;
+}
+
+.form-buttons button,
+.form-buttons a {
+    flex: 1 1 calc(50% - 5px);
+    min-width: 200px;
+}

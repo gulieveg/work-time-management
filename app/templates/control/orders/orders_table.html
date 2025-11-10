@@ -1,0 +1,125 @@
+{% extends "control/base.html" %}
+
+{% block title %}Управление заказами{% endblock title %}
+
+{% block content %}
+    <div class="content-section">
+        <div class="tabs">
+            <form method="GET" action="{{ url_for('control.orders.orders_table') }}">
+                <button class="tab-button active"><i class="fas fa-list"></i>Список заказов</button>
+            </form>
+            <form method="GET" action="{{ url_for('control.orders.add_order') }}">
+                <button class="tab-button"><i class="fas fa-plus"></i>Добавить заказ</button>
+            </form>
+        </div>
+
+        <form method="GET">
+            <div class="filter-container">
+                <div class="filter-item">
+                    <label for="order_number">Фильтр по номеру заказа</label>
+                    <div>
+                        <i class="fa fa-hashtag"></i>
+                        <input
+                            type="text"
+                            name="order_number"
+                            value="{{ request.args.get('order_number', '') }}"
+                            class="order-number"
+                            placeholder="Номер заказа"
+                            autocomplete="off"
+                        />
+                        <div class="order-number-suggestions suggestions-list"></div>
+                    </div>
+                </div>
+
+                <div class="filter-item">
+                    <label for="order_name">Фильтр по наименованию заказа</label>
+                    <div>
+                        <i class="fa fa-cogs"></i>
+                        <input
+                            type="text"
+                            name="order_name"
+                            value="{{ request.args.get('order_name', '') }}"
+                            class="order-name"
+                            placeholder="Наименование заказа"
+                            autocomplete="off"
+                        />
+                        <div class="order-name-suggestions suggestions-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-buttons-container">
+                <button type="submit" class="default-button reset-filters-button">
+                    <i class="fas fa-eraser"></i>Сбросить фильтры
+                </button>
+                <button type="submit" class="default-button">
+                    <i class="fas fa-play"></i>Применить фильтры
+                </button>
+            </div>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%;">&numero;</th>
+                    <th style="width: 18%;">Номер заказа</th>
+                    <th style="width: 62%;">Наименование заказа</th>
+                    <th style="width: 15%;">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set filtered_orders_page = filtered_orders_page | default([]) %}
+                {% for order_id, order_number, order_name in filtered_orders_page %}
+                    {% set page = page | default(1) %}
+                    {% set page_size = 10 %}
+                    <tr>
+                        <td>{{ loop.index + (page - 1) * page_size }}</td>
+                        <td>{{ order_number }}</td>
+                        <td>{{ order_name }}</td>
+                        <td class="actions-container">
+                            <form method="GET" action="{{ url_for('control.orders.edit_order', order_id=order_id) }}">
+                                <button type="submit" class="icon-button edit-button tooltip">
+                                    <i class="fas fa-edit"></i>
+                                    <span class="tooltiptext">Редактировать заказ</span>
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('control.orders.delete_order', order_id=order_id) }}">
+                                <input type="hidden" name="page" value="{{ page }}">
+                                <button type="submit" class="icon-button delete-button tooltip" data-action="delete-order">
+                                    <i class="fas fa-trash"></i>
+                                    <span class="tooltiptext">Удалить заказ</span>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination-container">
+            {% set page = page | default(0) %}
+            {% set page_size = 10 %}
+            {% set total_orders = filtered_orders | length %}
+            {% set total_pages = (total_orders + page_size - 1) // page_size %}
+            {% if page == 1 %}
+                <span class="pagination-arrow" style="visibility: hidden;"></i></span>
+            {% endif %}
+            {% if page > 1 %}
+                {% set previous_page = page - 1 %}
+                <a href="{{ url_for('control.orders.orders_table', page=previous_page) }}" class="pagination-arrow">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+            {% endif %}
+            <span>Страница {{ page }} / {{ total_pages }}</span>
+            {% if page < total_pages %}
+                {% set next_page = page + 1 %}
+                <a href="{{ url_for('control.orders.orders_table', page=next_page) }}" class="pagination-arrow">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+            {% endif %}
+            {% if page == total_pages %}
+                <span class="pagination-arrow" style="visibility: hidden;"></i></span>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

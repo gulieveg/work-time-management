@@ -1,0 +1,129 @@
+{% extends "control/base.html" %}
+
+{% block title %}Управление работниками{% endblock title %}
+
+{% block content %}
+    <div class="content-section">
+        <div class="tabs">
+            <form method="GET" action="{{ url_for('control.employees.employees_table') }}">
+                <button class="tab-button active"><i class="fas fa-list"></i>Список работников</button>
+            </form>
+            <form method="GET" action="{{ url_for('control.employees.add_employee') }}">
+                <button class="tab-button"><i class="fas fa-plus"></i>Добавить работника</button>
+            </form>
+        </div>
+
+        <form method="GET">
+            <div class="filter-container">
+                <div class="filter-item">
+                    <label for="employee_name">Фильтр по ФИО работника</label>
+                    <div>
+                        <i class="fa fa-hashtag"></i>
+                        <input
+                            type="text"
+                            name="employee_name"
+                            value="{{ request.args.get('employee_name', '') }}"
+                            class="employee-name"
+                            placeholder="ФИО работника"
+                            autocomplete="off"
+                        />
+                        <div class="employee-name-suggestions suggestions-list"></div>
+                    </div>
+                </div>
+
+                <div class="filter-item">
+                    <label for="employee_number">Фильтр по табельному номеру работника</label>
+                    <div>
+                        <i class="fa fa-cogs"></i>
+                        <input
+                            type="text"
+                            name="employee_number"
+                            value="{{ request.args.get('employee_number', '') }}"
+                            class="employee-number"
+                            placeholder="Таб. номер работника"
+                            autocomplete="off"
+                        />
+                        <div class="employee-number-suggestions suggestions-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-buttons-container">
+                <button type="submit" class="default-button reset-filters-button">
+                    <i class="fas fa-eraser"></i>Сбросить фильтры
+                </button>
+                <button type="submit" class="default-button">
+                    <i class="fas fa-play"></i>Применить фильтры
+                </button>
+            </div>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%;">&numero;</th>
+                    <th style="width: 19%;">ФИО</th>
+                    <th style="width: 19%;">Таб. номер</th>
+                    <th style="width: 19%;">Подразделение</th>
+                    <th style="width: 19%;">Категория</th>
+                    <th style="width: 19%;">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set filtered_employees_page = filtered_employees_page | default([]) %}
+                {% for employee_name, employee_number, employee_department, employee_category in filtered_employees_page %}
+                    {% set page = page | default(1) %}
+                    {% set page_size = 10 %}
+                    <tr>
+                        <td>{{ loop.index + (page - 1) * page_size }}</td>
+                        <td>{{ employee_name }}</td>
+                        <td>{{ employee_number }}</td>
+                        <td>{{ employee_department }}</td>
+                        <td>{{ employee_category }}</td>
+                        <td class="actions-container">
+                            <form method="GET" action="{{ url_for('control.employees.edit_employee', employee_id=employee_id) }}">
+                                <button type="submit" class="icon-button edit-button tooltip">
+                                    <i class="fas fa-edit"></i>
+                                    <span class="tooltiptext">Редактировать работника</span>
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('control.employees.delete_employee', employee_id=employee_id) }}">
+                                <input type="hidden" name="page" value="{{ page }}">
+                                <button type="submit" class="icon-button delete-button tooltip">
+                                    <i class="fas fa-trash"></i>
+                                    <span class="tooltiptext">Удалить работника</span>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination-container">
+            {% set page = page | default(0) %}
+            {% set page_size = 10 %}
+            {% set total_employees = filtered_employees | length %}
+            {% set total_pages = (total_employees + page_size - 1) // page_size %}
+            {% if page == 1 %}
+                <span class="pagination-arrow" style="visibility: hidden;"></i></span>
+            {% endif %}
+            {% if page > 1 %}
+                {% set previous_page = page - 1 %}
+                <a href="{{ url_for('control.employees.employees_table', page=previous_page) }}" class="pagination-arrow">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+            {% endif %}
+            <span>Страница {{ page }} / {{ total_pages }}</span>
+            {% if page < total_pages %}
+                {% set next_page = page + 1 %}
+                <a href="{{ url_for('control.employees.employees_table', page=next_page) }}" class="pagination-arrow">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+            {% endif %}
+            {% if page == total_pages %}
+                <span class="pagination-arrow" style="visibility: hidden;"></i></span>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

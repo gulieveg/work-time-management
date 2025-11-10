@@ -1,0 +1,42 @@
+.content {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	gap: 10px;
+}
+
+.greeting-section,
+.stats-section {
+	background: white;
+	border-radius: 8px;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+}
+
+.content-section {
+	display: flex;
+    flex-direction: column;
+	flex: 1;
+	background: white;
+	border-radius: 8px;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+}
+
+.sections-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 16px;
+    margin-top: auto;
+}
+
+.section {
+    flex: 1 1 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    white-space: nowrap;
+    border-radius: 8px;
+}

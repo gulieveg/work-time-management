@@ -1,0 +1,129 @@
+.default-button {
+    display: inline-block;
+    cursor: pointer;
+    outline: none;
+    text-decoration: none;
+    transition: 0.4s;
+    letter-spacing: 1px;
+    padding: 10px 20px;
+    border-width: 2px;
+    border-style: solid;
+    background-color: #213977;
+    color: #fff;
+    border-color: #213977;
+}
+
+.default-button:hover {
+    background-color: #fff;
+    color: #213977;
+}
+
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    width: 32px;
+    border-radius: 4px;
+    border: none;
+    padding: 5px 10px;
+    color: white;
+}
+
+.edit-table-task-button {
+    background-color: #4caf50;
+}
+
+.edit-table-task-button:hover {
+    background-color: #45a049;
+}
+
+.edit-table-task-button:active {
+    background-color: #388e3c;
+}
+
+.delete-table-task-button {
+    background-color: #dc3545;
+}
+
+.delete-table-task-button:hover {
+    background-color: #c9303f;
+}
+
+.delete-table-task-button:active {
+    background-color: #a82834;
+}
+
+.login-button,
+.register-button,
+.cancel-register-button,
+.return-home-button,
+.add-form-task-button,
+.delete-form-task-button,
+.save-form-tasks-button,
+.save-task-button,
+.cancel-button {
+    border-radius: 10px;
+}
+
+.login-button,
+.return-home-button {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.register-button {
+    flex: 3;
+}
+
+.cancel-register-button,
+.add-form-task-button,
+.save-form-tasks-button,
+.cancel-button {
+    flex: 1;
+}
+
+.delete-form-task-button {
+    width: 240px;
+}
+
+.save-task-button {
+    flex: 2;
+}
+
+.reset-filters-button,
+.apply-filters-button,
+.export-report-button {
+    width: 300px;
+    background-color: #4caf50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    gap: 14px;
+}
+
+.reset-filters-button:hover,
+.apply-filters-button:hover,
+.export-report-button:hover {
+    background-color: #45a049;
+}
+
+.reset-hours-total-button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    padding: 0;
+    opacity: 0.7;
+}
+
+.reset-hours-total-button:hover {
+    opacity: 1;
+}

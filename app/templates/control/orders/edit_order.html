@@ -1,0 +1,71 @@
+{% extends "control/base.html" %}
+
+{% block title %}Редактирование заказа{% endblock title %}
+
+{% block content %}
+    <div class="content-section">
+        <div class="tabs">
+            <form method="GET" action="{{ url_for('control.orders.orders_table') }}">
+                <button class="tab-button"><i class="fas fa-list"></i>Список заказов</button>
+            </form>
+            <form method="GET" action="{{ url_for('control.orders.add_order') }}">
+                <button class="tab-button"><i class="fas fa-plus"></i>Добавить заказ</button>
+            </form>
+            <form method="GET" action="{{ url_for('control.orders.edit_order', order_id=request.view_args['order_id']) }}">
+                <button class="tab-button active"><i class="fas fa-edit"></i>Редактирование заказа</button>
+            </form>
+        </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label>Номер заказа</label>
+                <div>
+                    <i class="fa fa-hashtag"></i>
+                    <input
+                        type="text"
+                        name="order_number"
+                        value="{{ order_number }}"
+                        class="order-number"
+                        placeholder="Номер заказа"
+                        autocomplete="off"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Наименование заказа</label>
+                <div>
+                    <i class="fa fa-cogs"></i>
+                    <input
+                        type="text"
+                        name="order_name"
+                        value="{{ order_name }}"
+                        class="order-name"
+                        placeholder="Наименование заказа"
+                        autocomplete="off"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="default-button">
+                    <i class="fas fa-save"></i>Сохранить изменения
+                </button>
+
+                <a href="{{ url_for('control.orders.orders_table') }}" class="default-button">
+                    <i class="fas fa-undo"></i>Отменить
+                </a>
+            </div>
+        </form>
+
+        <div class="flashed-messages">
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <div class="{{ category }}" id="message">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

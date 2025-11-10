@@ -1,0 +1,154 @@
+{% extends "control/base.html" %}
+
+{% block title %}Добавление пользователя{% endblock title %}
+
+{% block content %}
+    <div class="content-section">
+        <div class="tabs">
+            <form method="GET" action="{{ url_for('control.users.users_table') }}">
+                <button class="tab-button"><i class="fas fa-list"></i>Список пользователей</button>
+            </form>
+            <form method="GET" action="{{ url_for('control.users.add_user') }}">
+                <button class="tab-button active"><i class="fas fa-plus"></i>Добавить пользователя</button>
+            </form>
+        </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label>ФИО пользователя</label>
+                <div>
+                    <i class="fa fa-user"></i>
+                    <input
+                        type="text"
+                        name="user_name"
+                        value="{{ request.form.get('user_name', '') }}"
+                        class="user-name"
+                        placeholder="ФИО пользователя"
+                        autocomplete="off"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Подразделение</label>
+                <div>
+                    <i class="fa fa-briefcase"></i>
+                    <input
+                        type="text"
+                        name="user_department"
+                        value="{{ request.form.get('user_department', '') }}"
+                        class="user-department"
+                        placeholder="Подразделение пользователя"
+                        autocomplete="off"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Логин пользователя</label>
+                <div>
+                    <i class="fa fa-at"></i>
+                    <input
+                        type="text"
+                        name="user_login"
+                        value="{{ request.form.get('user_login', '') }}"
+                        class="user-login"
+                        placeholder="Логин пользователя"
+                        autocomplete="off"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <label class="dropdown-title">Уровень привилегий</label>
+                <input type="checkbox" id="toggle-dropdown">
+
+                {% set selected_privilege = request.form.get("user_permissions_level") %}
+                {% set is_selected = selected_privilege is not none and selected_privilege != "" %}
+
+                {% set privileges = {
+                    "minimal": "Минимальный",
+                    "standard": "Стандартный",
+                    "advanced": "Расширенный",
+                } %}
+
+                <label for="toggle-dropdown" class="dropdown-label" id="dropdown-privilege-text">
+                    <div>
+                        <i class="fa fa-star"></i>
+                        <span class="{{ 'selected' if is_selected }}">{{ privileges.get(selected_privilege, "Уровень привилегий пользователя") }}</span>
+                    </div>
+                    <i class="fa fa-chevron-down dropdown-icon"></i>
+                </label>
+
+                <div class="dropdown-content" id="dropdown-privilege-list">
+                    <label data-value="minimal">Минимальный</label>
+                    <label data-value="standard">Стандартный</label>
+                    <label data-value="advanced">Расширенный</label>
+                </div>
+
+                <input type="hidden" name="user_permissions_level" value="{{ selected_privilege or 'standard' }}">
+            </div>
+
+            <div class="form-group">
+                <label>Установить пароль</label>
+                <label class="switch">
+                    <input type="checkbox" id="password-switch" autocomplete="off">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="form-group" id="password-field" style="display: none;">
+                <label>Пароль</label>
+                <div>
+                    <i class="fa fa-lock"></i>
+                    <input
+                        type="password"
+                        name="user_password"
+                        value="{{ request.form.get('user_password', '') }}"
+                        class="user-password"
+                        placeholder="Пароль пользователя"
+                        autocomplete="off"
+                    />
+                <i class="fa fa-eye toggle-password"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Производственный сотрудник</label>
+                <label class="switch">
+                    <input type="checkbox" name="is_user_factory_worker" autocomplete="off">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Активен</label>
+                <label class="switch">
+                    <input type="checkbox" name="is_user_account_enabled" autocomplete="off">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="default-button">
+                    <i class="fas fa-save"></i>Сохранить пользователя
+                </button>
+
+                <a href="{{ url_for('control.users.users_table') }}" class="default-button">
+                    <i class="fas fa-undo"></i>Отменить
+                </a>
+            </div>
+        </form>
+
+        <div class="flashed-messages" style="margin-left: 0; min-width: 200px; max-width: 600px; width: 100%;">
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <div class="{{ category }}" id="message">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,47 @@
+.role-badge {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 28px;
+    width: 32px;
+    padding: 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    border-radius: 6px;
+    text-align: center;
+    line-height: 1;
+    cursor: default;
+    transition: all 0.25s ease;
+    letter-spacing: 0.5px;
+    background-clip: padding-box;
+    position: relative;
+    overflow: hidden;
+    margin-right: 8px;
+}
+
+.role-badge.engineer {
+    background-color: #2f80ed;
+}
+
+.role-badge.engineer::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 50%;
+    background: rgba(255,255,255,0.2);
+    border-radius: 6px 6px 0 0;
+}
+
+.role-badge.factory {
+    background-color: #27ae60;
+}
+
+.role-badge.factory::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 50%;
+    background: rgba(255,255,255,0.2);
+    border-radius: 6px 6px 0 0;
+}

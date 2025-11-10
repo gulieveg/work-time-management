@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome/font-awesome.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/control/main.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/control-panel.png') }}" type="image/x-icon">
+    <title>{% block title %}{% endblock title %}</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <a href="{{ url_for('control.dashboard.overview') }}" class="sidebar-title-link">
+                Панель управления
+            </a>
+
+            <hr class="sidebar-divider">
+
+            {% set menu_items = [
+                ["control.dashboard.overview", "fas fa-home", "Главная"],
+                ["control.users.users_table", "fas fa-user-shield", "Управление пользователями"],
+                ["control.orders.orders_table", "fas fa-cogs", "Управление заказами"],
+                ["control.employees.employees_table", "fas fa-user-cog", "Управление работниками"],
+            ] %}
+
+            <nav class="sidebar-nav">
+                {% for endpoint, icon_class, text in menu_items %}
+                {% set url = url_for(endpoint) %}
+                {% set active = "active" if request.path.startswith(url) else "" %}
+                <a href="{{ url }}" class="sidebar-link {{ active }}">
+                    <i class="{{ icon_class }}"></i>{{ text }}
+                </a>
+                {% endfor %}
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="{{ url_for('tasks.tasks_table') }}" class="back-button">
+                    <i class="fas fa-sign-out-alt"></i>Назад
+                </a>
+            </div>
+        </div>
+
+        <div class="content">
+            {% block content %}{% endblock content %}
+        </div>
+
+        <div class="modal-container" id="confirmation-modal">
+            <div class="modal-content">
+                <span class="close-modal-button"><i class="fas fa-times"></i></span>
+                <p class="modal-text" id="confirmation-modal-text"></p>
+                <div class="modal-buttons">
+                    <button id="confirm-action" class="btn btn-danger">Да</button>
+                    <button id="cancel-action" class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="{{ url_for('static', filename='js/control/script.js') }}"></script>
+</body>
+
+</html>

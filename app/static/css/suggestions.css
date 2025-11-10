@@ -1,0 +1,21 @@
+.suggestions-list {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    z-index: 1100;
+    color: #333;
+    display: none;
+}
+
+.suggestion {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.suggestion:hover {
+    background-color: #f0f0f0;
+}
