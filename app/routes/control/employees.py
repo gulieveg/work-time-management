@@ -43,3 +43,19 @@ def employees_table() -> Response:
         "page": page,
     }
     return render_template("control/employees/employees_table.html", **context)
+
+
+@employees_bp.route("/names", methods=["GET"])
+@login_required
+def get_employee_names() -> Response:
+    query: str = request.args.get("query", "")
+    employee_names: List[str] = db_manager.employees.get_employee_names_by_partial_match(query)
+    return jsonify(employee_names)
+
+
+@employees_bp.route("/numbers", methods=["GET"])
+@login_required
+def get_employee_numbers() -> Response:
+    query: str = request.args.get("query", "")
+    employee_numbers: List[str] = db_manager.employees.get_employee_numbers_by_partial_match(query)
+    return jsonify(employee_numbers)

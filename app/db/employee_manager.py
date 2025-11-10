@@ -166,12 +166,12 @@ class EmployeeManager(DatabaseConnection):
 
     def get_employees(
         self,
-        employee_name: Optional[str],
-        employee_number: Optional[str],
-        page: Optional[int],
+        employee_name: Optional[str] = None,
+        employee_number: Optional[str] = None,
+        page: Optional[int] = None,
     ) -> List[str]:
         query: str = """
-            SELECT id, name, personnel_numer, department, category
+            SELECT id, name, personnel_number, department, category
             FROM employees
         """
 
@@ -200,3 +200,7 @@ class EmployeeManager(DatabaseConnection):
                 cursor.execute(query, tuple(params))
                 employees: List[Tuple[str]] = cursor.fetchall()
                 return employees
+
+    def get_employee_names_by_partial_match(self, query: str) -> List[str]:
+        query_string: str = "SELECT name FROM employees WHERE name LIKE ?"
+        ...
