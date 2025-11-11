@@ -59,9 +59,9 @@ def add_user() -> str:
         user_password: str = request.form.get("user_password")
         user_permissions_level: str = request.form.get("user_permissions_level")
 
-        if db_manager.users.is_login_available(login=user_login):
-            flash(message=MESSAGES["users"]["user_login_taken"], category="warning")
-            return render_template("control/users/add_user.html")
+        if not db_manager.users.is_login_available(login=user_login):
+            flash(message=MESSAGES["users"]["user_login_taken"], category="error")
+            return render_template("control/users/add_user.html", user_login_error=True)
 
         is_user_factory_worker: bool = request.form.get("is_user_factory_worker") is not None
         is_user_account_enabled: bool = request.form.get("is_user_account_enabled") is not None
@@ -106,6 +106,17 @@ def edit_user(user_id: int) -> Union[str, Response]:
         is_user_factory_worker: bool = request.form.get("is_user_factory_worker") is not None
         is_user_account_enabled: bool = request.form.get("is_user_account_enabled") is not None
 
+        if not db_manager.users.is_login_available(user_login, exclude_id=user_id):
+            flash(message=MESSAGES["users"]["user_login_taken"], category="error")
+            context_with_error: Dict[str, str] = context.copy()
+            context_with_error.update(
+                {
+                    "user_login": user_login,
+                    "user_login_error": True,
+                }
+            )
+            return render_template("control/users/edit_user.html", **context_with_error)
+
         args: Dict[str, Union[str, bool]] = {
             "user_id": user_id,
             "user_name": user_name,
@@ -117,6 +128,7 @@ def edit_user(user_id: int) -> Union[str, Response]:
             "is_user_account_enabled": is_user_account_enabled,
         }
         db_manager.users.update_user(**args)
+        print(user_permissions_level)
         flash(message=MESSAGES["users"]["user_updated"], category="info")
         return redirect(url_for("control.users.edit_user", user_id=user_id))
     return render_template("control/users/edit_user.html", **context)

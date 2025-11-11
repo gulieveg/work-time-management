@@ -1,21 +1,60 @@
 import re
 from decimal import Decimal
-from typing import List, Match, Optional, Tuple
+from typing import Dict, List, Match, Optional, Tuple, Union
 
 from .db_connection import DatabaseConnection
 
 
 class EmployeeManager(DatabaseConnection):
-    def add_employee(self, name: str, personnel_number: str, department: str, operation_type: str) -> None:
+    def add_employee(self, name: str, personnel_number: str, department: str, category: str) -> None:
         query: str = """
-            IF NOT EXISTS (SELECT * FROM employees WHERE personnel_number = ?)
-            INSERT INTO employees (name, department, personnel_number, operation_type)
+            INSERT INTO employees (name, personnel_number, department, category)
             VALUES (?, ?, ?, ?)
         """
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (personnel_number, name, department, personnel_number, operation_type))
+                cursor.execute(query, (name, personnel_number, department, category))
+                connection.commit()
+
+    def update_employee(
+        self,
+        employee_id: int,
+        employee_name: str,
+        personnel_number: str,
+        employee_department: str,
+        employee_category: str,
+    ) -> None:
+        query: str = """
+            UPDATE employees
+            SET
+                name = ?,
+                personnel_number = ?,
+                department = ?,
+                category = ?
+            WHERE id = ?
+        """
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    query,
+                    (
+                        employee_name,
+                        personnel_number,
+                        employee_department,
+                        employee_category,
+                        employee_id,
+                    ),
+                )
+                connection.commit()
+
+    def delete_employee(self, employee_id: int) -> None:
+        query: str = "DELETE FROM employees WHERE id = ?"
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, (employee_id,))
                 connection.commit()
 
     def get_employee_used_hours(self, personnel_number: str, operation_date: str) -> Decimal:
@@ -38,17 +77,6 @@ class EmployeeManager(DatabaseConnection):
         hours_per_day: Decimal = Decimal(8.25)
         used_hours: Decimal = self.get_employee_used_hours(personnel_number, operation_date)
         return hours_per_day - used_hours
-
-    def get_employee_operation_type(self, personnel_number: str) -> Optional[str]:
-        query: str = "SELECT operation_type FROM employees WHERE personnel_number = ?"
-
-        with self.get_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(query, (personnel_number,))
-
-                res: Optional[Tuple[str]] = cursor.fetchone()
-                if res:
-                    return res[0]
 
     def get_employee_department(self, personnel_number: str) -> Optional[str]:
         query: str = "SELECT department FROM employees WHERE personnel_number = ?"
@@ -85,56 +113,20 @@ class EmployeeManager(DatabaseConnection):
                 employees = [f"{name} ({personnel_number})" for name, personnel_number in cursor.fetchall()]
                 return employees
 
-    def get_operation_types_by_partial_match(self, query: str) -> List[str]:
-        query_string: str = """
-            SELECT operation_type
-            FROM employees
-            WHERE operation_type LIKE ?
-        """
-
-        with self.get_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(query_string, ("%" + query + "%",))
-
-                operation_types: List[str] = []
-                for data in cursor.fetchall():
-                    if data[0] not in operation_types:
-                        operation_types.append(data[0])
-                return operation_types
-
-    def get_work_types(self) -> List[str]:
-        query: str = "SELECT name FROM work_types"
-
-        with self.get_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(query)
-
-                work_types: List[str] = []
-                for data in cursor.fetchall():
-                    if data[0] not in work_types:
-                        work_types.append(data[0])
-                return work_types
-
-    def get_work_types_by_partial_match(self, query: str) -> List[str]:
-        query_string: str = "SELECT name FROM work_types WHERE name LIKE ?"
-
-        with self.get_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(query_string, ("%" + query + "%",))
-
-                work_types: List[str] = []
-                for data in cursor.fetchall():
-                    if data[0] not in work_types:
-                        work_types.append(data[0])
-                return work_types
-
-    def does_employee_exist(self, personnel_number: str) -> bool:
+    def employee_exists(self, personnel_number: str, exclude_id: Optional[int] = None) -> bool:
         query: str = "SELECT * FROM employees WHERE personnel_number = ?"
 
+        params: List[str] = [personnel_number]
+
+        if exclude_id is not None:
+            query += " AND id <> ?"
+            params.append(exclude_id)
+
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (personnel_number,))
-                return cursor.fetchone() is not None
+                cursor.execute(query, tuple(params))
+                record: Optional[Tuple[str]] = cursor.fetchone()
+                return record is not None
 
     def get_employee_details(self, employee_data: str) -> Optional[Tuple[str, str]]:
         pattern: str = "(?P<employee_name>[\\w\\s]+)\\s\\((?P<personnel_number>\\d+)\\)"
@@ -167,7 +159,7 @@ class EmployeeManager(DatabaseConnection):
     def get_employees(
         self,
         employee_name: Optional[str] = None,
-        employee_number: Optional[str] = None,
+        personnel_number: Optional[str] = None,
         page: Optional[int] = None,
     ) -> List[str]:
         query: str = """
@@ -181,9 +173,9 @@ class EmployeeManager(DatabaseConnection):
         if employee_name:
             conditions.append("name = ?")
             params.append(employee_name)
-        if employee_number:
+        if personnel_number:
             conditions.append("personnel_number = ?")
-            params.append(employee_number)
+            params.append(personnel_number)
 
         if conditions:
             query += " WHERE " + " AND ".join(conditions)
@@ -195,7 +187,11 @@ class EmployeeManager(DatabaseConnection):
                     offset: int = (page - 1) * page_size
                     params.append(offset)
                     params.append(page_size)
-                    query += "ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
+                    query += """
+                        ORDER BY id
+                        OFFSET ? ROWS
+                        FETCH NEXT ? ROWS ONLY
+                    """
 
                 cursor.execute(query, tuple(params))
                 employees: List[Tuple[str]] = cursor.fetchall()
@@ -210,26 +206,26 @@ class EmployeeManager(DatabaseConnection):
                 employee_names: List[str] = [data[0] for data in cursor.fetchall()]
                 return employee_names
 
-    def get_employee_numbers_by_partial_match(self, query: str) -> List[str]:
+    def get_personnel_numbers_by_partial_match(self, query: str) -> List[str]:
         query_string: str = "SELECT personnel_number FROM employees WHERE personnel_number LIKE ?"
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(query_string, ("%" + query + "%",))
-                employee_numbers: List[str] = [data[0] for data in cursor.fetchall()]
-                return employee_numbers
+                personnel_numbers: List[str] = [data[0] for data in cursor.fetchall()]
+                return personnel_numbers
 
-    def get_employee_name_by_number(self, employee_number: str) -> Optional[str]:
+    def get_employee_name_by_number(self, personnel_number: str) -> Optional[str]:
         query: str = "SELECT name FROM employees WHERE personnel_number = ?"
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (employee_number,))
+                cursor.execute(query, (personnel_number,))
 
                 row: Optional[Tuple[str]] = cursor.fetchone()
                 return row and row[0]
 
-    def get_employee_number_by_name(self, employee_name: str) -> Optional[str]:
+    def get_personnel_number_by_name(self, employee_name: str) -> Optional[str]:
         query: str = "SELECT personnel_number FROM employees WHERE name = ?"
 
         with self.get_connection() as connection:
@@ -238,3 +234,24 @@ class EmployeeManager(DatabaseConnection):
 
                 row: Optional[Tuple[str]] = cursor.fetchone()
                 return row and row[0]
+
+    def get_employee_data_by_id(self, employee_id: int) -> Optional[Dict[str, Union[str, int]]]:
+        query: str = """
+            SELECT id, name, personnel_number, department, category
+            FROM employees
+            WHERE id = ?
+        """
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, (employee_id,))
+
+                employee_data: Optional[Tuple[str]] = cursor.fetchone()
+                if employee_data:
+                    return {
+                        "employee_id": employee_data[0],
+                        "employee_name": employee_data[1],
+                        "personnel_number": employee_data[2],
+                        "employee_department": employee_data[3],
+                        "employee_category": employee_data[4],
+                    }

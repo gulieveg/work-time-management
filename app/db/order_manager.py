@@ -16,6 +16,21 @@ class OrderManager(DatabaseConnection):
                 cursor.execute(query, (order_number, order_number, order_name))
                 connection.commit()
 
+    def order_exists(self, order_number: str, exclude_id: Optional[int] = None) -> bool:
+        query: str = "SELECT * FROM orders WHERE number = ?"
+
+        params: List[str] = [order_number]
+
+        if exclude_id is not None:
+            query += " AND id <> ?"
+            params.append(exclude_id)
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, tuple(params))
+                record: Optional[Tuple[str]] = cursor.fetchone()
+                return record is not None
+
     def get_order_names_by_partial_match(self, query: str) -> List[str]:
         query_string: str = "SELECT name FROM orders WHERE name LIKE ?"
 
@@ -56,19 +71,19 @@ class OrderManager(DatabaseConnection):
                 if res:
                     return res[0]
 
-    def get_order_by_id(self, order_id: int) -> Optional[Dict[str, Union[str, int]]]:
+    def get_order_data_by_id(self, order_id: int) -> Optional[Dict[str, Union[str, int]]]:
         query: str = "SELECT id, number, name FROM orders WHERE id = ?"
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(query, (order_id,))
 
-                res: Optional[Tuple[str]] = cursor.fetchone()
-                if res:
+                order_data: Optional[Tuple[str]] = cursor.fetchone()
+                if order_data:
                     return {
-                        "id": res[0],
-                        "order_number": res[1],
-                        "order_name": res[2],
+                        "id": order_data[0],
+                        "order_number": order_data[1],
+                        "order_name": order_data[2],
                     }
 
     def delete_order(self, order_id: str) -> None:

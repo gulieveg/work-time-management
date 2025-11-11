@@ -81,7 +81,7 @@ def add_task() -> Union[str, Response]:
 
         employee_name, personnel_number = employee_details
 
-        if not db_manager.employees.does_employee_exist(personnel_number):
+        if not db_manager.employees.employee_exists(personnel_number):
             flash(message=MESSAGES["employees"]["employee_not_found"], category="warning")
             context: Dict[str, Union[str, List[str]]] = {
                 "employee_data": employee_data,
@@ -179,7 +179,7 @@ def edit_task(task_id: int) -> Union[str, Response]:
 
         employee_name, personnel_number = employee_details
 
-        if not db_manager.employees.does_employee_exist(personnel_number):
+        if not db_manager.employees.employee_exists(personnel_number):
             flash(message=MESSAGES["employees"]["employee_not_found"], category="warning")
             context: Dict[str, str] = {
                 "employee_name": employee_name,

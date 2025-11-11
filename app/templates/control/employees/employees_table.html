@@ -8,7 +8,7 @@
             <form method="GET" action="{{ url_for('control.employees.employees_table') }}">
                 <button class="tab-button active"><i class="fas fa-list"></i>Список работников</button>
             </form>
-            <form method="GET" action="{{ url_for('control.employees.employees_table') }}">
+            <form method="GET" action="{{ url_for('control.employees.add_employee') }}">
                 <button class="tab-button"><i class="fas fa-plus"></i>Добавить работника</button>
             </form>
         </div>
@@ -18,7 +18,7 @@
                 <div class="filter-item">
                     <label for="employee_name">Фильтр по ФИО работника</label>
                     <div>
-                        <i class="fa fa-user"></i>
+                        <i class="fas fa-user"></i>
                         <input
                             type="text"
                             name="employee_name"
@@ -32,18 +32,18 @@
                 </div>
 
                 <div class="filter-item">
-                    <label for="employee_number">Фильтр по табельному номеру работника</label>
+                    <label for="personnel_number">Фильтр по табельному номеру работника</label>
                     <div>
-                        <i class="fa fa-hashtag"></i>
+                        <i class="fas fa-hashtag"></i>
                         <input
                             type="text"
-                            name="employee_number"
-                            value="{{ request.args.get('employee_number', '') }}"
-                            class="employee-number"
+                            name="personnel_number"
+                            value="{{ request.args.get('personnel_number', '') }}"
+                            class="personnel-number"
                             placeholder="Таб. номер работника"
                             autocomplete="off"
                         />
-                        <div class="employee-number-suggestions suggestions-list"></div>
+                        <div class="personnel-number-suggestions suggestions-list"></div>
                     </div>
                 </div>
             </div>
@@ -71,25 +71,25 @@
             </thead>
             <tbody>
                 {% set filtered_employees_page = filtered_employees_page | default([]) %}
-                {% for employee_id, employee_name, employee_number, employee_department, employee_category in filtered_employees_page %}
+                {% for employee_id, employee_name, personnel_number, employee_department, employee_category in filtered_employees_page %}
                     {% set page = page | default(1) %}
                     {% set page_size = 10 %}
                     <tr>
                         <td>{{ loop.index + (page - 1) * page_size }}</td>
                         <td>{{ employee_name }}</td>
-                        <td>{{ employee_number }}</td>
+                        <td>{{ personnel_number }}</td>
                         <td>{{ employee_department }}</td>
                         <td>{{ employee_category }}</td>
                         <td class="actions-container">
-                            <form method="GET" action="{{ url_for('control.employees.employees_table', employee_id=employee_id) }}">
+                            <form method="GET" action="{{ url_for('control.employees.edit_employee', employee_id=employee_id) }}">
                                 <button type="submit" class="icon-button edit-button tooltip">
                                     <i class="fas fa-edit"></i>
                                     <span class="tooltiptext">Редактировать работника</span>
                                 </button>
                             </form>
-                            <form method="POST" action="{{ url_for('control.employees.employees_table', employee_id=employee_id) }}">
+                            <form method="POST" action="{{ url_for('control.employees.delete_employee', employee_id=employee_id) }}">
                                 <input type="hidden" name="page" value="{{ page }}">
-                                <button type="submit" class="icon-button delete-button tooltip">
+                                <button type="submit" class="icon-button delete-button tooltip" data-action="delete-employee">
                                     <i class="fas fa-trash"></i>
                                     <span class="tooltiptext">Удалить работника</span>
                                 </button>

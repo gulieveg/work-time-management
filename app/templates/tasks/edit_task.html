@@ -8,7 +8,7 @@
         <p class="paragraph">Редактирование задания</p>
         <form method="POST">
             <div class="form-group">
-                <i class="fa fa-user" style="left: 14px;"></i>
+                <i class="fas fa-user" style="left: 14px;"></i>
                 <input
                     type="text"
                     name="employee_data"
@@ -21,7 +21,7 @@
             </div>
 
             <div class="form-group">
-                <i class="fa fa-calendar-alt" style="left: 14px;"></i>
+                <i class="fas fa-calendar-alt" style="left: 14px;"></i>
                 <input
                     type="date"
                     name="operation_date"
@@ -32,7 +32,7 @@
 
             <div class="task-fields">
                 <div class="form-group">
-                    <i class="fa fa-clock" style="left: 14px;"></i>
+                    <i class="fas fa-clock" style="left: 14px;"></i>
                     <input
                         type="number"
                         name="hours"
@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="form-group">
-                    <i class="fa fa-cogs" style="left: 14px;"></i>
+                    <i class="fas fa-cogs" style="left: 14px;"></i>
                     <input
                         type="text"
                         name="order_name"
@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="form-group">
-                    <i class="fa fa-hashtag" style="left: 14px;"></i>
+                    <i class="fas fa-hashtag" style="left: 14px;"></i>
                     <input
                         type="text"
                         name="order_number"
@@ -73,7 +73,7 @@
 
                 {% if not current_user.is_factory_worker %}
                     <div class="form-group">
-                        <i class="fa fa-tools" style="left: 14px;"></i>
+                        <i class="fas fa-tools" style="left: 14px;"></i>
                         <input
                             type="text"
                             name="work_type"
@@ -82,7 +82,7 @@
                             value="{{ work_type }}"
                             required
                         />
-                        <i class="fa fa-chevron-down show-work-types" style="right: 4px; padding: 10px; cursor: pointer;"></i>
+                        <i class="fas fa-chevron-down show-work-types" style="right: 4px; padding: 10px; cursor: pointer;"></i>
                         <div class="work-type-suggestions suggestions-list"></div>
                     </div>
                 {% endif %}

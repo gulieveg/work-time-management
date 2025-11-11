@@ -68,39 +68,26 @@ class UserManager(DatabaseConnection):
         is_user_factory_worker: str,
         is_user_account_enabled: str,
     ) -> None:
-        user_password_hash: Optional[str] = None
+        fields: List[str] = ["name = ?", "department = ?", "login = ?"]
+        params: List[str] = [user_name, user_department, user_login]
 
         if user_password and user_password.strip():
+            fields.append("password_hash = ?")
             user_password_hash: str = hashlib.sha256(user_password.encode()).hexdigest()
+            params.append(user_password_hash)
 
-        query: str = """
-            UPDATE users
-            SET
-                name = ?,
-                department = ?,
-                login = ?,
-                password_hash = ?,
-                permissions_level = ?,
-                is_factory_worker = ?,
-                is_enabled = ?
-            WHERE id = ?
-        """
+        if user_permissions_level and user_permissions_level.strip():
+            fields.append("permissions_level = ?")
+            params.append(user_permissions_level)
+
+        fields.extend(["is_factory_worker = ?", "is_enabled = ?"])
+        params.extend([is_user_factory_worker, is_user_account_enabled, user_id])
+
+        query: str = "UPDATE users SET {} WHERE id = ?".format(", ".join(fields))
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(
-                    query,
-                    (
-                        user_name,
-                        user_department,
-                        user_login,
-                        user_password_hash,
-                        user_permissions_level,
-                        is_user_factory_worker,
-                        is_user_account_enabled,
-                        user_id,
-                    ),
-                )
+                cursor.execute(query, tuple(params))
                 connection.commit()
 
     def reset_user_password(self, user_id: int) -> None:
@@ -143,14 +130,20 @@ class UserManager(DatabaseConnection):
                 cursor.execute(query, (login,))
                 return cursor.fetchone() is not None
 
-    def is_login_available(self, login: str) -> bool:
+    def is_login_available(self, login: str, exclude_id: Optional[int] = None) -> bool:
         query: str = "SELECT login FROM users WHERE login = ?"
+
+        params: List[str] = [login]
+
+        if exclude_id is not None:
+            query += " AND id <> ?"
+            params.append(exclude_id)
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (login,))
+                cursor.execute(query, tuple(params))
                 record: Optional[Tuple[str]] = cursor.fetchone()
-                return bool(record and record[0])
+                return record is None
 
     def is_user_enabled(self, login: str) -> int:
         query: str = "SELECT is_enabled FROM users WHERE login = ?"
@@ -271,7 +264,11 @@ class UserManager(DatabaseConnection):
                     offset: int = (page - 1) * page_size
                     params.append(offset)
                     params.append(page_size)
-                    query += "ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
+                    query += """
+                        ORDER BY id
+                        OFFSET ? ROWS
+                        FETCH NEXT ? ROWS ONLY
+                    """
 
                 cursor.execute(query, tuple(params))
                 users: List[Tuple[str]] = cursor.fetchall()

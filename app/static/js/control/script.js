@@ -83,14 +83,14 @@ configureSuggestionHandlers([
         resourceType: "employees",
         urlPart: "name",
         updateTarget: {
-            inputSelector: ".employee-number",
-            fieldName: "employee_number",
+            inputSelector: ".personnel-number",
+            fieldName: "personnel_number",
             urlPart: "number"
         }
     },
     {
-        inputSelector: ".employee-number",
-        suggestionsSelector: ".employee-number-suggestions",
+        inputSelector: ".personnel-number",
+        suggestionsSelector: ".personnel-number-suggestions",
         resourceType: "employees",
         urlPart: "number",
         updateTarget: {

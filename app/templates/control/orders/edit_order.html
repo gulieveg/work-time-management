@@ -20,12 +20,12 @@
             <div class="form-group">
                 <label>Номер заказа</label>
                 <div>
-                    <i class="fa fa-hashtag"></i>
+                    <i class="fas fa-hashtag"></i>
                     <input
                         type="text"
                         name="order_number"
                         value="{{ order_number }}"
-                        class="order-number"
+                        class="order-number {% if order_number_error %}input-error{% endif %}"
                         placeholder="Номер заказа"
                         autocomplete="off"
                         required
@@ -36,7 +36,7 @@
             <div class="form-group">
                 <label>Наименование заказа</label>
                 <div>
-                    <i class="fa fa-cogs"></i>
+                    <i class="fas fa-cogs"></i>
                     <input
                         type="text"
                         name="order_name"

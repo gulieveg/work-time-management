@@ -10,7 +10,7 @@ export function configureSuggestionInputs() {
         [".user-name", ".user-name-suggestions", "/control/users/names"],
         [".user-login", ".user-login-suggestions", "/control/users/logins"],
         [".employee-name", ".employee-name-suggestions", "/control/employees/names"],
-        [".employee-number", ".employee-number-suggestions", "/control/employees/numbers"],
+        [".personnel-number", ".personnel-number-suggestions", "/control/employees/numbers"],
     ];
 
     selectorsMap.forEach(([inputSelector, suggestionsListSelector, url]) => {

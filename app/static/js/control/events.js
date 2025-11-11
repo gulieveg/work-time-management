@@ -2,7 +2,11 @@ export function configureSuggestionListBlurHandler() {
     document.addEventListener("click", function (event) {
         const selectors = [
             ".order-name-suggestions",
-            ".order-number-suggestions"
+            ".order-number-suggestions",
+            ".user-name-suggestions",
+            ".user-login-suggestions",
+            ".employee-name-suggestions",
+            ".personnel-number-suggestions",
         ];
 
         document.querySelectorAll(selectors.join(", ")).forEach(suggestionsList => {
@@ -25,7 +29,11 @@ export function configureSuggestionListEscapeHandler() {
 
         const selectors = [
             ".order-name-suggestions",
-            ".order-number-suggestions"
+            ".order-number-suggestions",
+            ".user-name-suggestions",
+            ".user-login-suggestions",
+            ".employee-name-suggestions",
+            ".personnel-number-suggestions",
         ];
 
         document.querySelectorAll(selectors.join(", ")).forEach(suggestionsList => {
@@ -115,6 +123,10 @@ export function configureUserConfirmationModal() {
         "delete-order": {
             message: "Вы уверены, что хотите удалить заказ?",
             button: "Удалить",
+        },
+        "delete-employee": {
+            message: "Вы уверены, что хотите удалить работника?",
+            button: "Удалить",
         }
     };
 
@@ -190,6 +202,10 @@ export function configureUserPrivilegesDropDownHandler() {
         const toggleCheckbox = dropdown.querySelector("input[type='checkbox']");
 
         if (!hiddenInput || !labelText || !options.length || !toggleCheckbox) return;
+
+        if (!toggleCheckbox.checked) {
+            hiddenInput.value = "";
+        }
 
         options.forEach(option => {
             option.addEventListener("click", () => {

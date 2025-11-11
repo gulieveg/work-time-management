@@ -15,7 +15,7 @@
     box-sizing: border-box;
 }
 
-.form-group .fa {
+.form-group .fas {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);

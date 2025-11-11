@@ -14,7 +14,7 @@
     position: relative;
 }
 
-.filter-item .fa {
+.filter-item .fas {
     position: absolute;
     top: 50%;
     left: 12px;

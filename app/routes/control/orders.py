@@ -55,7 +55,17 @@ def add_order() -> str:
     if request.method == "POST":
         order_number: str = request.form.get("order_number")
         order_name: str = request.form.get("order_name")
-        db_manager.orders.add_order(order_number, order_name)
+
+        if db_manager.orders.order_exists(order_number):
+            flash(message=MESSAGES["orders"]["order_exists"], category="warning")
+            return render_template("control/orders/add_order.html")
+
+        args: Dict[str, str] = {
+            "order_number": order_number,
+            "order_name": order_name,
+        }
+        db_manager.orders.add_order(**args)
+
         flash(message=MESSAGES["orders"]["order_added"], category="info")
         return render_template("control/orders/add_order.html")
     return render_template("control/orders/add_order.html")
@@ -65,16 +75,27 @@ def add_order() -> str:
 @login_required
 @permission_required(["advanced"])
 def edit_order(order_id: int) -> Union[str, Response]:
-    order: Tuple[str] = db_manager.orders.get_order_by_id(order_id)
+    order_data: Tuple[str] = db_manager.orders.get_order_data_by_id(order_id)
 
     context: Dict[str, str] = {
-        "order_number": order["order_number"],
-        "order_name": order["order_name"],
+        "order_number": order_data["order_number"],
+        "order_name": order_data["order_name"],
     }
 
     if request.method == "POST":
-        order_number: str = request.form["order_number"]
-        order_name: str = request.form["order_name"]
+        order_number: str = request.form.get("order_number")
+        order_name: str = request.form.get("order_name")
+
+        if db_manager.orders.order_exists(order_number, exclude_id=order_id):
+            flash(message=MESSAGES["orders"]["order_exists"], category="error")
+            context_with_error: Dict[str, str] = context.copy()
+            context_with_error.update(
+                {
+                    "order_number": order_number,
+                    "order_number_error": True,
+                }
+            )
+            return render_template("control/orders/edit_order.html", **context_with_error)
 
         args: Dict[str, Union[str, int]] = {
             "order_id": order_id,
@@ -82,6 +103,7 @@ def edit_order(order_id: int) -> Union[str, Response]:
             "order_name": order_name,
         }
         db_manager.orders.update_order(**args)
+
         flash(message=MESSAGES["orders"]["order_updated"], category="info")
         return redirect(url_for("control.orders.edit_order", order_id=order_id))
     return render_template("control/orders/edit_order.html", **context)
