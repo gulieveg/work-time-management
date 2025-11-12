@@ -63,7 +63,7 @@ export function configureFilterResetHandler() {
         const form = resetButton.closest("form");
         if (!form) return;
 
-        const inputs = form.querySelectorAll("input[type='text'], input[type='number']");
+        const inputs = form.querySelectorAll("input[type='text'], input[type='number'], input[type='date']");
         inputs.forEach(input => input.value = "");
 
         const departmentCheckboxes = form.querySelectorAll(".dropdown-content input[type='checkbox'][name='departments[]']");
