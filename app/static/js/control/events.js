@@ -234,3 +234,21 @@ export function configureUserPrivilegesDropDownHandler() {
         });
     });
 }
+
+
+export function configureFileUpload() {
+    const container = document.querySelector(".file-upload-container");
+    if (!container) return;
+
+    const fileUpload = container.querySelector(".file-upload");
+    const fileUploadLabel = container.querySelector(".file-upload-label");
+    const uploadButton = container.querySelector(".upload-button");
+
+    uploadButton.addEventListener("click", () => fileUpload.click());
+
+    fileUpload.addEventListener("change", () => {
+        if (fileUpload.files.length > 0) {
+            fileUploadLabel.textContent = fileUpload.files[0].name;
+        }
+    });
+}

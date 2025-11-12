@@ -1,6 +1,7 @@
 from decimal import Decimal
 from typing import Dict, List, Tuple, Union
 
+import pandas
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import login_required
 from werkzeug.wrappers import Response
@@ -55,6 +56,7 @@ def add_order() -> str:
     if request.method == "POST":
         order_number: str = request.form.get("order_number")
         order_name: str = request.form.get("order_name")
+        file_upload: str = request.files.get("file_upload")
 
         if db_manager.orders.order_exists(order_number):
             flash(message=MESSAGES["orders"]["order_exists"], category="warning")
@@ -64,7 +66,19 @@ def add_order() -> str:
             "order_number": order_number,
             "order_name": order_name,
         }
-        db_manager.orders.add_order(**args)
+
+        order_id: int = db_manager.orders.add_order(**args)
+
+        dataframe: pandas.DataFrame = pandas.read_excel(file_upload, header=None)
+
+        for work_name, planned_hours in dataframe.itertuples(index=False, name=None):
+            if pandas.isna(work_name) or pandas.isna(planned_hours):
+                continue
+
+            if db_manager.orders.work_exists(order_id, work_name):
+                continue
+
+            db_manager.orders.add_work_to_order(order_id, str(work_name).strip(), Decimal(planned_hours))
 
         flash(message=MESSAGES["orders"]["order_added"], category="info")
         return render_template("control/orders/add_order.html")

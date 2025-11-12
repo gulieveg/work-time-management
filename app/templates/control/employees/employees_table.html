@@ -100,30 +100,32 @@
             </tbody>
         </table>
 
-        <div class="pagination-container">
-            {% set page = page | default(0) %}
-            {% set page_size = 10 %}
-            {% set total_employees = filtered_employees | length %}
-            {% set total_pages = (total_employees + page_size - 1) // page_size %}
-            {% if page == 1 %}
-                <span class="pagination-arrow" style="visibility: hidden;"></i></span>
-            {% endif %}
-            {% if page > 1 %}
-                {% set previous_page = page - 1 %}
-                <a href="{{ url_for('control.employees.employees_table', page=previous_page) }}" class="pagination-arrow">
-                    <i class="fas fa-angle-left"></i>
-                </a>
-            {% endif %}
-            <span>Страница {{ page }} / {{ total_pages }}</span>
-            {% if page < total_pages %}
-                {% set next_page = page + 1 %}
-                <a href="{{ url_for('control.employees.employees_table', page=next_page) }}" class="pagination-arrow">
-                    <i class="fas fa-angle-right"></i>
-                </a>
-            {% endif %}
-            {% if page == total_pages %}
-                <span class="pagination-arrow" style="visibility: hidden;"></i></span>
-            {% endif %}
+        <div class="section">
+            <div class="pagination-container">
+                {% set page = page | default(0) %}
+                {% set page_size = 10 %}
+                {% set total_employees = filtered_employees | length %}
+                {% set total_pages = (total_employees + page_size - 1) // page_size %}
+                {% if page == 1 %}
+                    <span class="pagination-arrow" style="visibility: hidden;"><i class="fas fa-angle-left"></i></span>
+                {% endif %}
+                {% if page > 1 %}
+                    {% set previous_page = page - 1 %}
+                    <a href="{{ url_for('control.employees.employees_table', page=previous_page) }}" class="pagination-arrow">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                {% endif %}
+                <span>Страница {{ page }} / {{ total_pages }}</span>
+                {% if page < total_pages %}
+                    {% set next_page = page + 1 %}
+                    <a href="{{ url_for('control.employees.employees_table', page=next_page) }}" class="pagination-arrow">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                {% endif %}
+                {% if page == total_pages %}
+                    <span class="pagination-arrow" style="visibility: hidden;"><i class="fas fa-angle-right"></i></span>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock content %}

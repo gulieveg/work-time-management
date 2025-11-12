@@ -146,7 +146,7 @@
                     {% set total_users = filtered_users | length %}
                     {% set total_pages = (total_users + page_size - 1) // page_size %}
                     {% if page == 1 %}
-                        <span class="pagination-arrow" style="visibility: hidden;"></i></span>
+                        <span class="pagination-arrow" style="visibility: hidden;"><i class="fas fa-angle-left"></i></span>
                     {% endif %}
                     {% if page > 1 %}
                         {% set previous_page = page - 1 %}
@@ -162,7 +162,7 @@
                         </a>
                     {% endif %}
                     {% if page == total_pages %}
-                        <span class="pagination-arrow" style="visibility: hidden;"></i></span>
+                        <span class="pagination-arrow" style="visibility: hidden;"><i class="fas fa-angle-right"></i></span>
                     {% endif %}
                 </div>
             </div>

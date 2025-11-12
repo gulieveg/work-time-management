@@ -143,7 +143,7 @@
             </div>
         </form>
 
-        <div class="flashed-messages" style="margin-left: 0; min-width: 200px; max-width: 600px; width: 100%;">
+        <div class="flashed-messages">
             {% for category, message in get_flashed_messages(with_categories=true) %}
                 <div class="{{ category }}" id="message">
                     <p>{{ message }}</p>

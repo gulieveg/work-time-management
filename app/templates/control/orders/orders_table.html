@@ -78,12 +78,6 @@
                         <td>{{ order_name }}</td>
                         <td class="actions-container">
                             <form method="GET" action="{{ url_for('control.orders.edit_order', order_id=order_id) }}">
-                                <button type="submit" class="icon-button work-list-button tooltip">
-                                    <i class="fas fa-plus"></i>
-                                    <span class="tooltiptext">Добавить перечень работ</span>
-                                </button>
-                            </form>
-                            <form method="GET" action="{{ url_for('control.orders.edit_order', order_id=order_id) }}">
                                 <button type="submit" class="icon-button edit-button tooltip">
                                     <i class="fas fa-edit"></i>
                                     <span class="tooltiptext">Редактировать заказ</span>
@@ -102,30 +96,32 @@
             </tbody>
         </table>
 
-        <div class="pagination-container">
-            {% set page = page | default(0) %}
-            {% set page_size = 10 %}
-            {% set total_orders = filtered_orders | length %}
-            {% set total_pages = (total_orders + page_size - 1) // page_size %}
-            {% if page == 1 %}
-                <span class="pagination-arrow" style="visibility: hidden;"></i></span>
-            {% endif %}
-            {% if page > 1 %}
-                {% set previous_page = page - 1 %}
-                <a href="{{ url_for('control.orders.orders_table', page=previous_page) }}" class="pagination-arrow">
-                    <i class="fas fa-angle-left"></i>
-                </a>
-            {% endif %}
-            <span>Страница {{ page }} / {{ total_pages }}</span>
-            {% if page < total_pages %}
-                {% set next_page = page + 1 %}
-                <a href="{{ url_for('control.orders.orders_table', page=next_page) }}" class="pagination-arrow">
-                    <i class="fas fa-angle-right"></i>
-                </a>
-            {% endif %}
-            {% if page == total_pages %}
-                <span class="pagination-arrow" style="visibility: hidden;"></i></span>
-            {% endif %}
+        <div class="section">
+            <div class="pagination-container">
+                {% set page = page | default(0) %}
+                {% set page_size = 10 %}
+                {% set total_orders = filtered_orders | length %}
+                {% set total_pages = (total_orders + page_size - 1) // page_size %}
+                {% if page == 1 %}
+                    <span class="pagination-arrow" style="visibility: hidden;"><i class="fas fa-angle-left"></i></span>
+                {% endif %}
+                {% if page > 1 %}
+                    {% set previous_page = page - 1 %}
+                    <a href="{{ url_for('control.orders.orders_table', page=previous_page) }}" class="pagination-arrow">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                {% endif %}
+                <span>Страница {{ page }} / {{ total_pages }}</span>
+                {% if page < total_pages %}
+                    {% set next_page = page + 1 %}
+                    <a href="{{ url_for('control.orders.orders_table', page=next_page) }}" class="pagination-arrow">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                {% endif %}
+                {% if page == total_pages %}
+                    <span class="pagination-arrow" style="visibility: hidden;"><i class="fas fa-angle-right"></i></span>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock content %}

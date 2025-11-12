@@ -48,5 +48,7 @@ CREATE TABLE works (
     id INT IDENTITY(1,1) PRIMARY KEY,
     order_id INT NOT NULL,
     name NVARCHAR(255) NOT NULL,
+    planned_hours DECIMAL(10,2) NOT NULL,
+    spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
