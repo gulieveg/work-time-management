@@ -4,8 +4,7 @@ export function configureSuggestionListBlurHandler() {
             ".order-name-suggestions",
             ".order-number-suggestions",
             ".employee-data-suggestions",
-            ".operation-type-suggestions",
-            ".work-type-suggestions"
+            ".work-name-suggestions",
         ];
 
         document.querySelectorAll(selectors.join(", ")).forEach(suggestionsList => {
@@ -39,8 +38,7 @@ export function configureSuggestionListEscapeHandler() {
             ".order-name-suggestions",
             ".order-number-suggestions",
             ".employee-data-suggestions",
-            ".operation-type-suggestions",
-            ".work-type-suggestions"
+            ".work-name-suggestions",
         ];
 
         document.querySelectorAll(selectors.join(", ")).forEach(suggestionsList => {
@@ -166,18 +164,18 @@ export function configureHoursSelection() {
 }
 
 
-export function configureWorkTypeDropDownHandler() {
+export function configureWorkNameDropDownHandler() {
     document.addEventListener("click", (event) => {
-        const icon = event.target.closest(".show-work-types");
+        const icon = event.target.closest(".show-work-names");
         if (!icon) return;
 
         const taskFields = icon.closest(".task-fields");
         if (!taskFields) return;
 
-        const input = taskFields.querySelector(".work-type");
+        const input = taskFields.querySelector(".work-name");
         if (!input) return;
 
-        const suggestionsContainer = taskFields.querySelector(".work-type-suggestions");
+        const suggestionsContainer = taskFields.querySelector(".work-name-suggestions");
         if (!suggestionsContainer) return;
 
         if (suggestionsContainer.dataset.open === "true") {
@@ -187,10 +185,10 @@ export function configureWorkTypeDropDownHandler() {
             return;
         }
 
-        const workTypesContainer = document.getElementById("work-types-data");
-        const workTypes = JSON.parse(workTypesContainer.dataset.workTypes || "[]");
+        const workNamesContainer = document.getElementById("work-names-data");
+        const workNames = JSON.parse(workNamesContainer.dataset.workNames || "[]");
 
-        workTypes.forEach(work => {
+        workNames.forEach(work => {
             const item = document.createElement("div");
             item.classList.add("suggestion");
             item.textContent = work;

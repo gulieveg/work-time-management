@@ -5,7 +5,7 @@ import {
     configurePasswordToggle,
     configureScrollToTopButton,
     configureHoursSelection,
-    configureWorkTypeDropDownHandler,
+    configureWorkNameDropDownHandler,
     configureDropdownCheckboxListener
 } from "./events.js";
 import { configureTaskCreateHandler, configureTaskDeleteHandler } from "./tasks.js";
@@ -29,7 +29,7 @@ configureFilterResetHandler();
 configurePasswordToggle();
 configureScrollToTopButton();
 configureHoursSelection();
-configureWorkTypeDropDownHandler();
+configureWorkNameDropDownHandler();
 
 configureTaskCreateHandler();
 configureTaskDeleteHandler();

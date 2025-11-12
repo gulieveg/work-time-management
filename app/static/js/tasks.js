@@ -107,38 +107,38 @@ export function configureTaskCreateHandler() {
         const isFactoryWorker = document.body.dataset.isFactoryWorker === "True";
 
         if (!isFactoryWorker) {
-            const workTypeGroup = document.createElement("div");
-            workTypeGroup.classList.add("form-group");
+            const workNameGroup = document.createElement("div");
+            workNameGroup.classList.add("form-group");
 
-            const workTypeIcon = document.createElement("i");
-            workTypeIcon.classList.add("fas", "fa-tools");
-            workTypeIcon.style.left = "14px";
+            const workNameIcon = document.createElement("i");
+            workNameIcon.classList.add("fas", "fa-tools");
+            workNameIcon.style.left = "14px";
 
-            const workTypeDropDownListIcon = document.createElement("i");
-            workTypeDropDownListIcon.classList.add("fas", "fa-chevron-down", "show-work-types");
-            workTypeDropDownListIcon.style.right = "4px";
-            workTypeDropDownListIcon.style.padding = "10px";
-            workTypeDropDownListIcon.style.cursor = "pointer";
+            const workNameDropDownListIcon = document.createElement("i");
+            workNameDropDownListIcon.classList.add("fas", "fa-chevron-down", "show-work-names");
+            workNameDropDownListIcon.style.right = "4px";
+            workNameDropDownListIcon.style.padding = "10px";
+            workNameDropDownListIcon.style.cursor = "pointer";
 
-            const workTypeInput = document.createElement("input");
-            workTypeInput.type = "text";
-            workTypeInput.name = "work_type[]";
-            workTypeInput.classList.add("work-type");
-            workTypeInput.placeholder = "Наименование работы";
-            workTypeInput.autocomplete = "off";
-            workTypeInput.required = true;
+            const workNameInput = document.createElement("input");
+            workNameInput.type = "text";
+            workNameInput.name = "work_name[]";
+            workNameInput.classList.add("work-name");
+            workNameInput.placeholder = "Наименование работы";
+            workNameInput.autocomplete = "off";
+            workNameInput.required = true;
 
-            const workTypeSuggestionsList = document.createElement("div");
-            workTypeSuggestionsList.classList.add("work-type-suggestions", "suggestions-list");
+            const workNameSuggestionsList = document.createElement("div");
+            workNameSuggestionsList.classList.add("work-name-suggestions", "suggestions-list");
 
-            workTypeGroup.appendChild(workTypeIcon);
-            workTypeGroup.appendChild(workTypeDropDownListIcon);
-            workTypeGroup.appendChild(workTypeInput);
-            workTypeGroup.appendChild(workTypeSuggestionsList);
-            taskFields.appendChild(workTypeGroup);
+            workNameGroup.appendChild(workNameIcon);
+            workNameGroup.appendChild(workNameDropDownListIcon);
+            workNameGroup.appendChild(workNameInput);
+            workNameGroup.appendChild(workNameSuggestionsList);
+            taskFields.appendChild(workNameGroup);
 
-            processInput(workTypeInput, workTypeSuggestionsList, "/employees/work-types");
-            processSelection(workTypeInput, workTypeSuggestionsList);
+            processInput(workNameInput, workNameSuggestionsList, "/employees/work-names");
+            processSelection(workNameInput, workNameSuggestionsList);
         }
 
         const deleteButton = document.createElement("button");
