@@ -252,3 +252,43 @@ export function configureFileUpload() {
         }
     });
 }
+
+
+export function configureWorkListHandlers() {
+    const tabButtons = document.querySelectorAll(".sub-tab-button");
+    const tabContents = document.querySelectorAll(".tab-content");
+    const tbody = document.getElementById("manual-rows");
+    const addRowButton = document.getElementById("add-row");
+
+    if (!tabButtons.length || !tabContents.length || !tbody || !addRowButton) return;
+
+    tabButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            tabButtons.forEach(btn => btn.classList.remove("active"));
+            tabContents.forEach(tab => tab.classList.remove("active"));
+
+            button.classList.add("active");
+            const targetTab = document.getElementById(button.dataset.tab);
+            if (targetTab) {
+                targetTab.classList.add("active");
+            }
+        });
+    });
+
+    addRowButton.addEventListener("click", () => {
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td><input type="text" name="work_name[]" required></td>
+            <td><input type="number" name="work_hours[]" step="0.01" required></td>
+            <td><button type="button" class="delete-work">Х</button></td>
+        `;
+        tbody.appendChild(newRow);
+    });
+
+    tbody.addEventListener("click", event => {
+        const deleteWorkButton = event.target.closest(".delete-work");
+        if (deleteWorkButton) {
+            deleteWorkButton.closest("tr").remove();
+        }
+    });
+}

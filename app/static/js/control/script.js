@@ -7,7 +7,8 @@ import {
     configureUserConfirmationModal,
     configurePasswordToggle,
     configureUserPrivilegesDropDownHandler,
-    configureFileUpload
+    configureFileUpload,
+    configureWorkListHandlers
 } from "./events.js";
 import { configureSuggestionInputs, configureSuggestionHandlers } from "./suggestions.js"
 
@@ -105,3 +106,4 @@ configureSuggestionHandlers([
 configurePasswordToggle();
 configureUserPrivilegesDropDownHandler();
 configureFileUpload();
+configureWorkListHandlers();

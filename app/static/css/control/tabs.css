@@ -20,3 +20,42 @@
 .tab-button.active {
     background: #ddd;
 }
+
+.tabs-section-title {
+    font-weight: bold;
+}
+
+.sub-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.sub-tab-button {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    cursor: pointer;
+}
+
+.sub-tab-button.active {
+    background: #fff;
+    border-bottom: 2px solid #007bff;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* events.js
+tabs.css
+add_ordee.html
+table.css
+
+naming 
+
+*/
