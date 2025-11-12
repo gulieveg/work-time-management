@@ -14,7 +14,7 @@ class TaskManager(DatabaseConnection):
         employee_name: str,
         personnel_number: str,
         department: str,
-        operation_type: str,
+        work_name: str,
         hours: Decimal,
         order_number: str,
         order_name: str,
@@ -26,7 +26,7 @@ class TaskManager(DatabaseConnection):
                 employee_name,
                 personnel_number,
                 department,
-                operation_type,
+                work_name,
                 hours,
                 order_number,
                 order_name,
@@ -44,7 +44,7 @@ class TaskManager(DatabaseConnection):
                         employee_name,
                         personnel_number,
                         department,
-                        operation_type,
+                        work_name,
                         hours,
                         order_number,
                         order_name,
@@ -54,14 +54,14 @@ class TaskManager(DatabaseConnection):
                 )
                 connection.commit()
 
-    def get_task_by_id(self, task_id: int) -> Optional[Dict[str, Union[str, Decimal]]]:
+    def get_task_data_by_id(self, task_id: int) -> Optional[Dict[str, Union[str, Decimal]]]:
         query: str = """
             SELECT
                 id,
                 employee_name,
                 personnel_number,
                 department,
-                operation_type,
+                work_name,
                 hours,
                 order_number,
                 order_name,
@@ -73,18 +73,18 @@ class TaskManager(DatabaseConnection):
             with connection.cursor() as cursor:
                 cursor.execute(query, (task_id,))
 
-                res: Optional[Tuple[str]] = cursor.fetchone()
-                if res:
+                task_data: Optional[Tuple[str]] = cursor.fetchone()
+                if task_data:
                     return {
-                        "id": res[0],
-                        "employee_name": res[1],
-                        "personnel_number": res[2],
-                        "department": res[3],
-                        "operation_type": res[4],
-                        "hours": res[5],
-                        "order_number": res[6],
-                        "order_name": res[7],
-                        "operation_date": res[8].strftime("%Y-%m-%d"),
+                        "id": task_data[0],
+                        "employee_name": task_data[1],
+                        "personnel_number": task_data[2],
+                        "department": task_data[3],
+                        "work_name": task_data[4],
+                        "hours": task_data[5],
+                        "order_number": task_data[6],
+                        "order_name": task_data[7],
+                        "operation_date": task_data[8].strftime("%Y-%m-%d"),
                     }
 
     def delete_task(self, task_id: str) -> None:
@@ -102,15 +102,16 @@ class TaskManager(DatabaseConnection):
         end_date: Optional[str] = None,
         employee_data: Optional[str] = None,
         order_number: Optional[str] = None,
-        operation_type: Optional[str] = None,
+        work_name: Optional[str] = None,
         order_name: Optional[str] = None,
     ) -> Tasks:
         base_query: str = """
-            SELECT id,
+            SELECT
+                id,
                 employee_name,
                 personnel_number,
                 department,
-                operation_type,
+                work_name,
                 hours,
                 order_number,
                 order_name,
@@ -155,9 +156,9 @@ class TaskManager(DatabaseConnection):
             query += " AND order_number = ?"
             params.append(order_number)
 
-        if operation_type:
-            query += " AND operation_type = ?"
-            params.append(operation_type)
+        if work_name:
+            query += " AND work_name = ?"
+            params.append(work_name)
 
         if order_name:
             query += " AND order_name = ?"
@@ -173,7 +174,7 @@ class TaskManager(DatabaseConnection):
                         "employee_name": task[1],
                         "personnel_number": task[2],
                         "department": task[3],
-                        "operation_type": task[4],
+                        "work_name": task[4],
                         "hours": task[5],
                         "order_number": task[6],
                         "order_name": task[7],
@@ -193,12 +194,9 @@ class TaskManager(DatabaseConnection):
         order_name: str,
         order_number: str,
         operation_date: str,
-        operation_type: Optional[str] = None,
+        work_name: str,
     ) -> None:
         department: str = EmployeeManager().get_employee_department(personnel_number)
-
-        if operation_type is None:
-            operation_type: str = EmployeeManager().get_employee_operation_type(personnel_number)
 
         query: str = """
             UPDATE tasks
@@ -206,7 +204,7 @@ class TaskManager(DatabaseConnection):
                 employee_name = ?,
                 personnel_number = ?,
                 department = ?,
-                operation_type = ?,
+                work_name = ?,
                 hours = ?,
                 order_number = ?,
                 order_name = ?,
@@ -222,7 +220,7 @@ class TaskManager(DatabaseConnection):
                         employee_name,
                         personnel_number,
                         department,
-                        operation_type,
+                        work_name,
                         hours,
                         order_number,
                         order_name,

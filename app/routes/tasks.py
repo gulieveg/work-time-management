@@ -25,7 +25,7 @@ def tasks_table() -> Union[str, Response]:
         "end_date": request.args.get("end_date"),
         "employee_data": request.args.get("employee_data"),
         "order_number": request.args.get("order_number"),
-        "operation_type": request.args.get("operation_type"),
+        "work_name": request.args.get("work_name"),
         "order_name": request.args.get("order_name"),
     }
 
@@ -55,7 +55,7 @@ def add_task() -> Union[str, Response]:
         hours_list: List[str] = request.form.getlist("hours[]")
         order_names: List[str] = request.form.getlist("order_name[]")
         order_numbers: List[str] = request.form.getlist("order_number[]")
-        work_types: List[str] = request.form.getlist("work_type[]")
+        work_names: List[str] = request.form.getlist("work_name[]")
 
         if not hours_list:
             flash(message=MESSAGES["tasks"]["no_tasks_provided"], category="warning")
@@ -73,7 +73,7 @@ def add_task() -> Union[str, Response]:
                 "hours_list": hours_list,
                 "order_names": order_names,
                 "order_numbers": order_numbers,
-                "work_types": work_types,
+                "work_names": work_names,
             }
             return render_template("tasks/add_task.html", **context)
 
@@ -87,7 +87,7 @@ def add_task() -> Union[str, Response]:
                 "hours_list": hours_list,
                 "order_names": order_names,
                 "order_numbers": order_numbers,
-                "work_types": work_types,
+                "work_names": work_names,
             }
             return render_template("tasks/add_task.html", **context)
 
@@ -102,28 +102,20 @@ def add_task() -> Union[str, Response]:
                 "hours_list": hours_list,
                 "order_names": order_names,
                 "order_numbers": order_numbers,
-                "work_types": work_types,
+                "work_names": work_names,
             }
             return render_template("tasks/add_task.html", **context)
 
         employee_department: str = db_manager.employees.get_employee_department(personnel_number)
         employee_category: str = db_manager.employees.get_employee_category(personnel_number)
 
-        if work_types:
-            operation_types: List[str] = work_types
-        else:
-            operation_type: str = db_manager.employees.get_employee_operation_type(personnel_number)
-            operation_types: List[str] = [operation_type] * len(hours_list)
-
-        for hours, order_number, order_name, operation_type in zip(
-            hours_list, order_numbers, order_names, operation_types
-        ):
+        for hours, order_number, order_name, work_name in zip(hours_list, order_numbers, order_names, work_names):
             args: Dict[str, Union[str, Decimal]] = {
                 "employee_name": employee_name,
                 "personnel_number": personnel_number,
                 "department": employee_department,
                 "employee_category": employee_category,
-                "operation_type": operation_type,
+                "work_name": work_name,
                 "hours": Decimal(hours),
                 "order_number": order_number,
                 "order_name": order_name,
@@ -140,19 +132,17 @@ def add_task() -> Union[str, Response]:
 @login_required
 @permission_required(["advanced", "standard"])
 def edit_task(task_id: int) -> Union[str, Response]:
-    task: Dict[str, Union[str, Decimal]] = db_manager.tasks.get_task_by_id(task_id)
+    task_data: Dict[str, Union[str, Decimal]] = db_manager.tasks.get_task_data_by_id(task_id)
 
     context: Dict[str, Union[str, Decimal]] = {
-        "employee_name": task["employee_name"],
-        "personnel_number": task["personnel_number"],
-        "operation_date": task["operation_date"],
-        "hours": task["hours"],
-        "order_name": task["order_name"],
-        "order_number": task["order_number"],
-        "work_type": task["operation_type"],
+        "employee_name": task_data["employee_name"],
+        "personnel_number": task_data["personnel_number"],
+        "operation_date": task_data["operation_date"],
+        "hours": task_data["hours"],
+        "order_name": task_data["order_name"],
+        "order_number": task_data["order_number"],
+        "work_name": task_data["work_name"],
     }
-
-    work_types_data: List[str] = db_manager.employees.get_work_types()
 
     if request.method == "POST":
         employee_data: str = request.form.get("employee_data")
@@ -160,7 +150,7 @@ def edit_task(task_id: int) -> Union[str, Response]:
         hours: str = request.form.get("hours")
         order_name: str = request.form.get("order_name")
         order_number: str = request.form.get("order_number")
-        operation_type: str = request.form.get("work_type")
+        work_name: str = request.form.get("work_name")
 
         employee_details: Tuple[str, str] = db_manager.employees.get_employee_details(employee_data)
 
@@ -171,7 +161,7 @@ def edit_task(task_id: int) -> Union[str, Response]:
                 "hours": hours,
                 "order_name": order_name,
                 "order_number": order_number,
-                "work_type": operation_type,
+                "work_name": work_name,
             }
             return render_template("tasks/edit_task.html", **context)
 
@@ -186,7 +176,7 @@ def edit_task(task_id: int) -> Union[str, Response]:
                 "hours": hours,
                 "order_name": order_name,
                 "order_number": order_number,
-                "work_type": operation_type,
+                "work_name": work_name,
             }
             return render_template("tasks/edit_task.html", **context)
 
@@ -203,7 +193,7 @@ def edit_task(task_id: int) -> Union[str, Response]:
                 "hours": hours,
                 "order_name": order_name,
                 "order_number": order_number,
-                "work_type": operation_type,
+                "work_name": work_name,
             }
             return render_template("tasks/edit_task.html", **context)
 
@@ -215,7 +205,7 @@ def edit_task(task_id: int) -> Union[str, Response]:
             "order_name": order_name,
             "order_number": order_number,
             "operation_date": operation_date,
-            "operation_type": operation_type,
+            "work_name": work_name,
         }
         db_manager.tasks.update_task(**args)
 
@@ -225,7 +215,7 @@ def edit_task(task_id: int) -> Union[str, Response]:
             "end_date": request.args.get("end_date"),
             "employee_data": request.args.get("employee_data"),
             "order_number": request.args.get("order_number"),
-            "operation_type": request.args.get("operation_type"),
+            "work_name": request.args.get("work_name"),
             "order_name": request.args.get("order_name"),
         }
         return redirect(url_for("tasks.tasks_table", **params))
@@ -242,7 +232,7 @@ def delete_task(task_id: str) -> Response:
         "end_date": request.form.get("end_date"),
         "employee_data": request.form.get("employee_data"),
         "order_number": request.form.get("order_number"),
-        "operation_type": request.form.get("operation_type"),
+        "work_name": request.form.get("work_name"),
         "order_name": request.form.get("order_name"),
     }
     db_manager.tasks.delete_task(task_id)

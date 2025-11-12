@@ -22,7 +22,7 @@ export function configureTaskCreateHandler() {
         hoursGroup.classList.add("form-group");
 
         const hoursIcon = document.createElement("i");
-        hoursIcon.classList.add("fa", "fa-clock");
+        hoursIcon.classList.add("fas", "fa-clock");
         hoursIcon.style.left = "14px";
 
         const hoursInput = document.createElement("input");
@@ -42,7 +42,7 @@ export function configureTaskCreateHandler() {
         orderNameGroup.classList.add("form-group");
 
         const orderNameIcon = document.createElement("i");
-        orderNameIcon.classList.add("fa", "fa-cogs");
+        orderNameIcon.classList.add("fas", "fa-cogs");
         orderNameIcon.style.left = "14px";
 
         const orderNameInput = document.createElement("input");
@@ -68,7 +68,7 @@ export function configureTaskCreateHandler() {
         orderNumberGroup.classList.add("form-group");
 
         const orderNumberIcon = document.createElement("i");
-        orderNumberIcon.classList.add("fa", "fa-hashtag");
+        orderNumberIcon.classList.add("fas", "fa-hashtag");
         orderNumberIcon.style.left = "14px";
 
         const orderNumberInput = document.createElement("input");
@@ -111,11 +111,11 @@ export function configureTaskCreateHandler() {
             workTypeGroup.classList.add("form-group");
 
             const workTypeIcon = document.createElement("i");
-            workTypeIcon.classList.add("fa", "fa-tools");
+            workTypeIcon.classList.add("fas", "fa-tools");
             workTypeIcon.style.left = "14px";
 
             const workTypeDropDownListIcon = document.createElement("i");
-            workTypeDropDownListIcon.classList.add("fa", "fa-chevron-down", "show-work-types");
+            workTypeDropDownListIcon.classList.add("fas", "fa-chevron-down", "show-work-types");
             workTypeDropDownListIcon.style.right = "4px";
             workTypeDropDownListIcon.style.padding = "10px";
             workTypeDropDownListIcon.style.cursor = "pointer";
