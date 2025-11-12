@@ -1,3 +1,10 @@
+IF OBJECT_ID('departments', 'U') IS NULL
+CREATE TABLE departments (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    name NVARCHAR(255) NOT NULL,
+    is_production BIT NOT NULL DEFAULT 0
+);
+
 IF OBJECT_ID('employees', 'U') IS NULL
 CREATE TABLE employees (
     id INT IDENTITY(1,1) PRIMARY KEY,
