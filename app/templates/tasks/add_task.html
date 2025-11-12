@@ -3,7 +3,6 @@
 {% block title %}Добавление заданий{% endblock title %}
 
 {% block content %}
-    <div id="work-types-data" data-work-types='{{ work_types_data | tojson | safe }}'></div>
     <div class="add-task-container">
         <p class="paragraph">Добавление заданий</p>
         <form method="POST">
@@ -32,9 +31,8 @@
             </div>
 
             <div id="tasks-container">
-                {% if hours_list and order_names and order_numbers %}
-                    {% set work_types = work_types if work_types else [""] * hours_list | length %}
-                    {% for hours, order_name, order_number, work_type in hours_list | zip_iterables(order_names, order_numbers, work_types) %}
+                {% if hours_list and order_names and order_numbers and work_names %}
+                    {% for hours, order_name, order_number, work_name in hours_list | zip_iterables(order_names, order_numbers, work_names) %}
                         <div class="task-fields">
                             <p class="task-number">Задание &#8470;{{ loop.index }}</p>
                             <div class="form-group">
@@ -50,6 +48,7 @@
                                     required
                                 />
                             </div>
+
                             <div class="form-group">
                                 <i class="fas fa-cogs" style="left: 14px;"></i>
                                 <input
@@ -63,6 +62,7 @@
                                 />
                                 <div class="order-name-suggestions suggestions-list"></div>
                             </div>
+
                             <div class="form-group">
                                 <i class="fas fa-hashtag" style="left: 14px;"></i>
                                 <input
@@ -76,22 +76,20 @@
                                 />
                                 <div class="order-number-suggestions suggestions-list"></div>
                             </div>
-                            {% if not current_user.is_factory_worker %}
-                                <div class="form-group">
-                                    <i class="fas fa-tools" style="left: 14px;"></i>
-                                    <input
-                                        type="text"
-                                        name="work_type[]"
-                                        value="{{ work_type }}"
-                                        class="work-type"
-                                        placeholder="Наименование работы"
-                                        autocomplete="off"
-                                        required
-                                    />
-                                    <i class="fas fa-chevron-down show-work-types" style="right: 4px; padding: 10px; cursor: pointer;"></i>
-                                    <div class="work-type-suggestions suggestions-list"></div>
-                                </div>
-                            {% endif %}
+
+                            <div class="form-group">
+                                <i class="fas fa-tools" style="left: 14px;"></i>
+                                <input
+                                    type="text"
+                                    name="work_name[]"
+                                    value="{{ work_name }}"
+                                    class="work-name"
+                                    placeholder="Наименование работы"
+                                    autocomplete="off"
+                                    required
+                                />
+                                <div class="work-name-suggestions suggestions-list"></div>
+                            </div>
                             <button type="button" class="default-button delete-form-task-button">Удалить задание</button>
                             <hr>
                         </div>
@@ -136,21 +134,18 @@
                             />
                             <div class="order-number-suggestions suggestions-list"></div>
                         </div>
-                        {% if not current_user.is_factory_worker %}
-                            <div class="form-group">
-                                <i class="fas fa-tools" style="left: 14px;"></i>
-                                <input
-                                    type="text"
-                                    name="work_type[]"
-                                    class="work-type"
-                                    placeholder="Наименование работы"
-                                    autocomplete="off"
-                                    required
-                                />
-                                <i class="fas fa-chevron-down show-work-types" style="right: 4px; padding: 10px; cursor: pointer;"></i>
-                                <div class="work-type-suggestions suggestions-list"></div>
-                            </div>
-                        {% endif %}
+                        <div class="form-group">
+                            <i class="fas fa-tools" style="left: 14px;"></i>
+                            <input
+                                type="text"
+                                name="work_name[]"
+                                class="work-name"
+                                placeholder="Наименование работы"
+                                autocomplete="off"
+                                required
+                            />
+                            <div class="work-name-suggestions suggestions-list"></div>
+                        </div>
                         <button type="button" class="default-button delete-form-task-button">Удалить задание</button>
                         <hr>
                     </div>

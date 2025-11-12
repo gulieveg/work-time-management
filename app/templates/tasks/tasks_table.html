@@ -77,12 +77,12 @@
                 </div>
 
                 <div class="filter-item">
-                    <label>Фильтр по типу операции</label>
+                    <label>Фильтр по наименованию работы</label>
                     <div>
                         <i class="fas fa-hammer"></i>
-                        <input type="text" name="operation_type" value="{{ request.args.get('operation_type', '') }}"
-                            class="operation-type" placeholder="Тип операции" autocomplete="off">
-                        <div class="operation-type-suggestions suggestions-list"></div>
+                        <input type="text" name="work_name" value="{{ request.args.get('work_name', '') }}"
+                            class="work-name" placeholder="Наименование работы" autocomplete="off">
+                        <div class="work-name-suggestions suggestions-list"></div>
                     </div>
                 </div>
 
@@ -120,7 +120,7 @@
                     <th>Таб. номер</th>
                     <th>Роль сотрудника</th>
                     <th>Наименование подразделения</th>
-                    <th>Тип операции / Вид работы</th>
+                    <th>Наименование работы</th>
                     <th>Часы</th>
                     <th>Номер заказа</th>
                     <th>Наименование заказа</th>
@@ -140,7 +140,7 @@
                         <td>{{ task["personnel_number"] | default("-", true) }}</td>
                         <td>{{ task["employee_category"] | default("-", true) }}</td>
                         <td>{{ task["department"] | default("-", true) }}</td>
-                        <td>{{ task["operation_type"] | default("-", true) }}</td>
+                        <td>{{ task["work_name"] | default("-", true) }}</td>
                         <td class="hours" data-hours="{{ task['hours'] | default(0) }}">{{ task["hours"] | default("-", true) }}</td>
                         <td>{{ task["order_number"] | default("-", true) }}</td>
                         <td>{{ task["order_name"] | default("-", true) }}</td>

@@ -16,19 +16,3 @@ def get_employees() -> Response:
     query: str = request.args.get("query", "")
     employee_data: List[str] = db_manager.employees.get_employees_by_partial_match(query)
     return jsonify(employee_data)
-
-
-@employees_bp.route("/operation-types", methods=["GET"])
-@login_required
-def get_operation_types() -> Response:
-    query: str = request.args.get("query", "")
-    operation_types: List[str] = db_manager.employees.get_operation_types_by_partial_match(query)
-    return jsonify(operation_types)
-
-
-@employees_bp.route("/work-types", methods=["GET"])
-@login_required
-def get_work_types() -> Response:
-    query: str = request.args.get("query", "")
-    work_types: List[str] = db_manager.employees.get_work_types_by_partial_match(query)
-    return jsonify(work_types)

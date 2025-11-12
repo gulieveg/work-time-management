@@ -4,7 +4,6 @@ CREATE TABLE employees (
     name NVARCHAR(255),
     personnel_number NVARCHAR(100) UNIQUE,
     department NVARCHAR(100),
-    operation_type NVARCHAR(100),
     category NVARCHAR(50),
     CONSTRAINT check_employee_category
         CHECK (category IN (N'руководитель', N'специалист', N'рабочий'))
@@ -42,10 +41,4 @@ CREATE TABLE users (
     is_factory_worker BIT NOT NULL DEFAULT 0,
     CONSTRAINT check_permissions_level
     CHECK (permissions_level IN ('minimal', 'standard', 'advanced'))
-);
-
-IF OBJECT_ID('work_types', 'U') IS NULL
-CREATE TABLE work_types (
-    id INT IDENTITY(1,1) PRIMARY KEY,
-    name NVARCHAR(100) NOT NULL UNIQUE
 );

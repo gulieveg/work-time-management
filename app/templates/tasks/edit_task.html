@@ -3,7 +3,6 @@
 {% block title %}Редактирование задания{% endblock %}
 
 {% block content %}
-    <div id="work-types-data" data-work-types='{{ work_types_data | tojson | safe }}'></div>
     <div class="edit-task-container">
         <p class="paragraph">Редактирование задания</p>
         <form method="POST">
@@ -71,21 +70,19 @@
                     <div class="order-number-suggestions suggestions-list"></div>
                 </div>
 
-                {% if not current_user.is_factory_worker %}
-                    <div class="form-group">
-                        <i class="fas fa-tools" style="left: 14px;"></i>
-                        <input
-                            type="text"
-                            name="work_type"
-                            class="work-type"
-                            placeholder="Наименование работы"
-                            value="{{ work_type }}"
-                            required
-                        />
-                        <i class="fas fa-chevron-down show-work-types" style="right: 4px; padding: 10px; cursor: pointer;"></i>
-                        <div class="work-type-suggestions suggestions-list"></div>
-                    </div>
-                {% endif %}
+                <div class="form-group">
+                    <i class="fas fa-tools" style="left: 14px;"></i>
+                    <input
+                        type="text"
+                        name="work_name"
+                        class="work-name"
+                        placeholder="Наименование работы"
+                        value="{{ work_name }}"
+                        required
+                    />
+                    <i class="fas fa-chevron-down show-work-names" style="right: 4px; padding: 10px; cursor: pointer;"></i>
+                    <div class="work-name-suggestions suggestions-list"></div>
+                </div>
             </div>
 
             {% set params = {
@@ -94,7 +91,7 @@
                 "end_date": request.args.get("end_date"),
                 "employee_data": request.args.get("employee_data"),
                 "order_number": request.args.get("order_number"),
-                "operation_type": request.args.get("operation_type"),
+                "work_name": request.args.get("work_name"),
                 "order_name": request.args.get("order_name"),
             } %}
 

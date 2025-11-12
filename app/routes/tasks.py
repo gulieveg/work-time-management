@@ -49,8 +49,6 @@ def tasks_table() -> Union[str, Response]:
 @login_required
 @permission_required(["advanced", "standard"])
 def add_task() -> Union[str, Response]:
-    work_types_data: List[str] = db_manager.employees.get_work_types()
-
     if request.method == "POST":
         employee_data: str = request.form.get("employee_data")
         operation_date: str = request.form.get("operation_date")
@@ -77,7 +75,7 @@ def add_task() -> Union[str, Response]:
                 "order_numbers": order_numbers,
                 "work_types": work_types,
             }
-            return render_template("tasks/add_task.html", **context, work_types_data=work_types_data)
+            return render_template("tasks/add_task.html", **context)
 
         employee_name, personnel_number = employee_details
 
@@ -91,7 +89,7 @@ def add_task() -> Union[str, Response]:
                 "order_numbers": order_numbers,
                 "work_types": work_types,
             }
-            return render_template("tasks/add_task.html", **context, work_types_data=work_types_data)
+            return render_template("tasks/add_task.html", **context)
 
         free_hours: Decimal = db_manager.employees.get_employee_free_hours(personnel_number, operation_date)
 
@@ -106,7 +104,7 @@ def add_task() -> Union[str, Response]:
                 "order_numbers": order_numbers,
                 "work_types": work_types,
             }
-            return render_template("tasks/add_task.html", **context, work_types_data=work_types_data)
+            return render_template("tasks/add_task.html", **context)
 
         employee_department: str = db_manager.employees.get_employee_department(personnel_number)
         employee_category: str = db_manager.employees.get_employee_category(personnel_number)
@@ -135,7 +133,7 @@ def add_task() -> Union[str, Response]:
 
         flash(message=MESSAGES["tasks"]["tasks_added"], category="info")
         return redirect(url_for("tasks.add_task"))
-    return render_template("tasks/add_task.html", work_types_data=work_types_data)
+    return render_template("tasks/add_task.html")
 
 
 @tasks_bp.route("/edit/<int:task_id>", methods=["GET", "POST"])
@@ -175,7 +173,7 @@ def edit_task(task_id: int) -> Union[str, Response]:
                 "order_number": order_number,
                 "work_type": operation_type,
             }
-            return render_template("tasks/edit_task.html", **context, work_types_data=work_types_data)
+            return render_template("tasks/edit_task.html", **context)
 
         employee_name, personnel_number = employee_details
 
@@ -190,7 +188,7 @@ def edit_task(task_id: int) -> Union[str, Response]:
                 "order_number": order_number,
                 "work_type": operation_type,
             }
-            return render_template("tasks/edit_task.html", **context, work_types_data=work_types_data)
+            return render_template("tasks/edit_task.html", **context)
 
         free_hours: Decimal = db_manager.employees.get_employee_free_hours(personnel_number, operation_date)
 
@@ -207,7 +205,7 @@ def edit_task(task_id: int) -> Union[str, Response]:
                 "order_number": order_number,
                 "work_type": operation_type,
             }
-            return render_template("tasks/edit_task.html", **context, work_types_data=work_types_data)
+            return render_template("tasks/edit_task.html", **context)
 
         args: Dict[str, Union[str, Decimal]] = {
             "task_id": task_id,
@@ -231,7 +229,7 @@ def edit_task(task_id: int) -> Union[str, Response]:
             "order_name": request.args.get("order_name"),
         }
         return redirect(url_for("tasks.tasks_table", **params))
-    return render_template("tasks/edit_task.html", **context, work_types_data=work_types_data)
+    return render_template("tasks/edit_task.html", **context)
 
 
 @tasks_bp.route("/delete/<int:task_id>", methods=["POST"])
