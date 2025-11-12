@@ -36,12 +36,15 @@
     transform: scale(0.9);
 }
 
+.work-list-button,
 .reset-password-button {
     background-color: #007bff;
 }
+.work-list-button:hover,
 .reset-password-button:hover {
     background-color: #0070e9;
 }
+.work-list-button:active,
 .reset-password-button:active {
     background-color: #005dbc;
     transform: scale(0.9);

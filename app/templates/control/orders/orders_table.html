@@ -78,6 +78,12 @@
                         <td>{{ order_name }}</td>
                         <td class="actions-container">
                             <form method="GET" action="{{ url_for('control.orders.edit_order', order_id=order_id) }}">
+                                <button type="submit" class="icon-button work-list-button tooltip">
+                                    <i class="fas fa-plus"></i>
+                                    <span class="tooltiptext">Добавить перечень работ</span>
+                                </button>
+                            </form>
+                            <form method="GET" action="{{ url_for('control.orders.edit_order', order_id=order_id) }}">
                                 <button type="submit" class="icon-button edit-button tooltip">
                                     <i class="fas fa-edit"></i>
                                     <span class="tooltiptext">Редактировать заказ</span>
