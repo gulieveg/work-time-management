@@ -42,3 +42,11 @@ CREATE TABLE users (
     CONSTRAINT check_permissions_level
     CHECK (permissions_level IN ('minimal', 'standard', 'advanced'))
 );
+
+IF OBJECT_ID('works', 'U') IS NULL
+CREATE TABLE works (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    order_id INT NOT NULL,
+    name NVARCHAR(255) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
