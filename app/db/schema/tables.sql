@@ -13,7 +13,7 @@ CREATE TABLE employees (
     department NVARCHAR(100),
     category NVARCHAR(50),
     CONSTRAINT check_employee_category
-        CHECK (category IN (N'руководитель', N'специалист', N'рабочий'))
+        CHECK (category IN (N'worker', N'specialist', N'manager'))
 );
 
 IF OBJECT_ID('orders', 'U') IS NULL
@@ -47,7 +47,7 @@ CREATE TABLE users (
     is_enabled BIT NOT NULL DEFAULT 0,
     is_factory_worker BIT NOT NULL DEFAULT 0,
     CONSTRAINT check_permissions_level
-    CHECK (permissions_level IN ('minimal', 'standard', 'advanced'))
+        CHECK (permissions_level IN ('minimal', 'standard', 'advanced'))
 );
 
 IF OBJECT_ID('works', 'U') IS NULL
@@ -59,3 +59,18 @@ CREATE TABLE works (
     spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
+
+-- UPDATE employees
+-- SET category = CASE category
+--     WHEN N'Руководитель' THEN 'manager'
+--     WHEN N'Специалист' THEN 'specialist'
+--     WHEN N'Рабочий' THEN 'worker'
+--     ELSE NULL
+-- END;
+
+-- ALTER TABLE employees
+-- DROP CONSTRAINT check_employee_category;
+
+-- ALTER TABLE employees
+-- ADD CONSTRAINT check_employee_category
+-- CHECK (category IN (N'worker', N'specialist', N'manager'));

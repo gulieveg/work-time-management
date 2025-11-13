@@ -63,33 +63,33 @@
             </div>
 
             <div class="dropdown">
-                <label class="dropdown-title">Уровень привилегий</label>
+                <label class="dropdown-title">Уровень доступа</label>
                 <input type="checkbox" id="toggle-dropdown">
 
-                {% set selected_privilege = request.form.get("user_permissions_level") %}
-                {% set is_selected = selected_privilege is not none and selected_privilege != "" %}
+                {% set selected_permissions_level = request.form.get("user_permissions_level") %}
+                {% set is_selected = selected_permissions_level is not none and selected_permissions_level != "" %}
 
-                {% set privileges = {
+                {% set permissions_levels = {
                     "minimal": "Минимальный",
                     "standard": "Стандартный",
                     "advanced": "Расширенный",
                 } %}
 
-                <label for="toggle-dropdown" class="dropdown-label" id="dropdown-privilege-text">
+                <label for="toggle-dropdown" class="dropdown-label">
                     <div>
                         <i class="fas fa-star"></i>
-                        <span class="{{ 'selected' if is_selected }}">{{ privileges.get(selected_privilege, "Уровень привилегий пользователя") }}</span>
+                        <span class="{{ 'selected' if is_selected }}">{{ permissions_levels.get(selected_permissions_level, "Уровень доступа пользователя") }}</span>
                     </div>
                     <i class="fas fa-chevron-down dropdown-icon"></i>
                 </label>
 
-                <div class="dropdown-content" id="dropdown-privilege-list">
-                    <label data-value="minimal">Минимальный</label>
-                    <label data-value="standard">Стандартный</label>
-                    <label data-value="advanced">Расширенный</label>
+                <div class="dropdown-content">
+                    {% for key, name in permissions_levels.items() %}
+                        <label data-value="{{ key }}">{{ name }}</label>
+                    {% endfor %}
                 </div>
 
-                <input type="hidden" name="user_permissions_level" value="{{ selected_privilege or 'standard' }}">
+                <input type="hidden" name="user_permissions_level" value="{{ selected_permissions_level or 'standard' }}">
             </div>
 
             <div class="form-group">

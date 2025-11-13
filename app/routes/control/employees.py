@@ -121,6 +121,8 @@ def edit_employee(employee_id: int) -> Union[str, Response]:
         employee_department: str = request.form.get("employee_department")
         employee_category: str = request.form.get("employee_category")
 
+        print(employee_category)
+
         if db_manager.employees.employee_exists(personnel_number, exclude_id=employee_id):
             flash(message=MESSAGES["employees"]["employee_exists"], category="error")
             context_with_error: Dict[str, str] = context.copy()

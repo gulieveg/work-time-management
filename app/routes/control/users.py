@@ -59,6 +59,8 @@ def add_user() -> str:
         user_password: str = request.form.get("user_password")
         user_permissions_level: str = request.form.get("user_permissions_level")
 
+        print(user_permissions_level)
+
         if not db_manager.users.is_login_available(login=user_login):
             flash(message=MESSAGES["users"]["user_login_taken"], category="error")
             return render_template("control/users/add_user.html", user_login_error=True)
@@ -128,7 +130,7 @@ def edit_user(user_id: int) -> Union[str, Response]:
             "is_user_account_enabled": is_user_account_enabled,
         }
         db_manager.users.update_user(**args)
-        print(user_permissions_level)
+
         flash(message=MESSAGES["users"]["user_updated"], category="info")
         return redirect(url_for("control.users.edit_user", user_id=user_id))
     return render_template("control/users/edit_user.html", **context)

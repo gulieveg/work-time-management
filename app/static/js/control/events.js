@@ -194,7 +194,7 @@ export function configurePasswordToggle() {
 }
 
 
-export function configureUserPrivilegesDropDownHandler() {
+export function configureDropDownHandler() {
     document.querySelectorAll(".dropdown").forEach(dropdown => {
         const hiddenInput = dropdown.querySelector("input[type='hidden']");
         const labelText = dropdown.querySelector(".dropdown-label span");
@@ -202,10 +202,6 @@ export function configureUserPrivilegesDropDownHandler() {
         const toggleCheckbox = dropdown.querySelector("input[type='checkbox']");
 
         if (!hiddenInput || !labelText || !options.length || !toggleCheckbox) return;
-
-        if (!toggleCheckbox.checked) {
-            hiddenInput.value = "";
-        }
 
         options.forEach(option => {
             option.addEventListener("click", () => {
@@ -337,7 +333,7 @@ export function configureWorksModal() {
             const orderNumber = button.dataset.orderNumber
 
             const response = await fetch(`/control/orders/${orderID}/works`);
-            const works = await response.json(); //{ work_id, work_name, planned_hours, spent_hours}
+            const works = await response.json(); // {work_id, work_name, planned_hours, spent_hours}
 
             worksModalBody.innerHTML = "";
             works.forEach(work => {

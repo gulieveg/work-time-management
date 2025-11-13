@@ -79,7 +79,12 @@
                         <td>{{ employee_name }}</td>
                         <td>{{ personnel_number }}</td>
                         <td>{{ employee_department }}</td>
-                        <td>{{ employee_category }}</td>
+                        {% set categories = {
+                            "worker": "Рабочий",
+                            "specialist": "Специалист",
+                            "manager": "Руководитель",
+                        } %}
+                        <td>{{ categories[employee_category] }}</td>
                         <td class="actions-container">
                             <form method="GET" action="{{ url_for('control.employees.edit_employee', employee_id=employee_id) }}">
                                 <button type="submit" class="icon-button edit-button tooltip">

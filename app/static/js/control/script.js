@@ -6,7 +6,7 @@ import {
     configureUserStatusSwitchHandler,
     configureUserConfirmationModal,
     configurePasswordToggle,
-    configureUserPrivilegesDropDownHandler,
+    configureDropDownHandler,
     configureFileUpload,
     configureWorkListHandlers,
     configureWorksModal
@@ -105,7 +105,7 @@ configureSuggestionHandlers([
 ]);
 
 configurePasswordToggle();
-configureUserPrivilegesDropDownHandler();
+configureDropDownHandler();
 configureFileUpload();
 configureWorkListHandlers();
 configureWorksModal();

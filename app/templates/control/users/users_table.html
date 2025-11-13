@@ -88,12 +88,12 @@
                         </td>
                         <td>{{ user_login }}</td>
                         <td>{{ department }}</td>
-                        {% set permission_names = {
+                        {% set permissions = {
                             "minimal": "Минимальный",
                             "standard": "Стандартный",
                             "advanced": "Расширенный",
                         } %}
-                        <td>{{ permission_names[permissions_level] }}</td>
+                        <td>{{ permissions[permissions_level] }}</td>
                         <td>
                             {% if password_hash %}
                                 Установлен
