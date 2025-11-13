@@ -51,13 +51,13 @@
 }
 
 .view-works-button {
-    background-color: #6c757d;
+    background-color: #FF760D;
 }
 .view-works-button:hover {
-    background-color: #5a6268;
+    background-color: #EB6D0C;
 }
 .view-works-button:active {
-    background-color: #495057;
+    background-color: #D6630B;
     transform: scale(0.9);
 }
 
