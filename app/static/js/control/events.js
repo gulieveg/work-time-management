@@ -294,3 +294,58 @@ export function configureWorkListHandlers() {
         tbody.appendChild(newRow);
     });
 }
+
+
+export function configureWorksModal() {
+    const worksModal = document.getElementById("works-modal");
+    const worksModalBody = document.getElementById("works-modal-body");
+    const modalOrderNumber = document.getElementById("modal-order-number");
+
+    if (!worksModal || !worksModalBody || !modalOrderNumber) return;
+
+    const closeWorksModal = worksModal.querySelector(".close-works-modal");
+    if (!closeWorksModal) return;
+
+    const viewWorksButtons = document.querySelectorAll(".view-works-button");
+    if (!viewWorksButtons.length) return;
+
+    viewWorksButtons.forEach(button => {
+        button.addEventListener("click", async () => {
+            const orderID = button.dataset.orderId;
+            const orderNumber = button.dataset.orderNumber
+
+            const response = await fetch(`/control/orders/${orderID}/works`);
+            const works = await response.json(); //{ work_id, work_name, planned_hours, spent_hours}
+
+            worksModalBody.innerHTML = "";
+            works.forEach(work => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${work.work_name}</td>
+                    <td>${work.planned_hours}</td>
+                    <td>${work.spent_hours}</td>
+                `;
+                worksModalBody.appendChild(tr);
+            });
+
+            modalOrderNumber.textContent = orderNumber;
+            worksModal.style.display = "block";
+        });
+    });
+
+    closeWorksModal.addEventListener("click", () => {
+        worksModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target === worksModal) {
+            worksModal.style.display = "none";
+        }
+    });
+
+    window.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && worksModal.style.display === "block") {
+            worksModal.style.display = "none";
+        }
+    });
+}

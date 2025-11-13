@@ -77,6 +77,10 @@
                         <td>{{ order_number }}</td>
                         <td>{{ order_name }}</td>
                         <td class="actions-container">
+                            <button type="button" class="icon-button view-works-button tooltip" data-order-id="{{ order_id }}" data-order-number="{{ order_number }}">
+                                <i class="fas fa-tasks"></i>
+                                <span class="tooltiptext">Посмотреть перечень работ</span>
+                            </button>
                             <form method="GET" action="{{ url_for('control.orders.edit_order', order_id=order_id) }}">
                                 <button type="submit" class="icon-button edit-button tooltip">
                                     <i class="fas fa-edit"></i>
@@ -121,6 +125,23 @@
                 {% if page == total_pages %}
                     <span class="pagination-arrow" style="visibility: hidden;"><i class="fas fa-angle-right"></i></span>
                 {% endif %}
+            </div>
+        </div>
+
+        <div id="works-modal" class="works-modal">
+            <div class="works-modal-content">
+                <span class="close-works-modal">&times;</span>
+                <span class="works-content-title">Перечень работ для заказа &numero;<span id="modal-order-number"></span></span>
+                <table class="works-modal-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 70%">Наименование работы</th>
+                            <th style="width: 15%">Плановая трудоемкость</th>
+                            <th style="width: 15%">Фактическая трудоемкость</th>
+                        </tr>
+                    </thead>
+                    <tbody id="works-modal-body"></tbody>
+                </table>
             </div>
         </div>
     </div>

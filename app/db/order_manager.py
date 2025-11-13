@@ -156,3 +156,21 @@ class OrderManager(DatabaseConnection):
                 cursor.execute(query, (order_id, work_name))
                 count: int = cursor.fetchone()[0]
         return count > 0
+
+    def get_works_for_order(self, order_id: int) -> List[Dict[str, Union[str, Decimal]]]:
+        query: str = "SELECT * FROM works WHERE order_id = ?"
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, (order_id,))
+
+                works: List[Dict[str, Union[str, Decimal]]] = [
+                    {
+                        "work_id": work_data[0],
+                        "work_name": work_data[2],
+                        "planned_hours": work_data[3],
+                        "spent_hours": work_data[4],
+                    }
+                    for work_data in cursor.fetchall()
+                ]
+                return works

@@ -174,3 +174,10 @@ def get_order_name(order_number: str) -> Response:
 def get_order_number(order_name: str) -> Response:
     order_number: str = db_manager.orders.get_order_number_by_name(order_name)
     return jsonify({"order_number": order_number})
+
+
+@orders_bp.route("/<int:order_id>/works", methods=["GET"])
+@login_required
+def get_order_works(order_id: int) -> Response:
+    works: List[str] = db_manager.orders.get_works_for_order(order_id)
+    return jsonify(works)
