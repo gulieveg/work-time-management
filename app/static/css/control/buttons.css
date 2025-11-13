@@ -133,21 +133,30 @@
 }
 
 .delete-work-button,
-.add-work-button {
+.add-work-button,
+.delete-file-button {
     background: none;
     border: none;
     cursor: pointer;
     transform: scale(2.2);
     transition: all 0.2s ease-in-out;
+    padding: 0 8px;
 }
 
-.delete-work-button {
+.delete-file-button {
+    display: none;
+}
+
+.delete-work-button,
+.delete-file-button {
     color: #dc3545;
 }
-.delete-work-button:hover {
+.delete-work-button:hover,
+.delete-file-button:hover {
     color: #c9303f;
 }
-.delete-work-button:active {
+.delete-work-button:active,
+.delete-file-button:active {
     color: #a82834;
     transform: scale(1.6);
 }

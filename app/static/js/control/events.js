@@ -293,6 +293,28 @@ export function configureWorkListHandlers() {
 
         tbody.appendChild(newRow);
     });
+
+    const fileInput = document.querySelector(".file-upload");
+    const fileLabel = document.querySelector(".file-upload-label");
+    const deleteFileButton = document.querySelector(".delete-file-button");
+
+    if (fileInput && fileLabel && deleteFileButton) {
+        fileInput.addEventListener("change", () => {
+            if (fileInput.files.length) {
+                fileLabel.textContent = fileInput.files[0].name;
+                deleteFileButton.style.display = "inline-block";
+            } else {
+                fileLabel.textContent = "Таблица не выбрана";
+                deleteFileButton.style.display = "none";
+            }
+        });
+
+        deleteFileButton.addEventListener("click", () => {
+            fileInput.value = "";
+            fileLabel.textContent = "Таблица не выбрана";
+            deleteFileButton.style.display = "none";
+        });
+    }
 }
 
 
