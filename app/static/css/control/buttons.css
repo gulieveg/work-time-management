@@ -125,7 +125,37 @@
     text-align: center;
     width: 295px;
 }
-
 .upload-button:hover {
     background-color: #3369c5;
+}
+
+.delete-work-button,
+.add-work-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transform: scale(2.2);
+    transition: all 0.2s ease-in-out;
+}
+
+.delete-work-button {
+    color: #dc3545;
+}
+.delete-work-button:hover {
+    color: #c9303f;
+}
+.delete-work-button:active {
+    color: #a82834;
+    transform: scale(1.6);
+}
+
+.add-work-button {
+    color: #4caf50;
+}
+.add-work-button:hover {
+    color: #45a049;
+}
+.add-work-button:active {
+    color: #388e3c;
+    transform: scale(1.6);
 }

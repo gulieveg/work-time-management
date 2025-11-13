@@ -45,15 +45,15 @@
         <p class="tabs-section-title">Перечень работ для заказа</p>
 
         <div class="sub-tabs">
-            <button type="button" class="sub-tab-button active" data-tab="file-tab">
-                <i class="fas fa-file-upload" style="margin-right: 8px;"></i>Загрузка таблицы
+            <button type="button" class="sub-tab-button active" data-tab="file-upload-tab">
+                <i class="fas fa-file-upload"></i>Загрузка таблицы
             </button>
-            <button type="button" class="sub-tab-button" data-tab="manual-tab">
-                <i class="fas fa-edit" style="margin-right: 8px;"></i>Ручное заполнение
+            <button type="button" class="sub-tab-button" data-tab="manual-entry-tab">
+                <i class="fas fa-edit"></i>Ручное заполнение
             </button>
         </div>
 
-        <div class="tab-content active" id="file-tab">
+        <div class="tab-content active" id="file-upload-tab">
             <div class="form-group">
                 <p class="upload-instruction">
                     Формат: первая колонка — наименование работы, вторая — плановая трудоемкость.
@@ -71,30 +71,34 @@
             </div>
         </div>
 
-        <div class="tab-content" id="manual-tab">
+        <div class="tab-content" id="manual-entry-tab">
             <div class="form-group">
                 <p class="upload-instruction">
                     Введите наименование работы и плановую трудоемкость. Можно добавить несколько строк.
                 </p>
-                <table class="manual-table">
+                <table class="works-table">
                     <thead>
                         <tr>
-                            <th>Наименование работы</th>
-                            <th>Плановая трудоемкость</th>
-                            <th></th>
+                            <th style="width: 70%;">Наименование работы</th>
+                            <th style="width: 20%;">Плановая трудоемкость</th>
+                            <th style="width: 10%;"></th>
                         </tr>
                     </thead>
-                    <tbody id="manual-rows">
+                    <tbody id="works-rows">
                         <tr>
-                            <td><input type="text" name="work_name[]" required></td>
-                            <td><input type="number" name="work_hours[]" step="0.01" required></td>
-                            <td><button type="button" class="delete-work">Х</button></td>
+                            <td><input type="text" name="work_name[]" autocomplete="off" required></td>
+                            <td><input type="text" name="work_planned_hours[]" autocomplete="off" required></td>
+                            <td><button type="button" class="delete-work-button">&times;</button></td>
                         </tr>
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3">
+                                <button type="button" id="add-work-button" class="add-work-button">&plus;</button>
+                            </td>
+                        </tr>
+                    </tfoot>
                 </table>
-                <button type="button" id="add-row" class="default-button">
-                    Добавить работу
-                </button>
             </div>
         </div>
 

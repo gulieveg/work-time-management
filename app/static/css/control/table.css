@@ -19,22 +19,23 @@ table th {
     color: white;
 }
 
-.manual-table {
+.works-table {
     border-collapse: collapse;
-    margin-top: 10px;
     width: 600px;
 }
 
-.manual-table th, .manual-table td {
+.works-table th,
+.works-table td {
     border: 1px solid #ccc;
-    padding: 5px;
-    text-align: left;
+    text-align: center;
+    height: 44px;
 }
 
-.delete-work-button {
-    background: none;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    color: red;
+.works-table th {
+    font-weight: 400;
+}
+
+.works-table td input {
+    height: 36px;
+    padding: 14px !important;
 }

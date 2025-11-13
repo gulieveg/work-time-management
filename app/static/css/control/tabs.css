@@ -38,6 +38,10 @@
     cursor: pointer;
 }
 
+.sub-tab-button i {
+    margin-right: 8px;
+}
+
 .sub-tab-button.active {
     background: #fff;
     border-bottom: 2px solid #007bff;
@@ -50,12 +54,3 @@
 .tab-content.active {
     display: block;
 }
-
-/* events.js
-tabs.css
-add_ordee.html
-table.css
-
-naming 
-
-*/
