@@ -31,10 +31,6 @@ table th {
     height: 44px;
 }
 
-.works-table th {
-    font-weight: 400;
-}
-
 .works-table td input {
     height: 36px;
     padding: 14px !important;

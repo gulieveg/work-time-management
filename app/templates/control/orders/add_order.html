@@ -3,122 +3,122 @@
 {% block title %}Добавление заказа{% endblock title %}
 
 {% block content %}
-<div class="content-section">
-    <div class="tabs">
-        <form method="GET" action="{{ url_for('control.orders.orders_table') }}">
-            <button class="tab-button"><i class="fas fa-list"></i>Список заказов</button>
-        </form>
-        <form method="GET" action="{{ url_for('control.orders.add_order') }}">
-            <button class="tab-button active"><i class="fas fa-plus"></i>Добавить заказ</button>
-        </form>
-    </div>
-
-    <form method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-            <label>Номер заказа</label>
-            <div>
-                <i class="fas fa-hashtag"></i>
-                <input type="text"
-                       name="order_number"
-                       value="{{ request.form.get('order_number', '') }}"
-                       class="order-number"
-                       placeholder="Номер заказа"
-                       autocomplete="off"
-                       required/>
-            </div>
+    <div class="content-section">
+        <div class="tabs">
+            <form method="GET" action="{{ url_for('control.orders.orders_table') }}">
+                <button class="tab-button"><i class="fas fa-list"></i>Список заказов</button>
+            </form>
+            <form method="GET" action="{{ url_for('control.orders.add_order') }}">
+                <button class="tab-button active"><i class="fas fa-plus"></i>Добавить заказ</button>
+            </form>
         </div>
 
-        <div class="form-group">
-            <label>Наименование заказа</label>
-            <div>
-                <i class="fas fa-cogs"></i>
-                <input type="text"
-                       name="order_name"
-                       value="{{ request.form.get('order_name', '') }}"
-                       class="order-name"
-                       placeholder="Наименование заказа"
-                       autocomplete="off"
-                       required/>
-            </div>
-        </div>
-
-        <p class="tabs-section-title">Перечень работ для заказа</p>
-
-        <div class="sub-tabs">
-            <button type="button" class="sub-tab-button active" data-tab="file-upload-tab">
-                <i class="fas fa-file-upload"></i>Загрузка таблицы
-            </button>
-            <button type="button" class="sub-tab-button" data-tab="manual-entry-tab">
-                <i class="fas fa-edit"></i>Ручное заполнение
-            </button>
-        </div>
-
-        <div class="tab-content active" id="file-upload-tab">
+        <form method="POST" enctype="multipart/form-data">
             <div class="form-group">
-                <p class="upload-instruction">
-                    Формат: первая колонка — наименование работы, вторая — плановая трудоемкость.
-                    Допустимые расширения: XLSX, XLS
-                </p>
-
-                <div class="file-upload-container">
-                    <input type="file"
-                           name="file_upload"
-                           class="file-upload"
-                           accept=".xlsx,.xls"/>
-                    <button type="button" class="upload-button">Выбрать таблицу</button>
-                    <span class="file-upload-label">Таблица не выбрана</span>
+                <label>Номер заказа</label>
+                <div>
+                    <i class="fas fa-hashtag"></i>
+                    <input type="text"
+                        name="order_number"
+                        value="{{ request.form.get('order_number', '') }}"
+                        class="order-number"
+                        placeholder="Номер заказа"
+                        autocomplete="off"
+                        required/>
                 </div>
             </div>
-        </div>
 
-        <div class="tab-content" id="manual-entry-tab">
             <div class="form-group">
-                <p class="upload-instruction">
-                    Введите наименование работы и плановую трудоемкость. Можно добавить несколько строк.
-                </p>
-                <table class="works-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 70%;">Наименование работы</th>
-                            <th style="width: 20%;">Плановая трудоемкость</th>
-                            <th style="width: 10%;"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="works-rows">
-                        <tr>
-                            <td><input type="text" name="work_name[]" autocomplete="off" required></td>
-                            <td><input type="text" name="work_planned_hours[]" autocomplete="off" required></td>
-                            <td><button type="button" class="delete-work-button">&times;</button></td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3">
-                                <button type="button" id="add-work-button" class="add-work-button">&plus;</button>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+                <label>Наименование заказа</label>
+                <div>
+                    <i class="fas fa-cogs"></i>
+                    <input type="text"
+                        name="order_name"
+                        value="{{ request.form.get('order_name', '') }}"
+                        class="order-name"
+                        placeholder="Наименование заказа"
+                        autocomplete="off"
+                        required/>
+                </div>
             </div>
-        </div>
 
-        <div class="form-buttons">
-            <button type="submit" class="default-button">
-                <i class="fas fa-save"></i> Сохранить заказ
-            </button>
+            <p class="tabs-section-title">Перечень работ для заказа</p>
 
-            <a href="{{ url_for('control.orders.orders_table') }}" class="default-button">
-                <i class="fas fa-undo"></i>Отменить
-            </a>
-        </div>
-    </form>
-
-    <div class="flashed-messages">
-        {% for category, message in get_flashed_messages(with_categories=true) %}
-            <div class="{{ category }}" id="message">
-                <p>{{ message }}</p>
+            <div class="sub-tabs">
+                <button type="button" class="sub-tab-button active" data-tab="file-upload-tab">
+                    <i class="fas fa-file-upload"></i>Загрузка таблицы
+                </button>
+                <button type="button" class="sub-tab-button" data-tab="manual-entry-tab">
+                    <i class="fas fa-edit"></i>Ручное заполнение
+                </button>
             </div>
-        {% endfor %}
+
+            <div class="tab-content active" id="file-upload-tab">
+                <div class="form-group">
+                    <p class="upload-instruction">
+                        Формат: первая колонка — наименование работы, вторая — плановая трудоемкость.
+                        Допустимые расширения: XLSX, XLS
+                    </p>
+
+                    <div class="file-upload-container">
+                        <input type="file"
+                            name="file_upload"
+                            class="file-upload"
+                            accept=".xlsx,.xls"/>
+                        <button type="button" class="upload-button">Выбрать таблицу</button>
+                        <span class="file-upload-label">Таблица не выбрана</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="manual-entry-tab">
+                <div class="form-group">
+                    <p class="upload-instruction">
+                        Введите наименование работы и плановую трудоемкость. Можно добавить несколько строк.
+                    </p>
+                    <table class="works-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 70%;">Наименование работы</th>
+                                <th style="width: 20%;">Плановая трудоемкость</th>
+                                <th style="width: 10%;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="works-rows">
+                            <tr>
+                                <td><input type="text" name="work_name[]" autocomplete="off"></td>
+                                <td><input type="number" name="work_planned_hours[]" step="0.01" min="0"></td>
+                                <td><button type="button" class="delete-work-button">&times;</button></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3">
+                                    <button type="button" id="add-work-button" class="add-work-button">&plus;</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="default-button">
+                    <i class="fas fa-save"></i> Сохранить заказ
+                </button>
+
+                <a href="{{ url_for('control.orders.orders_table') }}" class="default-button">
+                    <i class="fas fa-undo"></i>Отменить
+                </a>
+            </div>
+        </form>
+
+        <div class="flashed-messages">
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <div class="{{ category }}" id="message">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+        </div>
     </div>
-</div>
 {% endblock content %}

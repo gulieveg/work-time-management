@@ -58,6 +58,9 @@ def add_order() -> str:
         order_name: str = request.form.get("order_name")
         file_upload: str = request.files.get("file_upload")
 
+        work_names: List[str] = request.form.getlist("work_name[]")
+        work_planned_hours: List[str] = request.form.getlist("work_planned_hours[]")
+
         if db_manager.orders.order_exists(order_number):
             flash(message=MESSAGES["orders"]["order_exists"], category="warning")
             return render_template("control/orders/add_order.html")
@@ -69,16 +72,27 @@ def add_order() -> str:
 
         order_id: int = db_manager.orders.add_order(**args)
 
-        dataframe: pandas.DataFrame = pandas.read_excel(file_upload, header=None)
+        if file_upload:
+            dataframe: pandas.DataFrame = pandas.read_excel(file_upload, header=None)
 
-        for work_name, planned_hours in dataframe.itertuples(index=False, name=None):
-            if pandas.isna(work_name) or pandas.isna(planned_hours):
-                continue
+            for work_name, planned_hours in dataframe.itertuples(index=False, name=None):
+                if pandas.isna(work_name) or pandas.isna(planned_hours):
+                    continue
+                if db_manager.orders.work_exists(order_id, str(work_name).strip()):
+                    continue
 
-            if db_manager.orders.work_exists(order_id, work_name):
-                continue
+                planned_hours: str = str(planned_hours).replace(" ", "").replace(",", ".")
+                db_manager.orders.add_work_to_order(order_id, str(work_name).strip(), Decimal(planned_hours))
 
-            db_manager.orders.add_work_to_order(order_id, str(work_name).strip(), Decimal(planned_hours))
+        if work_names and work_planned_hours:
+            for work_name, planned_hours in zip(work_names, work_planned_hours):
+                if not work_name or not planned_hours:
+                    continue
+                if db_manager.orders.work_exists(order_id, work_name.strip()):
+                    continue
+
+                planned_hours: str = planned_hours.replace(" ", "").replace(",", ".")
+                db_manager.orders.add_work_to_order(order_id, work_name.strip(), Decimal(planned_hours))
 
         flash(message=MESSAGES["orders"]["order_added"], category="info")
         return render_template("control/orders/add_order.html")
