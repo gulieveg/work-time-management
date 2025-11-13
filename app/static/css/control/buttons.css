@@ -36,20 +36,28 @@
     transform: scale(0.9);
 }
 
-.work-list-button,
 .reset-password-button,
-.view-works-button {
+.add-work-button {
     background-color: #007bff;
 }
-.work-list-button:hover,
 .reset-password-button:hover,
-.view-works-button:hover {
+.add-work-button:hover {
     background-color: #0070e9;
 }
-.work-list-button:active,
 .reset-password-button:active,
-.view-works-button:active {
+.add-work-button:active {
     background-color: #005dbc;
+    transform: scale(0.9);
+}
+
+.view-works-button {
+    background-color: #6c757d;
+}
+.view-works-button:hover {
+    background-color: #5a6268;
+}
+.view-works-button:active {
+    background-color: #495057;
     transform: scale(0.9);
 }
 
@@ -132,8 +140,8 @@
     background-color: #3369c5;
 }
 
-.delete-work-button,
-.add-work-button,
+.delete-row-button,
+.add-row-button,
 .delete-file-button {
     background: none;
     border: none;
@@ -147,27 +155,27 @@
     display: none;
 }
 
-.delete-work-button,
+.delete-row-button,
 .delete-file-button {
     color: #dc3545;
 }
-.delete-work-button:hover,
+.delete-row-button:hover,
 .delete-file-button:hover {
     color: #c9303f;
 }
-.delete-work-button:active,
+.delete-row-button:active,
 .delete-file-button:active {
     color: #a82834;
     transform: scale(1.6);
 }
 
-.add-work-button {
+.add-row-button {
     color: #4caf50;
 }
-.add-work-button:hover {
+.add-row-button:hover {
     color: #45a049;
 }
-.add-work-button:active {
+.add-row-button:active {
     color: #388e3c;
     transform: scale(1.6);
 }

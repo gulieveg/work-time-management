@@ -258,9 +258,9 @@ export function configureWorkListHandlers() {
     const tabButtons = document.querySelectorAll(".sub-tab-button");
     const tabContents = document.querySelectorAll(".tab-content");
     const tbody = document.getElementById("works-rows");
-    const addWorkButton = document.getElementById("add-work-button");
+    const addRowButton = document.getElementById("add-row-button");
 
-    if (!tabButtons.length || !tabContents.length || !tbody || !addWorkButton) return;
+    if (!tabButtons.length || !tabContents.length || !tbody || !addRowButton) return;
 
     tabButtons.forEach(button => {
         button.addEventListener("click", () => {
@@ -276,19 +276,19 @@ export function configureWorkListHandlers() {
     });
 
     tbody.addEventListener("click", event => {
-        const deleteWorkButton = event.target.closest(".delete-work-button");
-        if (deleteWorkButton) {
-            deleteWorkButton.closest("tr").remove();
+        const deleteRowButton = event.target.closest(".delete-row-button");
+        if (deleteRowButton) {
+            deleteRowButton.closest("tr").remove();
         }
     });
 
-    addWorkButton.addEventListener("click", () => {
+    addRowButton.addEventListener("click", () => {
         const newRow = document.createElement("tr");
 
         newRow.innerHTML = `
             <td><input type="text" name="work_name[]" autocomplete="off" required></td>
             <td><input type="text" name="work_planned_hours[]" autocomplete="off" required></td>
-            <td><button type="button" class="delete-work-button">&times;</button></td>
+            <td><button type="button" class="delete-row-button">&times;</button></td>
         `;
 
         tbody.appendChild(newRow);
