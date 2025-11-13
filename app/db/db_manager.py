@@ -5,6 +5,7 @@ from .employee_manager import EmployeeManager
 from .order_manager import OrderManager
 from .task_manager import TaskManager
 from .user_manager import UserManager
+from .work_manager import WorkManager
 
 
 class DatabaseManager(DatabaseConnection):
@@ -13,6 +14,7 @@ class DatabaseManager(DatabaseConnection):
         self.orders: OrderManager = OrderManager()
         self.tasks: TaskManager = TaskManager()
         self.users: UserManager = UserManager()
+        self.works: WorkManager = WorkManager()
 
     def fetch_column(
         self, column: str, table: str, where_column: str, value: str, multiple: bool = False

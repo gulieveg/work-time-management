@@ -78,21 +78,21 @@ def add_order() -> str:
             for work_name, planned_hours in dataframe.itertuples(index=False, name=None):
                 if pandas.isna(work_name) or pandas.isna(planned_hours):
                     continue
-                if db_manager.orders.work_exists(order_id, str(work_name).strip()):
+                if db_manager.works.work_exists(order_id, str(work_name).strip()):
                     continue
 
                 planned_hours: str = str(planned_hours).replace(" ", "").replace(",", ".")
-                db_manager.orders.add_work_to_order(order_id, str(work_name).strip(), Decimal(planned_hours))
+                db_manager.works.add_work_to_order(order_id, str(work_name).strip(), Decimal(planned_hours))
 
         if work_names and work_planned_hours:
             for work_name, planned_hours in zip(work_names, work_planned_hours):
                 if not work_name or not planned_hours:
                     continue
-                if db_manager.orders.work_exists(order_id, work_name.strip()):
+                if db_manager.works.work_exists(order_id, work_name.strip()):
                     continue
 
                 planned_hours: str = planned_hours.replace(" ", "").replace(",", ".")
-                db_manager.orders.add_work_to_order(order_id, work_name.strip(), Decimal(planned_hours))
+                db_manager.works.add_work_to_order(order_id, work_name.strip(), Decimal(planned_hours))
 
         flash(message=MESSAGES["orders"]["order_added"], category="info")
         return render_template("control/orders/add_order.html")
@@ -178,6 +178,7 @@ def get_order_number(order_name: str) -> Response:
 
 @orders_bp.route("/<int:order_id>/works", methods=["GET"])
 @login_required
-def get_order_works(order_id: int) -> Response:
-    works: List[str] = db_manager.orders.get_works_for_order(order_id)
+@permission_required(["advanced"])
+def works_table(order_id: int) -> Response:
+    works: List[str] = db_manager.works.get_works_for_order(order_id)
     return jsonify(works)

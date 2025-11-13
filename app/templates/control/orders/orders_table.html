@@ -77,18 +77,22 @@
                         <td>{{ order_number }}</td>
                         <td>{{ order_name }}</td>
                         <td class="actions-container">
-                            <form method="GET" action="{{ url_for('control.works.works_table', order_id=order_id) }}">
+                            {# <form method="GET" action="{{ url_for('control.works.works_table', order_id=order_id) }}">
                                 <button type="submit" class="icon-button view-works-button tooltip">
                                     <i class="fas fa-briefcase"></i>
                                     <span class="tooltiptext">Посмотреть перечень работ</span>
                                 </button>
                             </form>
-                            <form method="GET" action="{{ url_for('control.works.add_work', order_id=order_id) }}">
+                            <form method="GET" action="{{ url_for('control.works.add_work', order_id=order_id) }}"
                                 <button type="submit" class="icon-button add-work-button tooltip">
                                     <i class="fas fa-circle-plus"></i>
                                     <span class="tooltiptext">Добавить работу в перечень</span>
                                 </button>
-                            </form>
+                            </form> #}
+                            <button type="button" class="icon-button view-works-button tooltip" data-order-id="{{ order_id }}" data-order-number="{{ order_number }}">
+                                <i class="fas fa-briefcase"></i>
+                                <span class="tooltiptext">Посмотреть перечень работ</span>
+                            </button>
                             <form method="GET" action="{{ url_for('control.orders.edit_order', order_id=order_id) }}">
                                 <button type="submit" class="icon-button edit-button tooltip">
                                     <i class="fas fa-edit"></i>
