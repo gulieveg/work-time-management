@@ -18,26 +18,6 @@ export function configureTaskCreateHandler() {
         taskNumberElement.innerHTML = `Задание &#8470;${taskNumber}`;
         taskFields.appendChild(taskNumberElement);
 
-        const hoursGroup = document.createElement("div");
-        hoursGroup.classList.add("form-group");
-
-        const hoursIcon = document.createElement("i");
-        hoursIcon.classList.add("fas", "fa-clock");
-        hoursIcon.style.left = "14px";
-
-        const hoursInput = document.createElement("input");
-        hoursInput.type = "number";
-        hoursInput.name = "hours[]";
-        hoursInput.min = "0";
-        hoursInput.max = "8.25";
-        hoursInput.step = "0.01";
-        hoursInput.placeholder = "Часы работы";
-        hoursInput.required = true;
-
-        hoursGroup.appendChild(hoursIcon);
-        hoursGroup.appendChild(hoursInput);
-        taskFields.appendChild(hoursGroup);
-
         const orderNameGroup = document.createElement("div");
         orderNameGroup.classList.add("form-group");
 
@@ -104,48 +84,21 @@ export function configureTaskCreateHandler() {
             }
         });
 
-        const isFactoryWorker = document.body.dataset.isFactoryWorker === "True";
-
-        if (!isFactoryWorker) {
-            const workNameGroup = document.createElement("div");
-            workNameGroup.classList.add("form-group");
-
-            const workNameIcon = document.createElement("i");
-            workNameIcon.classList.add("fas", "fa-tools");
-            workNameIcon.style.left = "14px";
-
-            const workNameDropDownListIcon = document.createElement("i");
-            workNameDropDownListIcon.classList.add("fas", "fa-chevron-down", "show-work-names");
-            workNameDropDownListIcon.style.right = "4px";
-            workNameDropDownListIcon.style.padding = "10px";
-            workNameDropDownListIcon.style.cursor = "pointer";
-
-            const workNameInput = document.createElement("input");
-            workNameInput.type = "text";
-            workNameInput.name = "work_name[]";
-            workNameInput.classList.add("work-name");
-            workNameInput.placeholder = "Наименование работы";
-            workNameInput.autocomplete = "off";
-            workNameInput.required = true;
-
-            const workNameSuggestionsList = document.createElement("div");
-            workNameSuggestionsList.classList.add("work-name-suggestions", "suggestions-list");
-
-            workNameGroup.appendChild(workNameIcon);
-            workNameGroup.appendChild(workNameDropDownListIcon);
-            workNameGroup.appendChild(workNameInput);
-            workNameGroup.appendChild(workNameSuggestionsList);
-            taskFields.appendChild(workNameGroup);
-
-            processInput(workNameInput, workNameSuggestionsList, "/employees/work-names");
-            processSelection(workNameInput, workNameSuggestionsList);
-        }
+        const addWorksButton = document.createElement("button");
+        addWorksButton.type = "button";
+        addWorksButton.classList.add("default-button", "add-works-button");
+        addWorksButton.innerText = "Добавить работы";
 
         const deleteButton = document.createElement("button");
         deleteButton.type = "button";
         deleteButton.classList.add("default-button", "delete-form-task-button");
         deleteButton.innerText = "Удалить задание";
-        taskFields.appendChild(deleteButton);
+
+        const buttonsContainer = document.createElement("div");
+        buttonsContainer.classList.add("add-task-buttons-container");
+        buttonsContainer.appendChild(addWorksButton);
+        buttonsContainer.appendChild(deleteButton);
+        taskFields.appendChild(buttonsContainer);
 
         const hr = document.createElement("hr");
         taskFields.appendChild(hr);

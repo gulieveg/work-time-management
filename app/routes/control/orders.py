@@ -180,7 +180,7 @@ def get_order_number(order_name: str) -> Response:
 @login_required
 @permission_required(["advanced"])
 def works_table(order_id: int) -> Response:
-    works: List[str] = db_manager.works.get_works_for_order(order_id)
+    works: List[str] = db_manager.works.get_works_for_order_by_id(order_id)
     return jsonify(works)
 
 

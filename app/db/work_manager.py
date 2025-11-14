@@ -22,8 +22,8 @@ class WorkManager(DatabaseConnection):
                 count: int = cursor.fetchone()[0]
         return count > 0
 
-    def get_works_for_order(self, order_id: int) -> List[Dict[str, Union[str, Decimal]]]:
-        query: str = "SELECT * FROM works WHERE order_id = ?"
+    def get_works_for_order_by_id(self, order_id: int) -> List[Dict[str, Union[str, Decimal]]]:
+        query: str = "SELECT id, name, planned_hours, spent_hours FROM works WHERE order_id = ?"
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
@@ -32,9 +32,37 @@ class WorkManager(DatabaseConnection):
                 works: List[Dict[str, Union[str, Decimal]]] = [
                     {
                         "work_id": work_data[0],
-                        "work_name": work_data[2],
-                        "planned_hours": work_data[3],
-                        "spent_hours": work_data[4],
+                        "work_name": work_data[1],
+                        "planned_hours": work_data[2],
+                        "spent_hours": work_data[3],
+                    }
+                    for work_data in cursor.fetchall()
+                ]
+                return works
+        return count > 0
+
+    def get_works_for_order_by_number(self, order_number: str) -> List[Dict[str, Union[str, Decimal]]]:
+        query: str = """
+            SELECT
+                works.id,
+                works.name,
+                works.planned_hours,
+                works.spent_hours
+            FROM works
+            JOIN orders ON works.order_id = orders.id
+            WHERE orders.number = ?;
+        """
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, (order_number,))
+
+                works: List[Dict[str, Union[str, Decimal]]] = [
+                    {
+                        "work_id": work_data[0],
+                        "work_name": work_data[1],
+                        "planned_hours": work_data[2],
+                        "spent_hours": work_data[3],
                     }
                     for work_data in cursor.fetchall()
                 ]

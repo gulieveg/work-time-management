@@ -53,3 +53,20 @@
     width: 400px;
     z-index: 100;
 }
+
+.field-error {
+    border: 2px solid #dc3545;
+    background-color: #f8d7da;
+    animation: fadeHighlight 8s forwards;
+}
+
+@keyframes fadeHighlight {
+    0% {
+        border-color: #dc3545;
+        background-color: #f8d7da;
+    }
+    100% {
+        border-color: #ccc;
+        background-color: #fff;
+    }
+}

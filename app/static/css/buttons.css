@@ -12,7 +12,6 @@
     color: #fff;
     border-color: #213977;
 }
-
 .default-button:hover {
     background-color: #fff;
     color: #213977;
@@ -59,6 +58,7 @@
 .cancel-register-button,
 .return-home-button,
 .add-form-task-button,
+.add-works-button,
 .delete-form-task-button,
 .save-form-tasks-button,
 .save-task-button,
@@ -76,6 +76,8 @@
     flex: 3;
 }
 
+.add-works-button,
+.delete-form-task-button,
 .cancel-register-button,
 .add-form-task-button,
 .save-form-tasks-button,
@@ -83,12 +85,28 @@
     flex: 1;
 }
 
-.delete-form-task-button {
-    width: 240px;
-}
-
 .save-task-button {
     flex: 2;
+}
+
+.add-works-button {
+    background-color: #4caf50;
+    color: #fff;
+    border-color: #4caf50;
+}
+.add-works-button:hover {
+    background-color: #fff;
+    color: #4caf50;
+}
+
+.delete-form-task-button {
+    background-color: #E53935;
+    color: #fff;
+    border-color: #E53935;
+}
+.delete-form-task-button:hover {
+    background-color: #fff;
+    color: #E53935;
 }
 
 .reset-filters-button,

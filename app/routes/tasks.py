@@ -57,8 +57,6 @@ def add_task() -> Union[str, Response]:
         order_numbers: List[str] = request.form.getlist("order_number[]")
         work_names: List[str] = request.form.getlist("work_name[]")
 
-        print(work_names)
-
         if not hours_list:
             flash(message=MESSAGES["tasks"]["no_tasks_provided"], category="warning")
             return redirect(url_for("tasks.add_task"))
