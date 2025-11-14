@@ -50,7 +50,7 @@ class WorkManager(DatabaseConnection):
                 works.spent_hours
             FROM works
             JOIN orders ON works.order_id = orders.id
-            WHERE orders.number = ?;
+            WHERE orders.number = ?
         """
 
         with self.get_connection() as connection:

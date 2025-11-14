@@ -21,23 +21,22 @@ class TaskManager(DatabaseConnection):
         operation_date: str,
         employee_category: str,
     ) -> None:
-        query: str = """
-            INSERT INTO tasks (
-                employee_name,
-                personnel_number,
-                department,
-                work_name,
-                hours,
-                order_number,
-                order_name,
-                operation_date,
-                employee_category
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """
-
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
+                query: str = """
+                    INSERT INTO tasks (
+                        employee_name,
+                        personnel_number,
+                        department,
+                        work_name,
+                        hours,
+                        order_number,
+                        order_name,
+                        operation_date,
+                        employee_category
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """
                 cursor.execute(
                     query,
                     (
@@ -52,7 +51,37 @@ class TaskManager(DatabaseConnection):
                         employee_category,
                     ),
                 )
-                connection.commit()
+
+                query: str = """
+                    UPDATE works
+                    SET works.spent_hours = works.spent_hours + ?
+                    FROM works
+                    JOIN orders ON works.order_id = orders.id
+                    WHERE works.name = ?
+                    AND orders.number = ?;
+                """
+                cursor.execute(query, (hours, work_name, order_number))
+            connection.commit()
+
+    def delete_task(self, task_id: int) -> None:
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                query: str = "SELECT order_number, work_name, hours FROM tasks WHERE id = ?"
+                cursor.execute(query, (task_id,))
+                order_number, work_name, hours = cursor.fetchone()
+
+                query: str = "DELETE FROM tasks WHERE id = ?"
+                cursor.execute(query, (task_id,))
+
+                query: str = """
+                    UPDATE works
+                    SET spent_hours = spent_hours - ?
+                    FROM works
+                    JOIN orders ON works.order_id = orders.id
+                    WHERE works.name = ? AND orders.number = ?
+                """
+                cursor.execute(query, (hours, work_name, order_number))
+            connection.commit()
 
     def get_task_data_by_id(self, task_id: int) -> Optional[Dict[str, Union[str, Decimal]]]:
         query: str = """
@@ -86,14 +115,6 @@ class TaskManager(DatabaseConnection):
                         "order_name": task_data[7],
                         "operation_date": task_data[8].strftime("%Y-%m-%d"),
                     }
-
-    def delete_task(self, task_id: str) -> None:
-        query: str = "DELETE FROM tasks WHERE id = ?"
-
-        with self.get_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(query, (task_id,))
-                connection.commit()
 
     def get_tasks(
         self,

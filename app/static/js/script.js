@@ -74,14 +74,45 @@ document.addEventListener("click", function(event) {
                 const tbody = modal.querySelector("tbody");
                 tbody.innerHTML = "";
 
+                const hiddenContainer = document.querySelector("#hidden-work-hours-container");
+
                 data.forEach(work => {
+                    // ищем существующий скрытый input
+                    const hiddenInputName = `work_hours[${orderNumber}][${work.work_name}]`;
+                    let existingInput = hiddenContainer.querySelector(`input[name="${hiddenInputName}"]`);
+
+                    // если нет — создаем
+                    if (!existingInput) {
+                        existingInput = document.createElement("input");
+                        existingInput.type = "hidden";
+                        existingInput.name = hiddenInputName;
+                        hiddenContainer.appendChild(existingInput);
+                    }
+
+                    // берем значение из существующего инпута
+                    const value = existingInput.value || "";
+
+                    // создаем строку в модалке
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <td>${work.work_name}</td>
                         <td>${work.planned_hours}</td>
                         <td>${work.spent_hours}</td>
-                        <td><input type="number" name="work_hours[${orderNumber}][${work.work_name}]" min="0" step="0.01" form="tasks-form"></td>
+                        <td>
+                            <input
+                                type="number"
+                                name="work_hours[${orderNumber}][${work.work_name}]"
+                                min="0"
+                                step="0.01"
+                                value="${value}"
+                            />
+                        </td>
                     `;
+
+                    row.querySelector("input").addEventListener("input", e => {
+                        existingInput.value = e.target.value;
+                    });
+
                     tbody.appendChild(row);
                 });
 
@@ -89,20 +120,17 @@ document.addEventListener("click", function(event) {
             });
     }
 
-    // --- Закрытие модалки по крестику ---
-    if (event.target.classList.contains("close-works-modal") || 
+    if (event.target.classList.contains("close-works-modal") ||
         event.target.closest(".close-works-modal")) {
         document.querySelector(".works-modal-container").style.display = "none";
     }
 
-    // --- Закрытие модалки кликом вне контента ---
     const modal = document.querySelector(".works-modal-container");
     if (modal && event.target === modal) {
         modal.style.display = "none";
     }
 });
 
-// --- Закрытие модалки по Esc ---
 document.addEventListener("keydown", function(event) {
     if (event.key === "Escape") {
         const modal = document.querySelector(".works-modal-container");
@@ -114,6 +142,5 @@ document.addEventListener("keydown", function(event) {
 
 
 document.querySelector("#save-works").addEventListener("click", function() {
-    // Закрываем модалку
     document.querySelector(".works-modal-container").style.display = "none";
 });
