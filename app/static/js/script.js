@@ -80,7 +80,7 @@ document.addEventListener("click", function(event) {
                         <td>${work.work_name}</td>
                         <td>${work.planned_hours}</td>
                         <td>${work.spent_hours}</td>
-                        <td><input type="number" name="work_hours[${work.work_name}][]" min="0" step="0.01"></td>
+                        <td><input type="number" name="work_hours[${orderNumber}][${work.work_name}]" min="0" step="0.01" form="tasks-form"></td>
                     `;
                     tbody.appendChild(row);
                 });
@@ -110,4 +110,10 @@ document.addEventListener("keydown", function(event) {
             modal.style.display = "none";
         }
     }
+});
+
+
+document.querySelector("#save-works").addEventListener("click", function() {
+    // Закрываем модалку
+    document.querySelector(".works-modal-container").style.display = "none";
 });
