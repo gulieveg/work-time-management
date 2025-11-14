@@ -18,13 +18,15 @@
                 <label>Номер заказа</label>
                 <div>
                     <i class="fas fa-hashtag"></i>
-                    <input type="text"
+                    <input
+                        type="text"
                         name="order_number"
                         value="{{ request.form.get('order_number', '') }}"
                         class="order-number"
                         placeholder="Номер заказа"
                         autocomplete="off"
-                        required/>
+                        required
+                    />
                 </div>
             </div>
 
@@ -32,13 +34,15 @@
                 <label>Наименование заказа</label>
                 <div>
                     <i class="fas fa-cogs"></i>
-                    <input type="text"
+                    <input
+                        type="text"
                         name="order_name"
                         value="{{ request.form.get('order_name', '') }}"
                         class="order-name"
                         placeholder="Наименование заказа"
                         autocomplete="off"
-                        required/>
+                        required
+                    />
                 </div>
             </div>
 
@@ -61,7 +65,8 @@
                     </p>
 
                     <div class="file-upload-container">
-                        <input type="file"
+                        <input
+                            type="file"
                             name="file_upload"
                             class="file-upload"
                             accept=".xlsx,.xls"

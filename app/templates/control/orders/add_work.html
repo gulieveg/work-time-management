@@ -1,0 +1,73 @@
+{% extends "control/base.html" %}
+
+{% block title %}Добавление работы{% endblock title %}
+
+{% block content %}
+    <div class="content-section">
+        <div class="tabs">
+            <form method="GET" action="{{ url_for('control.orders.orders_table') }}">
+                <button class="tab-button"><i class="fas fa-list"></i>Список заказов</button>
+            </form>
+            <form method="GET" action="{{ url_for('control.orders.add_order') }}">
+                <button class="tab-button"><i class="fas fa-plus"></i>Добавить заказ</button>
+            </form>
+            <form method="GET" action="{{ url_for('control.orders.add_work', order_id=request.view_args['order_id']) }}">
+                <button class="tab-button active"><i class="fas fa-circle-plus"></i>Добавление работы</button>
+            </form>
+        </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label>Наименование работы</label>
+                <div>
+                    <i class="fas fa-briefcase"></i>
+                    <input
+                        type="text"
+                        name="work_name"
+                        value="{{ request.form.get('work_name', '') }}"
+                        class="work-name"
+                        placeholder="Наименование работы"
+                        autocomplete="off"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Плановая трудоемкость</label>
+                <div>
+                    <i class="fas fa-clock"></i>
+                    <input
+                        type="number"
+                        name="work_planned_hours"
+                        min="0"
+                        step="0.01"
+                        value="{{ request.form.get('work_planned_hours', '') }}"
+                        class="work-planned-hours"
+                        placeholder="Плановая трудоемкость"
+                        autocomplete="off"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="default-button">
+                    <i class="fas fa-save"></i>Сохранить работу
+                </button>
+
+                <a href="{{ url_for('control.orders.orders_table') }}" class="default-button">
+                    <i class="fas fa-undo"></i>Отменить
+                </a>
+            </div>
+        </form>
+
+        <div class="flashed-messages">
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <div class="{{ category }}" id="message">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
