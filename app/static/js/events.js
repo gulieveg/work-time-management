@@ -1,10 +1,9 @@
 export function configureSuggestionListBlurHandler() {
     document.addEventListener("click", function (event) {
         const selectors = [
+            ".employee-data-suggestions",
             ".order-name-suggestions",
             ".order-number-suggestions",
-            ".employee-data-suggestions",
-            ".work-name-suggestions",
         ];
 
         document.querySelectorAll(selectors.join(", ")).forEach(suggestionsList => {
@@ -35,10 +34,9 @@ export function configureSuggestionListEscapeHandler() {
         if (event.key !== "Escape") return;
 
         const selectors = [
+            ".employee-data-suggestions",
             ".order-name-suggestions",
             ".order-number-suggestions",
-            ".employee-data-suggestions",
-            ".work-name-suggestions",
         ];
 
         document.querySelectorAll(selectors.join(", ")).forEach(suggestionsList => {

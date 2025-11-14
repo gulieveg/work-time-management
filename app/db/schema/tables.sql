@@ -29,7 +29,7 @@ CREATE TABLE tasks (
     employee_name NVARCHAR(100),
     personnel_number NVARCHAR(100),
     department NVARCHAR(100),
-    operation_type NVARCHAR(100),
+    work_name NVARCHAR(100),
     hours DECIMAL(3,2),
     order_number NVARCHAR(100),
     order_name NVARCHAR(100),

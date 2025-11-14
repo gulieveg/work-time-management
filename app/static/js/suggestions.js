@@ -6,8 +6,6 @@ export function configureSuggestionInputs() {
         [".employee-data", ".employee-data-suggestions", "/employees"],
         [".order-name", ".order-name-suggestions", "/orders/names"],
         [".order-number", ".order-number-suggestions", "/orders/numbers"],
-        [".operation-type", ".operation-type-suggestions", "/employees/operation-types"],
-        [".work-type", ".work-type-suggestions", "/employees/work-types"],
     ];
 
     selectorsMap.forEach(([inputSelector, suggestionsListSelector, url]) => {
