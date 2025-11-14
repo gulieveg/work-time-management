@@ -86,11 +86,10 @@ document.addEventListener("click", function(event) {
                 });
 
                 modal.style.display = "block";
-                modal.dataset.taskId = taskFields.dataset.taskId;
             });
     }
 
-    // --- Закрытие модалки по кресту ---
+    // --- Закрытие модалки по крестику ---
     if (event.target.classList.contains("close-works-modal") || 
         event.target.closest(".close-works-modal")) {
         document.querySelector(".works-modal-container").style.display = "none";
