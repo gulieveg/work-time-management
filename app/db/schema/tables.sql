@@ -59,18 +59,3 @@ CREATE TABLE works (
     spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
-
--- UPDATE employees
--- SET category = CASE category
---     WHEN N'Руководитель' THEN 'manager'
---     WHEN N'Специалист' THEN 'specialist'
---     WHEN N'Рабочий' THEN 'worker'
---     ELSE NULL
--- END;
-
--- ALTER TABLE employees
--- DROP CONSTRAINT check_employee_category;
-
--- ALTER TABLE employees
--- ADD CONSTRAINT check_employee_category
--- CHECK (category IN (N'worker', N'specialist', N'manager'));
