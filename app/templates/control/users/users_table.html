@@ -73,7 +73,7 @@
             </thead>
             <tbody>
                 {% set filtered_users_page = filtered_users_page | default([]) %}
-                {% for user_id, user_name, user_login, password_hash, department, permissions_level, is_enabled, is_factory_worker in filtered_users_page %}
+                {% for user_id, user_name, user_login, password_hash, department, permissions_level, is_account_enabled, is_factory_worker in filtered_users_page %}
                     {% set page = page | default(1) %}
                     {% set page_size = 10 %}
                     <tr>
@@ -103,7 +103,7 @@
                         </td>
                         <td>
                             <label class="switch">
-                                <input type="checkbox" class="user-status-switch" data-user-id="{{ user_id }}" {% if is_enabled %}checked{% endif %}>
+                                <input type="checkbox" class="user-status-switch" data-user-id="{{ user_id }}" {% if is_account_enabled %}checked{% endif %}>
                                 <span class="slider"></span>
                             </label>
                         </td>

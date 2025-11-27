@@ -28,7 +28,7 @@ class UserManager(DatabaseConnection):
                 password_hash,
                 permissions_level,
                 is_factory_worker,
-                is_enabled
+                is_account_enabled
             )
             VALUES (?, ?, ?, ?, ?, ?, ?)
         """
@@ -80,7 +80,7 @@ class UserManager(DatabaseConnection):
             fields.append("permissions_level = ?")
             params.append(user_permissions_level)
 
-        fields.extend(["is_factory_worker = ?", "is_enabled = ?"])
+        fields.extend(["is_factory_worker = ?", "is_account_enabled = ?"])
         params.extend([is_user_factory_worker, is_user_account_enabled, user_id])
 
         query: str = "UPDATE users SET {} WHERE id = ?".format(", ".join(fields))
@@ -146,7 +146,7 @@ class UserManager(DatabaseConnection):
                 return record is None
 
     def is_user_enabled(self, login: str) -> int:
-        query: str = "SELECT is_enabled FROM users WHERE login = ?"
+        query: str = "SELECT is_account_enabled FROM users WHERE login = ?"
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
@@ -154,7 +154,7 @@ class UserManager(DatabaseConnection):
                 return cursor.fetchone()[0]
 
     def is_user_disabled(self, user_id: int) -> bool:
-        query: str = "SELECT is_enabled FROM users WHERE id = ?"
+        query: str = "SELECT is_account_enabled FROM users WHERE id = ?"
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
@@ -180,7 +180,7 @@ class UserManager(DatabaseConnection):
                 return record is None
 
     def update_user_status(self, user_id: int, is_active: bool) -> None:
-        query: str = "UPDATE users SET is_enabled = ? WHERE id = ?"
+        query: str = "UPDATE users SET is_account_enabled = ? WHERE id = ?"
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
@@ -189,7 +189,7 @@ class UserManager(DatabaseConnection):
 
     def get_user_data_by_id(self, user_id: int) -> Optional[Dict[str, Union[str, int]]]:
         query: str = """
-            SELECT id, name, department, login, permissions_level, is_factory_worker, is_enabled
+            SELECT id, name, department, login, permissions_level, is_factory_worker, is_account_enabled
             FROM users
             WHERE id = ?
         """
@@ -212,7 +212,7 @@ class UserManager(DatabaseConnection):
 
     def get_user_data_by_login(self, login: str) -> Optional[Dict[str, Union[str, int]]]:
         query: str = """
-            SELECT id, name, login, department, permissions_level, is_factory_worker, is_enabled
+            SELECT id, name, login, department, permissions_level, is_factory_worker, is_account_enabled
             FROM users
             WHERE login = ?
         """
@@ -240,7 +240,7 @@ class UserManager(DatabaseConnection):
         page: Optional[int] = None,
     ) -> List[Tuple[str]]:
         query: str = """
-            SELECT id, name, login, password_hash, department, permissions_level, is_enabled, is_factory_worker
+            SELECT id, name, login, password_hash, department, permissions_level, is_account_enabled, is_factory_worker
             FROM users
         """
 
