@@ -15,7 +15,7 @@ db_manager: DatabaseManager = DatabaseManager()
 @login_required
 @permission_required(["advanced"])
 def works_table() -> str:
-    order_id: str = request.args.get("order_id", type=int)
+    order_id: int = request.args.get("order_id", type=int)
 
     order_number: str = request.args.get("order_number")
     work_name: str = request.args.get("work_name")
