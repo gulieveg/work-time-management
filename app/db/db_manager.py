@@ -1,5 +1,6 @@
 from .db_connection import DatabaseConnection
 from .employee_manager import EmployeeManager
+from .log_manager import LogManager
 from .order_manager import OrderManager
 from .task_manager import TaskManager
 from .user_manager import UserManager
@@ -13,3 +14,4 @@ class DatabaseManager(DatabaseConnection):
         self.tasks: TaskManager = TaskManager()
         self.users: UserManager = UserManager()
         self.works: WorkManager = WorkManager()
+        self.logs: LogManager = LogManager()
