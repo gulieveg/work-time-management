@@ -15,7 +15,7 @@ export function configureTaskCreateHandler() {
 
         const taskNumberElement = document.createElement("p");
         taskNumberElement.classList.add("task-number");
-        taskNumberElement.innerHTML = `Задание &#8470;${taskNumber}`;
+        taskNumberElement.innerHTML = `Блок &#8470;${taskNumber}`;
         taskFields.appendChild(taskNumberElement);
 
         const orderNameGroup = document.createElement("div");
@@ -92,7 +92,7 @@ export function configureTaskCreateHandler() {
         const deleteButton = document.createElement("button");
         deleteButton.type = "button";
         deleteButton.classList.add("default-button", "delete-form-task-button");
-        deleteButton.innerText = "Удалить задание";
+        deleteButton.innerText = "Удалить блок";
 
         const buttonsContainer = document.createElement("div");
         buttonsContainer.classList.add("add-task-buttons-container");
@@ -152,7 +152,7 @@ export function configureTaskDeleteHandler() {
             document.querySelectorAll(".task-fields").forEach((field, index) => {
                 const number = field.querySelector(".task-number");
                 if (number) {
-                    number.innerHTML = `Задание &#8470;${index + 1}`;
+                    number.innerHTML = `Блок &#8470;${index + 1}`;
                 }
             });
         }
