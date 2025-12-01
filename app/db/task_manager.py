@@ -83,7 +83,7 @@ class TaskManager(DatabaseConnection):
                 cursor.execute(query, (hours, work_name, order_number))
 
                 query: str = "INSERT INTO logs (description) VALUES (?)"
-                description: str = "Задание с ID = {} удалено!".format(task_id)
+                description: str = "Задание с ID = {} было удалено пользователем admin".format(task_id)
                 cursor.execute(query, (description,))
             connection.commit()
 

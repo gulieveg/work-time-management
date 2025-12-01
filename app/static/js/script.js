@@ -72,6 +72,10 @@ document.addEventListener("click", function(event) {
             .then(data => {
                 const modal = document.querySelector(".works-modal-container");
                 const tbody = modal.querySelector("tbody");
+
+                const modalTitle = modal.querySelector("#works-modal-title");
+                modalTitle.textContent = `Заказ №${orderNumber}`; // Можно добавить и название: `${orderName} (№${orderNumber})`
+
                 tbody.innerHTML = "";
 
                 const hiddenContainer = document.querySelector("#hidden-work-hours-container");

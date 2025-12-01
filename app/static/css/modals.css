@@ -116,6 +116,14 @@
     position: relative;
 }
 
+#works-modal-title {
+    text-align: center;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #000;
+    margin-bottom: 20px;
+}
+
 .close-works-modal {
     position: absolute;
     top: 14px;
