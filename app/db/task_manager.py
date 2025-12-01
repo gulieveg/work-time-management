@@ -81,6 +81,10 @@ class TaskManager(DatabaseConnection):
                     WHERE works.name = ? AND orders.number = ?
                 """
                 cursor.execute(query, (hours, work_name, order_number))
+
+                query: str = "INSERT INTO logs (description) VALUES (?)"
+                description: str = "Задание с ID = {} удалено!".format(task_id)
+                cursor.execute(query, (description,))
             connection.commit()
 
     def get_task_data_by_id(self, task_id: int) -> Optional[Dict[str, Union[str, Decimal]]]:

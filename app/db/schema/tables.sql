@@ -60,3 +60,9 @@ CREATE TABLE works (
     spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
+
+IF OBJECT_ID('logs', 'U') IS NULL
+CREATE TABLE logs (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    description NVARCHAR(MAX) NOT NULL
+);

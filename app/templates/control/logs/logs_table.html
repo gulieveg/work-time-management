@@ -1,0 +1,24 @@
+{% extends "control/base.html" %}
+
+{% block title %}Журнай действий{% endblock title %}
+
+{% block content %}
+    <div class="content-section">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%;">&numero;</th>
+                    <th style="width: 95%;">Описание действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log_id, description in logs %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ description }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}
