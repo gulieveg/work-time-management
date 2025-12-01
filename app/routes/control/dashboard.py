@@ -20,4 +20,4 @@ def overview() -> str:
         "total_employees": db_manager.employees.get_total_employee_count(),
         "total_tasks": db_manager.tasks.get_total_task_count(),
     }
-    return render_template("control/dashboard/dashboard.html", **context)
+    return render_template("control/dashboard/overview.html", **context)
