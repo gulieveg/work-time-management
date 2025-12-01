@@ -15,5 +15,5 @@ db_manager: DatabaseManager = DatabaseManager()
 @login_required
 @permission_required(["advanced"])
 def logs_table() -> Response:
-    logs: List[Tuple[str]] = [[1, 2], [3, 4]]
+    logs: List[Tuple[str]] = db_manager.logs.get_logs()
     return render_template("control/logs/logs_table.html", logs=logs)
