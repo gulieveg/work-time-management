@@ -13,14 +13,14 @@
 <body>
     <div class="container">
         <div class="sidebar">
-            <a href="{{ url_for('control.dashboard.overview') }}" class="sidebar-title-link">
+            <a href="{{ url_for('control.home.index') }}" class="sidebar-title-link">
                 Панель управления
             </a>
 
             <hr class="sidebar-divider">
 
             {% set menu_items = [
-                ["control.dashboard.overview", "fas fa-home", "Главная"],
+                ["control.home.index", "fas fa-home", "Главная"],
                 ["control.users.users_table", "fas fa-user-shield", "Управление пользователями"],
                 ["control.orders.orders_table", "fas fa-cogs", "Управление заказами"],
                 ["control.works.works_table", "fas fa-briefcase", "Управление работами"],
