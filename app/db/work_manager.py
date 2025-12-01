@@ -125,3 +125,32 @@ class WorkManager(DatabaseConnection):
                         "spent_hours": work_data[4],
                         "remaining_hours": work_data[5],
                     }
+
+    def get_works_for_order_by_number(self, order_number: str) -> List[Dict[str, Union[str, Decimal]]]:
+        query: str = """
+            SELECT
+                works.id,
+                works.name,
+                works.planned_hours,
+                works.spent_hours,
+                works.remaining_hours
+            FROM works
+            JOIN orders ON works.order_id = orders.id
+            WHERE orders.number = ?
+        """
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, (order_number,))
+
+                works: List[Dict[str, Union[str, Decimal]]] = [
+                    {
+                        "work_id": work_data[0],
+                        "work_name": work_data[1],
+                        "planned_hours": work_data[2],
+                        "spent_hours": work_data[3],
+                        "remaining_hours": work_data[4],
+                    }
+                    for work_data in cursor.fetchall()
+                ]
+                return works

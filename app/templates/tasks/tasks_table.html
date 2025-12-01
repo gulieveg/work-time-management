@@ -138,7 +138,12 @@
                         <td>{{ loop.index }}</td>
                         <td>{{ task["employee_name"] | default("-", true) }}</td>
                         <td>{{ task["personnel_number"] | default("-", true) }}</td>
-                        <td>{{ task["employee_category"] | default("-", true) }}</td>
+                        {% set categories = {
+                            "worker": "Рабочий",
+                            "specialist": "Специалист",
+                            "manager": "Руководитель",
+                        } %}
+                        <td>{{ categories[task["employee_category"]] | default("-", true) }}</td>
                         <td>{{ task["department"] | default("-", true) }}</td>
                         <td>{{ task["work_name"] | default("-", true) }}</td>
                         <td class="hours" data-hours="{{ task['hours'] | default(0) }}">{{ task["hours"] | default("-", true) }}</td>

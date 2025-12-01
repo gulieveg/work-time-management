@@ -98,6 +98,7 @@ document.addEventListener("click", function(event) {
                         <td>${work.work_name}</td>
                         <td>${work.planned_hours}</td>
                         <td>${work.spent_hours}</td>
+                        <td>${work.remaining_hours}</td>
                         <td>
                             <input
                                 type="number"
@@ -109,8 +110,8 @@ document.addEventListener("click", function(event) {
                         </td>
                     `;
 
-                    row.querySelector("input").addEventListener("input", e => {
-                        existingInput.value = e.target.value;
+                    row.querySelector("input").addEventListener("input", event => {
+                        existingInput.value = event.target.value;
                     });
 
                     tbody.appendChild(row);

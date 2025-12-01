@@ -106,7 +106,7 @@ def edit_work(work_id: int) -> Union[str, Response]:
         args: Dict[str, Union[int, str]] = {
             "work_id": work_id,
             "work_name": work_name,
-            "planned_hours": planned_hours,
+            "planned_hours": Decimal(planned_hours),
         }
         db_manager.works.update_work(**args)
 
