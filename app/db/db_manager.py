@@ -10,8 +10,8 @@ from .work_manager import WorkManager
 class DatabaseManager(DatabaseConnection):
     def __init__(self):
         self.employees: EmployeeManager = EmployeeManager()
+        self.logs: LogManager = LogManager()
         self.orders: OrderManager = OrderManager()
         self.tasks: TaskManager = TaskManager()
         self.users: UserManager = UserManager()
         self.works: WorkManager = WorkManager()
-        self.logs: LogManager = LogManager()
