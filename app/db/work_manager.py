@@ -1,69 +1,127 @@
 from decimal import Decimal
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from .db_connection import DatabaseConnection
 
 
 class WorkManager(DatabaseConnection):
-    def add_work_to_order(self, order_id: int, work_name: str, work_planned_hours: Decimal) -> None:
-        query: str = "INSERT INTO works (order_id, name, planned_hours) VALUES (?, ?, ?)"
-
-        with self.get_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(query, (order_id, work_name, work_planned_hours))
-                connection.commit()
-
-    def work_exists(self, order_id: int, work_name: str) -> bool:
-        query: str = "SELECT COUNT(*) FROM works WHERE order_id = ? AND name = ?"
-
-        with self.get_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(query, (order_id, work_name))
-                count: int = cursor.fetchone()[0]
-        return count > 0
-
-    def get_works_for_order_by_id(self, order_id: int) -> List[Dict[str, Union[str, Decimal]]]:
-        query: str = "SELECT id, name, planned_hours, spent_hours FROM works WHERE order_id = ?"
-
-        with self.get_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(query, (order_id,))
-
-                works: List[Dict[str, Union[str, Decimal]]] = [
-                    {
-                        "work_id": work_data[0],
-                        "work_name": work_data[1],
-                        "planned_hours": work_data[2],
-                        "spent_hours": work_data[3],
-                    }
-                    for work_data in cursor.fetchall()
-                ]
-                return works
-        return count > 0
-
-    def get_works_for_order_by_number(self, order_number: str) -> List[Dict[str, Union[str, Decimal]]]:
+    def add_work(self, order_number: str, work_name: str, planned_hours: Decimal) -> None:
         query: str = """
-            SELECT
-                works.id,
-                works.name,
-                works.planned_hours,
-                works.spent_hours
-            FROM works
-            JOIN orders ON works.order_id = orders.id
-            WHERE orders.number = ?
+            INSERT INTO works (order_id, name, planned_hours)
+            VALUES ((SELECT id FROM orders WHERE number = ?), ?, ?)
         """
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (order_number,))
+                cursor.execute(query, (order_number, work_name, planned_hours))
+                connection.commit()
 
-                works: List[Dict[str, Union[str, Decimal]]] = [
-                    {
-                        "work_id": work_data[0],
-                        "work_name": work_data[1],
-                        "planned_hours": work_data[2],
-                        "spent_hours": work_data[3],
-                    }
-                    for work_data in cursor.fetchall()
-                ]
+    def update_work(self, work_id: int, work_name: str, planned_hours: Decimal) -> None:
+        query: str = "UPDATE works SET name = ?, planned_hours = ? WHERE id = ?"
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, (work_name, planned_hours, work_id))
+                connection.commit()
+
+    def delete_work(self, work_id: int) -> None:
+        query: str = "DELETE FROM works WHERE id = ?"
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, (work_id,))
+                connection.commit()
+
+    def work_exists(self, order_number: str, work_name: str, exclude_id: Optional[int] = None) -> bool:
+        query: str = """
+            SELECT *
+            FROM works
+            WHERE order_id = (SELECT id FROM orders WHERE number = ?) AND name = ?
+        """
+
+        params: List[str] = [order_number, work_name]
+
+        if exclude_id is not None:
+            query += " AND id <> ?"
+            params.append(exclude_id)
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, tuple(params))
+                record: Optional[Tuple[str]] = cursor.fetchone()
+                return record is not None
+
+    def get_works(
+        self,
+        order_id: Optional[int] = None,
+        order_number: Optional[str] = None,
+        work_name: Optional[str] = None,
+        page: Optional[int] = None,
+    ) -> List[Tuple[Any]]:
+        query: str = """
+            SELECT
+                works.id,
+                orders.number,
+                works.name,
+                works.planned_hours,
+                works.spent_hours,
+                works.remaining_hours
+            FROM works
+            JOIN orders ON works.order_id = orders.id
+        """
+
+        conditions: List[str] = []
+        params: List[Any] = []
+
+        if order_id:
+            conditions.append("works.order_id = ?")
+            params.append(order_id)
+        elif order_number:
+            conditions.append("orders.number = ?")
+            params.append(order_number)
+
+        if work_name:
+            conditions.append("works.name = ?")
+            params.append(work_name)
+
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                if page:
+                    page_size: int = 10
+                    offset: int = (page - 1) * page_size
+                    query += """
+                        ORDER BY works.id
+                        OFFSET ? ROWS
+                        FETCH NEXT ? ROWS ONLY
+                    """
+                    params.append(offset)
+                    params.append(page_size)
+
+                cursor.execute(query, tuple(params))
+                works: List[Tuple[Any]] = cursor.fetchall()
                 return works
+
+    def get_work_data_by_id(self, work_id: int) -> Optional[Dict[str, Union[str, int]]]:
+        query: str = """
+            SELECT id, order_id, name, planned_hours, spent_hours, remaining_hours
+            FROM works 
+            WHERE id = ?
+        """
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, (work_id,))
+
+                work_data: Optional[Tuple[str]] = cursor.fetchone()
+                if work_data:
+                    return {
+                        "id": work_data[0],
+                        "order_id": work_data[1],
+                        "work_name": work_data[2],
+                        "planned_hours": work_data[3],
+                        "spent_hours": work_data[4],
+                        "remaining_hours": work_data[5],
+                    }

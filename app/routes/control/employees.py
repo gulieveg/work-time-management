@@ -124,7 +124,7 @@ def edit_employee(employee_id: int) -> Union[str, Response]:
         if db_manager.employees.employee_exists(personnel_number, exclude_id=employee_id):
             flash(message=MESSAGES["employees"]["employee_exists"], category="error")
             context_with_error: Dict[str, str] = context.copy()
-            context.update(
+            context_with_error.update(
                 {
                     "personnel_number": personnel_number,
                     "personnel_number_error": True,
@@ -132,7 +132,7 @@ def edit_employee(employee_id: int) -> Union[str, Response]:
             )
             return render_template("control/employees/edit_employee.html", **context_with_error)
 
-        args: Dict[str, Union[str, bool]] = {
+        args: Dict[str, Union[int, str]] = {
             "employee_id": employee_id,
             "employee_name": employee_name,
             "personnel_number": personnel_number,

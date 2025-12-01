@@ -1,15 +1,15 @@
 {% extends "control/base.html" %}
 
-{% block title %}Управление заказами{% endblock title %}
+{% block title %}Управление работами{% endblock title %}
 
 {% block content %}
     <div class="content-section">
         <div class="tabs">
-            <form method="GET" action="{{ url_for('control.orders.orders_table') }}">
-                <button class="tab-button active"><i class="fas fa-list"></i>Список заказов</button>
+            <form method="GET" action="{{ url_for('control.works.works_table') }}">
+                <button class="tab-button active"><i class="fas fa-list"></i>Список работ</button>
             </form>
-            <form method="GET" action="{{ url_for('control.orders.add_order') }}">
-                <button class="tab-button"><i class="fas fa-plus"></i>Добавить заказ</button>
+            <form method="GET" action="{{ url_for('control.works.add_work') }}">
+                <button class="tab-button"><i class="fas fa-plus"></i>Добавить работу</button>
             </form>
         </div>
 
@@ -32,18 +32,18 @@
                 </div>
 
                 <div class="filter-item">
-                    <label for="order_name">Фильтр по наименованию заказа</label>
+                    <label for="work_name">Фильтр по наименованию работы</label>
                     <div>
                         <i class="fas fa-cogs"></i>
                         <input
                             type="text"
-                            name="order_name"
-                            value="{{ request.args.get('order_name', '') }}"
-                            class="order-name"
-                            placeholder="Наименование заказа"
+                            name="work_name"
+                            value="{{ request.args.get('work_name', '') }}"
+                            class="work-name"
+                            placeholder="Наименование работы"
                             autocomplete="off"
                         />
-                        <div class="order-name-suggestions suggestions-list"></div>
+                        <div class="work-name-suggestions suggestions-list"></div>
                     </div>
                 </div>
             </div>
@@ -62,38 +62,38 @@
             <thead>
                 <tr>
                     <th style="width: 5%;">&numero;</th>
-                    <th style="width: 18%;">Номер заказа</th>
-                    <th style="width: 62%;">Наименование заказа</th>
-                    <th style="width: 15%;">Действия</th>
+                    <th style="width: 16%;">Номер заказа</th>
+                    <th style="width: 30%;">Наименование работы</th>
+                    <th style="width: 13%;">Плановая трудоемкость</th>
+                    <th style="width: 13%;">Фактическая трудоемкость</th>
+                    <th style="width: 13%;">Остаточная трудоемкость</th>
+                    <th style="width: 10%;">Действия</th>
                 </tr>
             </thead>
             <tbody>
-                {% set filtered_orders_page = filtered_orders_page | default([]) %}
-                {% for order_id, order_number, order_name in filtered_orders_page %}
+                {% set filtered_works_page = filtered_works_page | default([]) %}
+                {% for work_id, order_number, work_name, planned_hours, spent_hours, remaining_hours in filtered_works_page %}
                     {% set page = page | default(1) %}
                     {% set page_size = 10 %}
                     <tr>
                         <td>{{ loop.index + (page - 1) * page_size }}</td>
                         <td>{{ order_number }}</td>
-                        <td>{{ order_name }}</td>
+                        <td>{{ work_name }}</td>
+                        <td>{{ planned_hours }}</td>
+                        <td>{{ spent_hours }}</td>
+                        <td>{{ remaining_hours }}</td>
                         <td class="actions-container">
-                            <form method="GET" action="{{ url_for('control.works.works_table', order_id=order_id) }}">
-                                <button type="submit" class="icon-button view-works-button tooltip">
-                                    <i class="fas fa-briefcase"></i>
-                                    <span class="tooltiptext">Посмотреть перечень работ</span>
-                                </button>
-                            </form>
-                            <form method="GET" action="{{ url_for('control.orders.edit_order', order_id=order_id) }}">
+                            <form method="GET" action="{{ url_for('control.works.edit_work', work_id=work_id) }}">
                                 <button type="submit" class="icon-button edit-button tooltip">
                                     <i class="fas fa-edit"></i>
-                                    <span class="tooltiptext">Редактировать заказ</span>
+                                    <span class="tooltiptext">Редактировать работу</span>
                                 </button>
                             </form>
-                            <form method="POST" action="{{ url_for('control.orders.delete_order', order_id=order_id) }}">
+                            <form method="POST" action="{{ url_for('control.works.delete_work', work_id=work_id) }}">
                                 <input type="hidden" name="page" value="{{ page }}">
-                                <button type="submit" class="icon-button delete-button tooltip" data-action="delete-order">
+                                <button type="submit" class="icon-button delete-button tooltip" data-action="delete-work">
                                     <i class="fas fa-trash"></i>
-                                    <span class="tooltiptext">Удалить заказ</span>
+                                    <span class="tooltiptext">Удалить работу</span>
                                 </button>
                             </form>
                         </td>
@@ -106,21 +106,21 @@
             <div class="pagination-container">
                 {% set page = page | default(0) %}
                 {% set page_size = 10 %}
-                {% set total_orders = filtered_orders | length %}
-                {% set total_pages = (total_orders + page_size - 1) // page_size %}
+                {% set total_works = filtered_works | length %}
+                {% set total_pages = (total_works + page_size - 1) // page_size %}
                 {% if page == 1 %}
                     <span class="pagination-arrow" style="visibility: hidden;"><i class="fas fa-angle-left"></i></span>
                 {% endif %}
                 {% if page > 1 %}
                     {% set previous_page = page - 1 %}
-                    <a href="{{ url_for('control.orders.orders_table', page=previous_page) }}" class="pagination-arrow">
+                    <a href="{{ url_for('control.works.works_table', page=previous_page) }}" class="pagination-arrow">
                         <i class="fas fa-angle-left"></i>
                     </a>
                 {% endif %}
                 <span>Страница {{ page }} / {{ total_pages }}</span>
                 {% if page < total_pages %}
                     {% set next_page = page + 1 %}
-                    <a href="{{ url_for('control.orders.orders_table', page=next_page) }}" class="pagination-arrow">
+                    <a href="{{ url_for('control.works.works_table', page=next_page) }}" class="pagination-arrow">
                         <i class="fas fa-angle-right"></i>
                     </a>
                 {% endif %}

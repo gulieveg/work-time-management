@@ -5,20 +5,34 @@
 {% block content %}
     <div class="content-section">
         <div class="tabs">
-            <form method="GET" action="{{ url_for('control.orders.orders_table') }}">
-                <button class="tab-button"><i class="fas fa-list"></i>Список заказов</button>
+            <form method="GET" action="{{ url_for('control.works.works_table') }}">
+                <button class="tab-button"><i class="fas fa-list"></i>Список работ</button>
             </form>
-            <form method="GET" action="{{ url_for('control.orders.add_order') }}">
-                <button class="tab-button"><i class="fas fa-plus"></i>Добавить заказ</button>
-            </form>
-            <form method="GET" action="{{ url_for('control.orders.add_work', order_id=request.view_args['order_id']) }}">
-                <button class="tab-button active"><i class="fas fa-circle-plus"></i>Добавление работы</button>
+            <form method="GET" action="{{ url_for('control.works.add_work') }}">
+                <button class="tab-button active"><i class="fas fa-plus"></i>Добавить работу</button>
             </form>
         </div>
 
         <form method="POST">
             <div class="form-group">
-                <label>Наименование работы</label>
+                <label for="order_number">Номер заказа</label>
+                <div>
+                    <i class="fas fa-briefcase"></i>
+                    <input
+                        type="text"
+                        name="order_number"
+                        value="{{ request.form.get('order_number', '') }}"
+                        class="order-number"
+                        placeholder="Номер заказа"
+                        autocomplete="off"
+                        required
+                    />
+                    <div class="order-number-suggestions suggestions-list"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="work_name">Наименование работы</label>
                 <div>
                     <i class="fas fa-briefcase"></i>
                     <input
@@ -34,16 +48,16 @@
             </div>
 
             <div class="form-group">
-                <label>Плановая трудоемкость</label>
+                <label for="planned_hours">Плановая трудоемкость</label>
                 <div>
                     <i class="fas fa-clock"></i>
                     <input
                         type="number"
-                        name="work_planned_hours"
+                        name="planned_hours"
                         min="0"
                         step="0.01"
-                        value="{{ request.form.get('work_planned_hours', '') }}"
-                        class="work-planned-hours"
+                        value="{{ request.form.get('planned_hours', '') }}"
+                        class="planned-hours"
                         placeholder="Плановая трудоемкость"
                         autocomplete="off"
                         required
@@ -56,7 +70,7 @@
                     <i class="fas fa-save"></i>Сохранить работу
                 </button>
 
-                <a href="{{ url_for('control.orders.orders_table') }}" class="default-button">
+                <a href="{{ url_for('control.works.works_table') }}" class="default-button">
                     <i class="fas fa-undo"></i>Отменить
                 </a>
             </div>

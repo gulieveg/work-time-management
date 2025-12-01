@@ -8,8 +8,7 @@ import {
     configurePasswordToggle,
     configureDropDownHandler,
     configureFileUpload,
-    configureWorkListHandlers,
-    configureWorksModal
+    configureWorkListHandlers
 } from "./events.js";
 import { configureSuggestionInputs, configureSuggestionHandlers } from "./suggestions.js"
 
@@ -108,4 +107,3 @@ configurePasswordToggle();
 configureDropDownHandler();
 configureFileUpload();
 configureWorkListHandlers();
-configureWorksModal();

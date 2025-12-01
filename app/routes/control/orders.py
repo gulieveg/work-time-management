@@ -9,8 +9,6 @@ from werkzeug.wrappers import Response
 from app.db import DatabaseManager
 from app.utils import MESSAGES, permission_required
 
-Tasks = List[Dict[str, Union[str, Decimal]]]
-
 orders_bp: Blueprint = Blueprint("orders", __name__, url_prefix="/orders")
 db_manager: DatabaseManager = DatabaseManager()
 
@@ -174,30 +172,3 @@ def get_order_name(order_number: str) -> Response:
 def get_order_number(order_name: str) -> Response:
     order_number: str = db_manager.orders.get_order_number_by_name(order_name)
     return jsonify({"order_number": order_number})
-
-
-@orders_bp.route("/<int:order_id>/works", methods=["GET"])
-@login_required
-@permission_required(["advanced"])
-def works_table(order_id: int) -> Response:
-    works: List[str] = db_manager.works.get_works_for_order_by_id(order_id)
-    return jsonify(works)
-
-
-@orders_bp.route("/<int:order_id>/works/add", methods=["GET", "POST"])
-@login_required
-@permission_required(["advanced"])
-def add_work(order_id: int) -> str:
-    if request.method == "POST":
-        work_name: str = request.form.get("work_name")
-        work_planned_hours: str = request.form.get("work_planned_hours")
-
-        if db_manager.works.work_exists(order_id, work_name.strip()):
-            flash(message=MESSAGES["works"]["work_exists"], category="warning")
-            return render_template("control/orders/add_work.html")
-
-        db_manager.works.add_work_to_order(order_id, work_name, Decimal(work_planned_hours))
-
-        flash(message=MESSAGES["works"]["work_added"], category="info")
-        return render_template("control/orders/add_work.html")
-    return render_template("control/orders/add_work.html")

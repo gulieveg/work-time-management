@@ -8,8 +8,6 @@ from werkzeug.wrappers import Response
 from app.db import DatabaseManager
 from app.utils import MESSAGES, permission_required
 
-Tasks = List[Dict[str, Union[str, Decimal]]]
-
 users_bp: Blueprint = Blueprint("users", __name__, url_prefix="/users")
 db_manager: DatabaseManager = DatabaseManager()
 

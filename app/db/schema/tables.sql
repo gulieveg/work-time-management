@@ -60,3 +60,6 @@ CREATE TABLE works (
     spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
+
+-- ALTER TABLE works
+-- ADD remaining_hours AS (planned_hours - spent_hours);

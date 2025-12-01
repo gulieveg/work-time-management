@@ -12,7 +12,8 @@
     font-weight: bold;
 }
 
-.form-group div {
+.form-group > div {
+    width: 100%;
     position: relative;
 }
 

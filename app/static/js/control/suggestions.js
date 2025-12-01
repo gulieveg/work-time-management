@@ -11,6 +11,7 @@ export function configureSuggestionInputs() {
         [".user-login", ".user-login-suggestions", "/control/users/logins"],
         [".employee-name", ".employee-name-suggestions", "/control/employees/names"],
         [".personnel-number", ".personnel-number-suggestions", "/control/employees/numbers"],
+        [".work-name", ".work-name-suggestions", "/control/works/names"],
     ];
 
     selectorsMap.forEach(([inputSelector, suggestionsListSelector, url]) => {
