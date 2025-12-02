@@ -67,7 +67,7 @@ CREATE TABLE logs (
     action NVARCHAR(50) NOT NULL,
     entity_id INT NOT NULL,
     entity_type NVARCHAR(50) NOT NULL,
-    created_ad DATETIME DEFAULT GETDATE(),
+    created_at DATETIME NOT NULL DEFAULT GETDATE(),
     message NVARCHAR(255) NOT NULL,
     user_id INT NOT NULL,
     user_name NVARCHAR(100) NOT NULL,
