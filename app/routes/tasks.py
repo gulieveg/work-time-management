@@ -269,15 +269,10 @@ def delete_task(task_id: str) -> Response:
         "order_name": request.form.get("order_name"),
     }
 
-    args: Dict[str, Union[str, int]] = {
-        "task_id": task_id,
-        "user_id": current_user.id,
-        "user_name": current_user.name,
-        "ip_address"
-
-
-
-
-    }
+    # args: Dict[str, Union[str, int]] = {
+    #     "task_id": task_id,
+    #     "user_id": current_user.id,
+    #     "user_name": current_user.name,
+    # }
     db_manager.tasks.delete_task(task_id)
     return redirect(url_for("tasks.tasks_table", **params))
