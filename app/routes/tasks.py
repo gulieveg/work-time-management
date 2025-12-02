@@ -4,7 +4,9 @@ from io import BytesIO
 from typing import Dict, List, Tuple, Union
 
 from flask import Blueprint, flash, redirect, render_template, request, send_file, url_for
-from flask_login import login_required
+from flask_login import current_user, login_required
+from user_agents import parse
+from user_agents.parsers import UserAgent
 from werkzeug.wrappers import Response
 
 from app.db import DatabaseManager
@@ -15,29 +17,17 @@ Tasks = List[Dict[str, Union[str, Decimal]]]
 tasks_bp: Blueprint = Blueprint("tasks", __name__, url_prefix="/tasks")
 db_manager: DatabaseManager = DatabaseManager()
 
+user_agent: UserAgent = parse(request.user_agent.string)
+
+platform: str = user_agent.os.family
+os_version: str = ".".join(map(str, user_agent.os.version))
+browse: str = user_agent.browser.family
+browser_version: str = ".".join(map(str, user_agent.browser.version))
+
 
 @tasks_bp.route("/table", methods=["GET"])
 @login_required
 def tasks_table() -> Union[str, Response]:
-
-    from user_agents import parse
-
-    user_agent = parse(request.user_agent.string)
-
-    # Семейство операционной системы (например, Windows, macOS, Linux)
-    platform = user_agent.os.family
-
-    # Версия операционной системы (например, 10.0 для Windows, 10.15.7 для macOS)
-    os_version = ".".join(map(str, user_agent.os.version))
-
-    # Семейство браузера (например, Chrome, Firefox, Safari)
-    browser = user_agent.browser.family
-
-    # Версия браузера (например, 92.0.4515.131 для Chrome)
-    browser_version = ".".join(map(str, user_agent.browser.version))
-
-    print(f"Platform: {platform}, OS Version: {os_version}, Browser: {browser}, Browser Version: {browser_version}")
-
     args: Dict[str, str] = {
         "departments": request.args.getlist("departments[]"),
         "start_date": request.args.get("start_date"),
@@ -286,6 +276,17 @@ def delete_task(task_id: str) -> Response:
         "order_number": request.form.get("order_number"),
         "work_name": request.form.get("work_name"),
         "order_name": request.form.get("order_name"),
+    }
+
+    args: Dict[str, Union[str, int]] = {
+        "task_id": task_id,
+        "user_id": current_user.id,
+        "user_name": current_user.name,
+        "ip_address"
+
+
+
+
     }
     db_manager.tasks.delete_task(task_id)
     return redirect(url_for("tasks.tasks_table", **params))
