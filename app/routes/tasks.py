@@ -19,6 +19,25 @@ db_manager: DatabaseManager = DatabaseManager()
 @tasks_bp.route("/table", methods=["GET"])
 @login_required
 def tasks_table() -> Union[str, Response]:
+
+    from user_agents import parse
+
+    user_agent = parse(request.user_agent.string)
+
+    # Семейство операционной системы (например, Windows, macOS, Linux)
+    platform = user_agent.os.family
+
+    # Версия операционной системы (например, 10.0 для Windows, 10.15.7 для macOS)
+    os_version = ".".join(map(str, user_agent.os.version))
+
+    # Семейство браузера (например, Chrome, Firefox, Safari)
+    browser = user_agent.browser.family
+
+    # Версия браузера (например, 92.0.4515.131 для Chrome)
+    browser_version = ".".join(map(str, user_agent.browser.version))
+
+    print(f"Platform: {platform}, OS Version: {os_version}, Browser: {browser}, Browser Version: {browser_version}")
+
     args: Dict[str, str] = {
         "departments": request.args.getlist("departments[]"),
         "start_date": request.args.get("start_date"),

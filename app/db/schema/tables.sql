@@ -64,5 +64,17 @@ CREATE TABLE works (
 IF OBJECT_ID('logs', 'U') IS NULL
 CREATE TABLE logs (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    description NVARCHAR(MAX) NOT NULL
+    action NVARCHAR(50) NOT NULL,
+    entity_id INT NOT NULL,
+    entity_type NVARCHAR(50) NOT NULL,
+    created_ad DATETIME DEFAULT GETDATE(),
+    message NVARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
+    user_name NVARCHAR(100) NOT NULL,
+    ip_address NVARCHAR(50) NOT NULL,
+    platform NVARCHAR(50) NOT NULL,
+    os_version NVARCHAR(50) NOT NULL,
+    browser NVARCHAR(50) NOT NULL,
+    browser_version NVARCHAR(50) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
