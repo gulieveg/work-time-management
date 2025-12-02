@@ -5,8 +5,6 @@ from typing import Dict, List, Tuple, Union
 
 from flask import Blueprint, flash, redirect, render_template, request, send_file, url_for
 from flask_login import current_user, login_required
-from user_agents import parse
-from user_agents.parsers import UserAgent
 from werkzeug.wrappers import Response
 
 from app.db import DatabaseManager
@@ -16,13 +14,6 @@ Tasks = List[Dict[str, Union[str, Decimal]]]
 
 tasks_bp: Blueprint = Blueprint("tasks", __name__, url_prefix="/tasks")
 db_manager: DatabaseManager = DatabaseManager()
-
-user_agent: UserAgent = parse(request.user_agent.string)
-
-platform: str = user_agent.os.family
-os_version: str = ".".join(map(str, user_agent.os.version))
-browse: str = user_agent.browser.family
-browser_version: str = ".".join(map(str, user_agent.browser.version))
 
 
 @tasks_bp.route("/table", methods=["GET"])
