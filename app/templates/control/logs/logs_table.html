@@ -4,61 +4,47 @@
 
 {% block content %}
     <div class="content-section">
-        <table>
+        <table class="logs-table">
             <thead>
                 <tr>
                     <th style="width: 4%;">&numero;</th>
-                    <th style="width: 10%;">Описание действия</th>
-                    <th>Действие</th>
+                    <th style="width: 10%;">Тип сущности</th>
+                    <th style="width: 12%;">Действие</th>
+                    <th style="width: 16%;">Имя пользователя</th>
+                    <th style="width: 9%;">IP</th>
+                    <th style="width: 10%;">Платформа</th>
+                    <th style="width: 10%;">Браузер</th>
+                    <th style="width: 17%;">Сообщение</th>
+                    <th style="width: 12%;">Дата и время</th>
                 </tr>
             </thead>
             <tbody>
-                {% for log_id, description in logs %}
+                {% for log in logs %}
                     <tr>
                         <td>{{ loop.index }}</td>
-                        <td><span class="delete">Удаление</span></td>
-                        <td>{{ description }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td><span class="update">Изменение</span></td>
-                        <td>{{ description }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td><span class="create">Создание</span></td>
-                        <td>{{ description }}</td>
+                        {% set entities = {
+                            "task": "Задание",
+                            "user": "Пользователь",
+                            "employee": "Работник",
+                            "work": "Работа",
+                            "order": "Заказ",
+                        } %}
+                        <td><span class="outline-badge {{ log.entity_type }}">{{ entities[log.entity_type] }}</span></td>
+                        {% set actions = {
+                            "delete": "Удаление",
+                            "update": "Изменение",
+                            "create": "Создание",
+                        } %}
+                        <td><span class="outline-badge {{ log.action }}">{{ actions[log.action] }}</span></td>
+                        <td>{{ log.user_name }}</td>
+                        <td>{{ log.ip_address }}</td>
+                        <td>{{ log.platform }} {{ log.os_version }}</td>
+                        <td>{{ log.browser }} {{ log.browser_version }}</td>
+                        <td>{{ log.message }}</td>
+                        <td>{{ log.created_at }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-    <style>
-        span {
-            display: block;
-            width: 120px;
-            padding: 6px 18px;
-            border-radius: 18px;
-            border-style: solid;
-            border-width: 2px;
-            text-align: center;
-            font-size: 12px;
-            background-color: transparent;
-        }
-
-        .delete {
-            color: #DC3545;
-            border-color: #DC3545;
-        }
-
-        .create {
-            color: #28A745;
-            border-color: #28A745;
-        }
-
-        .update {
-            color: #007BFF;
-            border-color: #007BFF;
-        }
-    </style>
     </div>
 {% endblock content %}

@@ -20,7 +20,7 @@ class TaskManager(DatabaseConnection):
         order_name: str,
         operation_date: str,
         employee_category: str,
-    ) -> None:
+    ) -> int:
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
                 query: str = """
@@ -35,6 +35,7 @@ class TaskManager(DatabaseConnection):
                         operation_date,
                         employee_category
                     )
+                    OUTPUT INSERTED.id
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """
                 cursor.execute(
@@ -52,6 +53,8 @@ class TaskManager(DatabaseConnection):
                     ),
                 )
 
+                task_id: int = cursor.fetchone()[0]
+
                 query: str = """
                     UPDATE works
                     SET works.spent_hours = works.spent_hours + ?
@@ -62,6 +65,7 @@ class TaskManager(DatabaseConnection):
                 """
                 cursor.execute(query, (hours, work_name, order_number))
             connection.commit()
+        return task_id
 
     def delete_task(self, task_id: int) -> None:
         with self.get_connection() as connection:
@@ -81,10 +85,6 @@ class TaskManager(DatabaseConnection):
                     WHERE works.name = ? AND orders.number = ?
                 """
                 cursor.execute(query, (hours, work_name, order_number))
-
-                query: str = "INSERT INTO logs (description) VALUES (?)"
-                description: str = "Задание с ID = {} было удалено пользователем admin".format(task_id)
-                cursor.execute(query, (description,))
             connection.commit()
 
     def get_task_data_by_id(self, task_id: int) -> Optional[Dict[str, Union[str, Decimal]]]:

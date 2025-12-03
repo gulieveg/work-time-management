@@ -8,7 +8,7 @@ from flask_login import current_user, login_required
 from werkzeug.wrappers import Response
 
 from app.db import DatabaseManager
-from app.utils import MESSAGES, generate_report, permission_required
+from app.utils import MESSAGES, generate_report, get_log_data, permission_required
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
 
@@ -50,6 +50,7 @@ def tasks_table() -> Union[str, Response]:
 @permission_required(["advanced", "standard"])
 def add_task() -> Union[str, Response]:
     if request.method == "POST":
+        print(request.user_agent.string)
         employee_data: str = request.form.get("employee_data")
         operation_date: str = request.form.get("operation_date")
         order_names: List[str] = request.form.getlist("order_name[]")
@@ -84,81 +85,20 @@ def add_task() -> Union[str, Response]:
                         "operation_date": operation_date,
                         "employee_category": employee_category,
                     }
-                    db_manager.tasks.add_task(**args)
+                    task_id: int = db_manager.tasks.add_task(**args)
+
+                    log_data: Dict[str, Union[str, int]] = get_log_data()
+
+                    log_data["action"] = "create"
+                    log_data["entity_id"] = task_id
+                    log_data["entity_type"] = "task"
+                    log_data["message"] = "Задание с ID {} создано".format(task_id)
+
+                    db_manager.logs.create_log(**log_data)
 
         flash(message="Задания успешно добавлены.", category="info")
         return redirect(url_for("tasks.add_task"))
     return render_template("tasks/add_task.html")
-
-    # if not hours_list:
-    #     flash(message=MESSAGES["tasks"]["no_tasks_provided"], category="warning")
-    #     return redirect(url_for("tasks.add_task"))
-
-    # if not operation_date:
-    #     operation_date: str = datetime.now().strftime("%Y-%m-%d")
-
-    # employee_details: Tuple[str, str] = db_manager.employees.get_employee_details(employee_data)
-
-    # if employee_details is None:
-    #     flash(message=MESSAGES["employees"]["invalid_employee_format"], category="warning")
-    #     context: Dict[str, Union[str, List[str]]] = {
-    #         "operation_date": operation_date,
-    #         "hours_list": hours_list,
-    #         "order_names": order_names,
-    #         "order_numbers": order_numbers,
-    #         "work_names": work_names,
-    #     }
-    #     return render_template("tasks/add_task.html", **context)
-
-    # employee_name, personnel_number = employee_details
-
-    # if not db_manager.employees.employee_exists(personnel_number):
-    #     flash(message=MESSAGES["employees"]["employee_not_found"], category="warning")
-    #     context: Dict[str, Union[str, List[str]]] = {
-    #         "employee_data": employee_data,
-    #         "operation_date": operation_date,
-    #         "hours_list": hours_list,
-    #         "order_names": order_names,
-    #         "order_numbers": order_numbers,
-    #         "work_names": work_names,
-    #     }
-    #     return render_template("tasks/add_task.html", **context)
-
-    # free_hours: Decimal = db_manager.employees.get_employee_free_hours(personnel_number, operation_date)
-
-    # if Decimal(sum(map(Decimal, hours_list))) > free_hours:
-    #     message: str = MESSAGES["employees"]["exceeded_hours"].format(employee_data, free_hours)
-    #     flash(message=message, category="warning")
-    #     context: Dict[str, Union[str, List[str]]] = {
-    #         "employee_data": employee_data,
-    #         "operation_date": operation_date,
-    #         "hours_list": hours_list,
-    #         "order_names": order_names,
-    #         "order_numbers": order_numbers,
-    #         "work_names": work_names,
-    #     }
-    #     return render_template("tasks/add_task.html", **context)
-
-    # employee_department: str = db_manager.employees.get_employee_department(personnel_number)
-    # employee_category: str = db_manager.employees.get_employee_category(personnel_number)
-
-    # for hours, order_number, order_name, work_name in zip(hours_list, order_numbers, order_names, work_names):
-    #     args: Dict[str, Union[str, Decimal]] = {
-    #         "employee_name": employee_name,
-    #         "personnel_number": personnel_number,
-    #         "department": employee_department,
-    #         "employee_category": employee_category,
-    #         "work_name": work_name,
-    #         "hours": Decimal(hours),
-    #         "order_number": order_number,
-    #         "order_name": order_name,
-    #         "operation_date": operation_date,
-    #     }
-    #     db_manager.tasks.add_task(**args)
-
-    # flash(message=MESSAGES["tasks"]["tasks_added"], category="info")
-    # return redirect(url_for("tasks.add_task"))
-    # return render_template("tasks/add_task.html")
 
 
 @tasks_bp.route("/edit/<int:task_id>", methods=["GET", "POST"])
@@ -242,6 +182,15 @@ def edit_task(task_id: int) -> Union[str, Response]:
         }
         db_manager.tasks.update_task(**args)
 
+        log_data: Dict[str, Union[str, int]] = get_log_data()
+
+        log_data["action"] = "update"
+        log_data["entity_id"] = task_id
+        log_data["entity_type"] = "task"
+        log_data["message"] = "Задание с ID {} обновлено".format(task_id)
+
+        db_manager.logs.create_log(**log_data)
+
         params: Dict[str, str] = {
             "departments[]": request.args.getlist("departments[]"),
             "start_date": request.args.get("start_date"),
@@ -269,10 +218,85 @@ def delete_task(task_id: str) -> Response:
         "order_name": request.form.get("order_name"),
     }
 
-    # args: Dict[str, Union[str, int]] = {
-    #     "task_id": task_id,
-    #     "user_id": current_user.id,
-    #     "user_name": current_user.name,
-    # }
+    log_data: Dict[str, Union[str, int]] = get_log_data()
+
+    log_data["action"] = "delete"
+    log_data["entity_id"] = task_id
+    log_data["entity_type"] = "task"
+    log_data["message"] = "Задание с ID {} удалено".format(task_id)
+
+    db_manager.logs.create_log(**log_data)
+
     db_manager.tasks.delete_task(task_id)
     return redirect(url_for("tasks.tasks_table", **params))
+
+    #####  TASK ADDING #####
+    # if not hours_list:
+    #     flash(message=MESSAGES["tasks"]["no_tasks_provided"], category="warning")
+    #     return redirect(url_for("tasks.add_task"))
+
+    # if not operation_date:
+    #     operation_date: str = datetime.now().strftime("%Y-%m-%d")
+
+    # employee_details: Tuple[str, str] = db_manager.employees.get_employee_details(employee_data)
+
+    # if employee_details is None:
+    #     flash(message=MESSAGES["employees"]["invalid_employee_format"], category="warning")
+    #     context: Dict[str, Union[str, List[str]]] = {
+    #         "operation_date": operation_date,
+    #         "hours_list": hours_list,
+    #         "order_names": order_names,
+    #         "order_numbers": order_numbers,
+    #         "work_names": work_names,
+    #     }
+    #     return render_template("tasks/add_task.html", **context)
+
+    # employee_name, personnel_number = employee_details
+
+    # if not db_manager.employees.employee_exists(personnel_number):
+    #     flash(message=MESSAGES["employees"]["employee_not_found"], category="warning")
+    #     context: Dict[str, Union[str, List[str]]] = {
+    #         "employee_data": employee_data,
+    #         "operation_date": operation_date,
+    #         "hours_list": hours_list,
+    #         "order_names": order_names,
+    #         "order_numbers": order_numbers,
+    #         "work_names": work_names,
+    #     }
+    #     return render_template("tasks/add_task.html", **context)
+
+    # free_hours: Decimal = db_manager.employees.get_employee_free_hours(personnel_number, operation_date)
+
+    # if Decimal(sum(map(Decimal, hours_list))) > free_hours:
+    #     message: str = MESSAGES["employees"]["exceeded_hours"].format(employee_data, free_hours)
+    #     flash(message=message, category="warning")
+    #     context: Dict[str, Union[str, List[str]]] = {
+    #         "employee_data": employee_data,
+    #         "operation_date": operation_date,
+    #         "hours_list": hours_list,
+    #         "order_names": order_names,
+    #         "order_numbers": order_numbers,
+    #         "work_names": work_names,
+    #     }
+    #     return render_template("tasks/add_task.html", **context)
+
+    # employee_department: str = db_manager.employees.get_employee_department(personnel_number)
+    # employee_category: str = db_manager.employees.get_employee_category(personnel_number)
+
+    # for hours, order_number, order_name, work_name in zip(hours_list, order_numbers, order_names, work_names):
+    #     args: Dict[str, Union[str, Decimal]] = {
+    #         "employee_name": employee_name,
+    #         "personnel_number": personnel_number,
+    #         "department": employee_department,
+    #         "employee_category": employee_category,
+    #         "work_name": work_name,
+    #         "hours": Decimal(hours),
+    #         "order_number": order_number,
+    #         "order_name": order_name,
+    #         "operation_date": operation_date,
+    #     }
+    #     db_manager.tasks.add_task(**args)
+
+    # flash(message=MESSAGES["tasks"]["tasks_added"], category="info")
+    # return redirect(url_for("tasks.add_task"))
+    # return render_template("tasks/add_task.html")
