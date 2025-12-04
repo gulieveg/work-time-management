@@ -7,15 +7,13 @@
         <table class="logs-table">
             <thead>
                 <tr>
-                    <th style="width: 4%;">&numero;</th>
-                    <th style="width: 10%;">Тип сущности</th>
-                    <th style="width: 12%;">Действие</th>
-                    <th style="width: 16%;">Имя пользователя</th>
-                    <th style="width: 9%;">IP</th>
-                    <th style="width: 10%;">Платформа</th>
-                    <th style="width: 10%;">Браузер</th>
-                    <th style="width: 17%;">Сообщение</th>
-                    <th style="width: 12%;">Дата и время</th>
+                    <th>&numero;</th>
+                    <th>Тип сущности</th>
+                    <th>Тип операции</th>
+                    <th>Имя пользователя</th>
+                    <th>Дата операции</th>
+                    <th>Время операции</th>
+                    <th>Действия</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,18 +27,17 @@
                             "work": "Работа",
                             "order": "Заказ",
                         } %}
-                        <td><span class="outline-badge {{ log.entity_type }}">{{ entities[log.entity_type] }}</span></td>
+                        <td><span class="outline-text {{ log.entity_type }}">{{ entities[log.entity_type] }}</span></td>
                         {% set actions = {
                             "delete": "Удаление",
                             "update": "Изменение",
                             "create": "Создание",
                         } %}
-                        <td><span class="outline-badge {{ log.action }}">{{ actions[log.action] }}</span></td>
+                        <td><span class="outline-text {{ log.action }}">{{ actions[log.action] }}</span></td>
                         <td>{{ log.user_name }}</td>
                         <td>{{ log.ip_address }}</td>
                         <td>{{ log.platform }} {{ log.os_version }}</td>
                         <td>{{ log.browser }} {{ log.browser_version }}</td>
-                        <td>{{ log.message }}</td>
                         <td>{{ log.created_at }}</td>
                     </tr>
                 {% endfor %}
