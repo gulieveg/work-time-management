@@ -13,7 +13,7 @@ orders_bp: Blueprint = Blueprint("orders", __name__, url_prefix="/orders")
 db_manager: DatabaseManager = DatabaseManager()
 
 
-@orders_bp.route("/", methods=["GET"])
+@orders_bp.route("", methods=["GET"])
 @login_required
 @permission_required(["advanced"])
 def orders_table() -> str:

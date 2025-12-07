@@ -11,7 +11,7 @@ works_bp: Blueprint = Blueprint("works", __name__, url_prefix="/works")
 db_manager: DatabaseManager = DatabaseManager()
 
 
-@works_bp.route("/", methods=["GET"])
+@works_bp.route("", methods=["GET"])
 @login_required
 @permission_required(["advanced"])
 def works_table() -> str:

@@ -11,7 +11,7 @@ logs_bp: Blueprint = Blueprint("logs", __name__, url_prefix="/logs")
 db_manager: DatabaseManager = DatabaseManager()
 
 
-@logs_bp.route("/", methods=["GET"])
+@logs_bp.route("", methods=["GET"])
 @login_required
 @permission_required(["advanced"])
 def logs_table() -> Response:

@@ -4,7 +4,7 @@ from io import BytesIO
 from typing import Dict, List, Tuple, Union
 
 from flask import Blueprint, flash, redirect, render_template, request, send_file, url_for
-from flask_login import current_user, login_required
+from flask_login import login_required
 from werkzeug.wrappers import Response
 
 from app.db import DatabaseManager

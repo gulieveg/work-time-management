@@ -13,14 +13,14 @@
 <body>
     <div class="container">
         <div class="sidebar">
-            <a href="{{ url_for('control.home.index') }}" class="sidebar-title-link">
+            <a href="{{ url_for('control.index') }}" class="sidebar-title-link">
                 Панель управления
             </a>
 
             <hr class="sidebar-divider">
 
             {% set menu_items = [
-                ["control.home.index", "fas fa-home", "Главная"],
+                ["control.index", "fas fa-home", "Главная"],
                 ["control.users.users_table", "fas fa-user-shield", "Управление пользователями"],
                 ["control.orders.orders_table", "fas fa-cogs", "Управление заказами"],
                 ["control.works.works_table", "fas fa-briefcase", "Управление работами"],
@@ -31,7 +31,14 @@
             <nav class="sidebar-nav">
                 {% for endpoint, icon_class, text in menu_items %}
                 {% set url = url_for(endpoint) %}
-                {% set active = "active" if request.path.startswith(url) else "" %}
+                
+                {% set active = "" %}
+                {% if endpoint == "control.index" %}
+                    {% set active = "active" if request.path == url %}
+                {% else %}
+                    {% set active = "active" if request.path.startswith(url) %}
+                {% endif %}
+
                 <a href="{{ url }}" class="sidebar-link {{ active }}">
                     <i class="{{ icon_class }}"></i>{{ text }}
                 </a>

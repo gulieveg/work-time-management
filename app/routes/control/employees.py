@@ -11,7 +11,7 @@ employees_bp: Blueprint = Blueprint("employees", __name__, url_prefix="/employee
 db_manager: DatabaseManager = DatabaseManager()
 
 
-@employees_bp.route("/", methods=["GET"])
+@employees_bp.route("", methods=["GET"])
 @login_required
 @permission_required(["advanced"])
 def employees_table() -> Response:

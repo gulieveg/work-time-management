@@ -12,7 +12,7 @@ users_bp: Blueprint = Blueprint("users", __name__, url_prefix="/users")
 db_manager: DatabaseManager = DatabaseManager()
 
 
-@users_bp.route("/", methods=["GET"])
+@users_bp.route("", methods=["GET"])
 @login_required
 @permission_required(["advanced"])
 def users_table() -> str:

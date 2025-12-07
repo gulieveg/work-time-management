@@ -17,7 +17,7 @@
             <div class="header-buttons-container">
                 {% if current_user.is_authenticated %}
                     {% if current_user.permissions_level == "advanced" %}
-                        <div><a href="{{ url_for('control.home.index') }}" class="default-button">Панель управления</a></div>
+                        <div><a href="{{ url_for('control.index') }}" class="default-button">Панель управления</a></div>
                     {% endif %}
                     {% if current_user.permissions_level != "minimal" %}
                         <div><a href="{{ url_for('tasks.add_task') }}" class="default-button">Добавить задания</a></div>
