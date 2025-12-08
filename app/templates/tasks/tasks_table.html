@@ -141,7 +141,7 @@
                         {% set categories = {
                             "worker": "Рабочий",
                             "specialist": "Специалист",
-                            "manager": "Руководитель",
+                            "manager": "Ведущий специалист",
                         } %}
                         <td>{{ categories[task["employee_category"]] | default("-", true) }}</td>
                         <td>{{ task["department"] | default("-", true) }}</td>

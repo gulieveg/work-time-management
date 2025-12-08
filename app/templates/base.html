@@ -22,7 +22,7 @@
                     {% if current_user.permissions_level != "minimal" %}
                         <div><a href="{{ url_for('tasks.add_task') }}" class="default-button">Добавить задания</a></div>
                     {% endif %}
-                    <div><a href="{{ url_for('tasks.tasks_table') }}" class="default-button">Посмотреть все задания</a></div>
+                    <div><a href="{{ url_for('tasks.tasks_table') }}" class="default-button">Посмотреть задания</a></div>
                     <div><a href="{{ url_for('auth.logout') }}" class="default-button">Выход из системы</a></div>
                 {% endif %}
             </div>

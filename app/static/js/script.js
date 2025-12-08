@@ -99,15 +99,17 @@ document.addEventListener("click", function(event) {
                     // создаем строку в модалке
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                        <td>${work.work_name}</td>
+                        <td style="width: 280px;">${work.work_name}</td>
                         <td>${work.planned_hours}</td>
                         <td>${work.spent_hours}</td>
                         <td>${work.remaining_hours}</td>
                         <td>
                             <input
+                                style="height: 18px; width: 140px; padding-left: 4px;"
                                 type="number"
                                 name="work_hours[${orderNumber}][${work.work_name}]"
                                 min="0"
+                                max="8.25"
                                 step="0.01"
                                 value="${value}"
                             />
