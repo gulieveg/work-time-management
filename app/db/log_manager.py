@@ -38,10 +38,9 @@ class LogManager(DatabaseConnection):
                 platform,
                 os_version,
                 browser,
-                browser_version,
-                message
+                browser_version
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
 
         with self.get_connection() as connection:
@@ -59,7 +58,6 @@ class LogManager(DatabaseConnection):
                         os_version,
                         browser,
                         browser_version,
-                        message,
                     ),
                 )
                 connection.commit()

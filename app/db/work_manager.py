@@ -5,15 +5,15 @@ from .db_connection import DatabaseConnection
 
 
 class WorkManager(DatabaseConnection):
-    def add_work(self, order_number: str, work_name: str, planned_hours: Decimal) -> None:
+    def add_work(self, order_id: str, work_name: str, planned_hours: Decimal) -> None:
         query: str = """
             INSERT INTO works (order_id, name, planned_hours)
-            VALUES ((SELECT id FROM orders WHERE number = ?), ?, ?)
+            VALUES (?, ?, ?)
         """
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (order_number, work_name, planned_hours))
+                cursor.execute(query, (order_id, work_name, planned_hours))
                 connection.commit()
 
     def update_work(self, work_id: int, work_name: str, planned_hours: Decimal) -> None:
@@ -32,14 +32,14 @@ class WorkManager(DatabaseConnection):
                 cursor.execute(query, (work_id,))
                 connection.commit()
 
-    def work_exists(self, order_number: str, work_name: str, exclude_id: Optional[int] = None) -> bool:
+    def work_exists(self, order_id: int, work_name: str, exclude_id: Optional[int] = None) -> bool:
         query: str = """
             SELECT *
             FROM works
-            WHERE order_id = (SELECT id FROM orders WHERE number = ?) AND name = ?
+            WHERE order_id = ? AND name = ?
         """
 
-        params: List[str] = [order_number, work_name]
+        params: List[str] = [order_id, work_name]
 
         if exclude_id is not None:
             query += " AND id <> ?"
@@ -107,7 +107,7 @@ class WorkManager(DatabaseConnection):
     def get_work_data_by_id(self, work_id: int) -> Optional[Dict[str, Union[str, int]]]:
         query: str = """
             SELECT id, order_id, name, planned_hours, spent_hours, remaining_hours
-            FROM works 
+            FROM works
             WHERE id = ?
         """
 

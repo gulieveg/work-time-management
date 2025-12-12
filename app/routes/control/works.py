@@ -58,7 +58,9 @@ def add_work() -> str:
         work_name: str = request.form.get("work_name")
         planned_hours: str = request.form.get("planned_hours")
 
-        if db_manager.works.work_exists(order_number, work_name):
+        order_id: int = db_manager.orders.get_order_id_by_number(order_number)
+
+        if db_manager.works.work_exists(order_id, work_name):
             flash(message=MESSAGES["works"]["work_exists"], category="warning")
             return render_template("control/works/add_work.html")
 
@@ -120,5 +122,12 @@ def edit_work(work_id: int) -> Union[str, Response]:
 @permission_required(["advanced"])
 def delete_work(work_id: int) -> Response:
     page: int = request.form.get("page", 1, int)
+    order_number: int = request.form.get("order_number")
+
+    args: Dict[str, Union[int, str]] = {
+        "page": page,
+        "order_number": order_number,
+    }
+
     db_manager.works.delete_work(work_id)
-    return redirect(url_for("control.works.works_table", page=page))
+    return redirect(url_for("control.works.works_table", **args))

@@ -91,6 +91,7 @@
                             </form>
                             <form method="POST" action="{{ url_for('control.works.delete_work', work_id=work_id) }}">
                                 <input type="hidden" name="page" value="{{ page }}">
+                                <input type="hidden" name="order_number" value="{{ order_number }}">
                                 <button type="submit" class="icon-button delete-button tooltip" data-action="delete-work">
                                     <i class="fas fa-trash"></i>
                                     <span class="tooltiptext">Удалить работу</span>
@@ -113,14 +114,14 @@
                 {% endif %}
                 {% if page > 1 %}
                     {% set previous_page = page - 1 %}
-                    <a href="{{ url_for('control.works.works_table', page=previous_page) }}" class="pagination-arrow">
+                    <a href="{{ url_for('control.works.works_table', page=previous_page, order_number=request.args.get('order_number')) }}" class="pagination-arrow">
                         <i class="fas fa-angle-left"></i>
                     </a>
                 {% endif %}
                 <span>Страница {{ page }} / {{ total_pages }}</span>
                 {% if page < total_pages %}
                     {% set next_page = page + 1 %}
-                    <a href="{{ url_for('control.works.works_table', page=next_page) }}" class="pagination-arrow">
+                    <a href="{{ url_for('control.works.works_table', page=next_page, order_number=request.args.get('order_number')) }}" class="pagination-arrow">
                         <i class="fas fa-angle-right"></i>
                     </a>
                 {% endif %}

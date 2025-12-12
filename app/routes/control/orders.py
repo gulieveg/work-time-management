@@ -80,7 +80,7 @@ def add_order() -> str:
                     continue
 
                 planned_hours: str = str(planned_hours).replace(" ", "").replace(",", ".")
-                db_manager.works.add_work_to_order(order_id, str(work_name).strip(), Decimal(planned_hours))
+                db_manager.works.add_work(order_id, str(work_name).strip(), Decimal(planned_hours))
 
         if work_names and work_planned_hours:
             for work_name, planned_hours in zip(work_names, work_planned_hours):
@@ -90,7 +90,7 @@ def add_order() -> str:
                     continue
 
                 planned_hours: str = planned_hours.replace(" ", "").replace(",", ".")
-                db_manager.works.add_work_to_order(order_id, work_name.strip(), Decimal(planned_hours))
+                db_manager.works.add_work(order_id, work_name.strip(), Decimal(planned_hours))
 
         flash(message=MESSAGES["orders"]["order_added"], category="info")
         return render_template("control/orders/add_order.html")

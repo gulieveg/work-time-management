@@ -4,8 +4,8 @@
     border: none;
     color: white;
     cursor: pointer;
-    height: 28px;
-    width: 32px;
+    height: 32px;
+    width: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -38,17 +38,20 @@
 
 .reset-password-button,
 .view-works-button,
-.add-work-button {
+.add-work-button,
+.view-log-details-button {
     background-color: #007bff;
 }
 .reset-password-button:hover,
 .view-works-button:hover,
-.add-work-button:hover {
+.add-work-button:hover,
+.view-log-details-button:hover {
     background-color: #0070e9;
 }
 .reset-password-button:active,
 .view-works-button:active,
-.add-work-button:active {
+.add-work-button:active,
+.view-log-details-button:active {
     background-color: #005dbc;
     transform: scale(0.9);
 }

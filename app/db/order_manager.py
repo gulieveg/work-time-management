@@ -69,6 +69,17 @@ class OrderManager(DatabaseConnection):
                 if res:
                     return res[0]
 
+    def get_order_id_by_number(self, order_number: str) -> Optional[int]:
+        query: str = "SELECT id FROM orders WHERE number = ?"
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, (order_number,))
+
+                res: Optional[Tuple[str]] = cursor.fetchone()
+                if res:
+                    return res[0]
+
     def get_order_data_by_id(self, order_id: int) -> Optional[Dict[str, Union[str, int]]]:
         query: str = "SELECT id, number, name FROM orders WHERE id = ?"
 

@@ -43,7 +43,7 @@ CREATE TABLE users (
     name NVARCHAR(100) NOT NULL,
     department NVARCHAR(100) NOT NULL,
     login NVARCHAR(100) UNIQUE NOT NULL,
-    password_hash NVARCHAR(255) NOT NULL,
+    password_hash NVARCHAR(255),
     permissions_level NVARCHAR(50) NOT NULL DEFAULT 'standard',
     is_account_enabled BIT NOT NULL DEFAULT 0,
     is_factory_worker BIT NOT NULL DEFAULT 0,

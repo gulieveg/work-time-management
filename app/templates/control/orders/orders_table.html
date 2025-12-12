@@ -78,7 +78,6 @@
                         <td>{{ order_name }}</td>
                         <td class="actions-container">
                             <form method="GET" action="{{ url_for('control.works.works_table') }}">
-                                <input type="hidden" name="order_id" value="{{ order_id }}">
                                 <input type="hidden" name="order_number" value="{{ order_number }}">
                                 <button type="submit" class="icon-button view-works-button tooltip">
                                     <i class="fas fa-briefcase"></i>
