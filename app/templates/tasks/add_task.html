@@ -72,14 +72,14 @@
 
             <div id="hidden-work-hours-container" style="display: none;"></div>
         </form>
+    </div>
 
-        <div class="flashed-messages-right">
-            {% for category, message in get_flashed_messages(with_categories=true) %}
-                <div class="{{ category }}" id="message">
-                    <p>{{ message }}</p>
-                </div>
-            {% endfor %}
-        </div>
+    <div class="flashed-messages" style="width: 640px;">
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+            <div class="{{ category }}" id="message">
+                {{ message }}
+            </div>
+        {% endfor %}
     </div>
 
     <div class="modal-container">

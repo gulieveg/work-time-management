@@ -72,8 +72,20 @@ def add_task() -> Union[str, Response]:
                 if key.startswith(f"work_hours[{order_numbers[0]}]")
             }
 
-            for work_name, hours in work_entries.items():
+            total_hours: Decimal = Decimal(0)
+            for hours in work_entries.values():
                 if hours:
+                    if Decimal(hours) < Decimal(0):
+                        flash(message=MESSAGES["tasks"]["hours_less_than_zero"], category="error")
+                        return render_template("tasks/add_task.html")
+                    total_hours += Decimal(hours)
+
+            if total_hours > Decimal(8.25):
+                flash(message=MESSAGES["tasks"]["hours_exceed_limit"], category="error")
+                return render_template("tasks/add_task.html")
+
+            for work_name, hours in work_entries.items():
+                if hours and Decimal(hours):
                     args: Dict[str, Union[str, Decimal]] = {
                         "employee_name": employee_name,
                         "personnel_number": personnel_number,
@@ -92,7 +104,6 @@ def add_task() -> Union[str, Response]:
                     log_data["action"] = "create"
                     log_data["entity_id"] = task_id
                     log_data["entity_type"] = "task"
-                    log_data["message"] = "Задание с ID {} создано".format(task_id)
 
                     db_manager.logs.create_log(**log_data)
 
@@ -223,7 +234,6 @@ def delete_task(task_id: str) -> Response:
     log_data["action"] = "delete"
     log_data["entity_id"] = task_id
     log_data["entity_type"] = "task"
-    log_data["message"] = "Задание с ID {} удалено".format(task_id)
 
     db_manager.logs.create_log(**log_data)
 

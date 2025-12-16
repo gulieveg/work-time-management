@@ -25,7 +25,6 @@ class LogManager(DatabaseConnection):
         os_version: str,
         browser: str,
         browser_version: str,
-        message: str,
     ) -> None:
         query: str = """
             INSERT INTO logs (

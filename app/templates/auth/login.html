@@ -37,7 +37,7 @@
     <div class="flashed-messages" style="width: 480px;">
         {% for category, message in get_flashed_messages(with_categories=true) %}
             <div class="{{ category }}" id="message">
-                <p>{{ message }}</p>
+                {{ message }}
             </div>
         {% endfor %}
     </div>

@@ -29,5 +29,4 @@ def get_log_data() -> Dict[str, Union[str, int]]:
         "os_version": user_and_request_log_info["os_version"],
         "browser": user_and_request_log_info["browser"],
         "browser_version": user_and_request_log_info["browser_version"],
-        "message": None,
     }
