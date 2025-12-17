@@ -65,7 +65,7 @@ def add_work() -> str:
             return render_template("control/works/add_work.html")
 
         args: Dict[str, str] = {
-            "order_number": order_number,
+            "order_id": order_id,
             "work_name": work_name,
             "planned_hours": Decimal(planned_hours),
         }
