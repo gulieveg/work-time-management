@@ -198,7 +198,6 @@ def edit_task(task_id: int) -> Union[str, Response]:
         log_data["action"] = "update"
         log_data["entity_id"] = task_id
         log_data["entity_type"] = "task"
-        log_data["message"] = "Задание с ID {} обновлено".format(task_id)
 
         db_manager.logs.create_log(**log_data)
 
