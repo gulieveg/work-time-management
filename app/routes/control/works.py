@@ -91,10 +91,7 @@ def edit_work(work_id: int) -> Union[str, Response]:
         work_name: str = request.form.get("work_name")
         planned_hours: str = request.form.get("planned_hours")
 
-        order_data: str = db_manager.orders.get_order_data_by_id(work_data["order_id"])
-        order_number: str = order_data["order_number"]
-
-        if db_manager.works.work_exists(order_number, work_name, exclude_id=work_id):
+        if db_manager.works.work_exists(work_data["order_id"], work_name, exclude_id=work_id):
             flash(message=MESSAGES["works"]["work_exists"], category="error")
             context_with_error: Dict[str, str] = context.copy()
             context_with_error.update(
