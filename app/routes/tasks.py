@@ -50,7 +50,6 @@ def tasks_table() -> Union[str, Response]:
 @permission_required(["advanced", "standard"])
 def add_task() -> Union[str, Response]:
     if request.method == "POST":
-        print(request.user_agent.string)
         employee_data: str = request.form.get("employee_data")
         operation_date: str = request.form.get("operation_date")
         order_names: List[str] = request.form.getlist("order_name[]")

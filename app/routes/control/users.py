@@ -57,8 +57,6 @@ def add_user() -> str:
         user_password: str = request.form.get("user_password")
         user_permissions_level: str = request.form.get("user_permissions_level")
 
-        print(user_permissions_level)
-
         if not db_manager.users.is_login_available(login=user_login):
             flash(message=MESSAGES["users"]["user_login_taken"], category="error")
             return render_template("control/users/add_user.html", user_login_error=True)
