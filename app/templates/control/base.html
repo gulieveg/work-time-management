@@ -20,28 +20,30 @@
             <hr class="sidebar-divider">
 
             {% set menu_items = [
-                ["control.index", "fas fa-home", "Главная"],
-                ["control.users.users_table", "fas fa-user-shield", "Управление пользователями"],
-                ["control.orders.orders_table", "fas fa-cogs", "Управление заказами"],
-                ["control.works.works_table", "fas fa-briefcase", "Управление работами"],
-                ["control.employees.employees_table", "fas fa-user-cog", "Управление работниками"],
-                ["control.logs.logs_table", "fas fa-history", "Журнал действий"],
+                ["control.index", "fas fa-home", "Главная", true],
+                ["control.orders.orders_table", "fas fa-cogs", "Управление заказами", true],
+                ["control.works.works_table", "fas fa-briefcase", "Управление работами", true],
+                ["control.users.users_table", "fas fa-user-shield", "Управление пользователями", current_user.is_admin],
+                ["control.employees.employees_table", "fas fa-user-cog", "Управление работниками", current_user.is_admin],
+                ["control.logs.logs_table", "fas fa-history", "Журнал действий", current_user.is_admin],
             ] %}
 
             <nav class="sidebar-nav">
-                {% for endpoint, icon_class, text in menu_items %}
-                {% set url = url_for(endpoint) %}
-                
-                {% set active = "" %}
-                {% if endpoint == "control.index" %}
-                    {% set active = "active" if request.path == url %}
-                {% else %}
-                    {% set active = "active" if request.path.startswith(url) %}
-                {% endif %}
+                {% for endpoint, icon_class, text, allowed in menu_items %}
+                    {% if allowed %}
+                        {% set url = url_for(endpoint) %}
 
-                <a href="{{ url }}" class="sidebar-link {{ active }}">
-                    <i class="{{ icon_class }}"></i>{{ text }}
-                </a>
+                        {% set active = "" %}
+                        {% if endpoint == "control.index" %}
+                            {% set active = "active" if request.path == url %}
+                        {% else %}
+                            {% set active = "active" if request.path.startswith(url) %}
+                        {% endif %}
+
+                        <a href="{{ url }}" class="sidebar-link {{ active }}">
+                            <i class="{{ icon_class }}"></i>{{ text }}
+                        </a>
+                    {% endif %}
                 {% endfor %}
             </nav>
 

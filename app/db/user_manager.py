@@ -189,7 +189,7 @@ class UserManager(DatabaseConnection):
 
     def get_user_data_by_id(self, user_id: int) -> Optional[Dict[str, Union[str, int]]]:
         query: str = """
-            SELECT id, name, department, login, permissions_level, is_factory_worker, is_account_enabled
+            SELECT id, name, department, login, permissions_level, is_factory_worker, is_account_enabled, is_admin
             FROM users
             WHERE id = ?
         """
@@ -208,11 +208,12 @@ class UserManager(DatabaseConnection):
                         "user_permissions_level": user_data[4],
                         "is_user_factory_worker": user_data[5],
                         "is_user_account_enabled": user_data[6],
+                        "is_user_admin": user_data[7],
                     }
 
     def get_user_data_by_login(self, login: str) -> Optional[Dict[str, Union[str, int]]]:
         query: str = """
-            SELECT id, name, login, department, permissions_level, is_factory_worker, is_account_enabled
+            SELECT id, name, login, department, permissions_level, is_factory_worker, is_account_enabled, is_admin
             FROM users
             WHERE login = ?
         """
@@ -231,6 +232,7 @@ class UserManager(DatabaseConnection):
                         "user_permissions_level": user_data[4],
                         "is_user_factory_worker": user_data[5],
                         "is_user_account_enabled": user_data[6],
+                        "is_user_admin": user_data[7],
                     }
 
     def get_users(
