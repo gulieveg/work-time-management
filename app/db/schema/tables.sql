@@ -48,7 +48,8 @@ CREATE TABLE users (
     is_account_enabled BIT NOT NULL DEFAULT 0,
     is_factory_worker BIT NOT NULL DEFAULT 0,
     CONSTRAINT check_permissions_level
-        CHECK (permissions_level IN ('minimal', 'standard', 'advanced'))
+        CHECK (permissions_level IN ('minimal', 'standard', 'advanced')),
+    is_admin BIT NOT NULL DEFAULT 0;
 );
 
 IF OBJECT_ID('works', 'U') IS NULL
