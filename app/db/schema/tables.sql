@@ -30,6 +30,7 @@ CREATE TABLE works (
     name NVARCHAR(MAX) NOT NULL,
     planned_hours DECIMAL(10,2) NOT NULL,
     spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
+    remaining_hours AS (planned_hours - spent_hours),
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
 
