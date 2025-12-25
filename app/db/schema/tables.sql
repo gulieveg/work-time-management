@@ -20,7 +20,17 @@ IF OBJECT_ID('orders', 'U') IS NULL
 CREATE TABLE orders (
     id INT IDENTITY(1,1) PRIMARY KEY,
     name NVARCHAR(MAX) NOT NULL,
-    number NVARCHAR(100) UNIQUE NOT NULL
+    number NVARCHAR(255) UNIQUE NOT NULL
+);
+
+IF OBJECT_ID('works', 'U') IS NULL
+CREATE TABLE works (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    order_id INT NOT NULL,
+    name NVARCHAR(MAX) NOT NULL,
+    planned_hours DECIMAL(10,2) NOT NULL,
+    spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
 
 IF OBJECT_ID('tasks', 'U') IS NULL
@@ -50,16 +60,6 @@ CREATE TABLE users (
     CONSTRAINT check_permissions_level
         CHECK (permissions_level IN ('minimal', 'standard', 'advanced')),
     is_admin BIT NOT NULL DEFAULT 0;
-);
-
-IF OBJECT_ID('works', 'U') IS NULL
-CREATE TABLE works (
-    id INT IDENTITY(1,1) PRIMARY KEY,
-    order_id INT NOT NULL,
-    name NVARCHAR(MAX) NOT NULL,
-    planned_hours DECIMAL(10,2) NOT NULL,
-    spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
 
 IF OBJECT_ID('logs', 'U') IS NULL
