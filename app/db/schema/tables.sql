@@ -19,7 +19,7 @@ CREATE TABLE employees (
 IF OBJECT_ID('orders', 'U') IS NULL
 CREATE TABLE orders (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    name NVARCHAR(100) NOT NULL,
+    name NVARCHAR(MAX) NOT NULL,
     number NVARCHAR(100) UNIQUE NOT NULL
 );
 
@@ -56,7 +56,7 @@ IF OBJECT_ID('works', 'U') IS NULL
 CREATE TABLE works (
     id INT IDENTITY(1,1) PRIMARY KEY,
     order_id INT NOT NULL,
-    name NVARCHAR(255) NOT NULL,
+    name NVARCHAR(MAX) NOT NULL,
     planned_hours DECIMAL(10,2) NOT NULL,
     spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
