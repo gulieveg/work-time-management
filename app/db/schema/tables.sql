@@ -41,7 +41,7 @@ CREATE TABLE tasks (
     personnel_number NVARCHAR(100) NOT NULL,
     department NVARCHAR(100) NOT NULL,
     work_name NVARCHAR(100) NOT NULL,
-    hours DECIMAL(3,2) NOT NULL DEFAULT 0,
+    hours DECIMAL(10,2) NOT NULL DEFAULT 0,
     order_number NVARCHAR(100) NOT NULL,
     order_name NVARCHAR(100) NOT NULL,
     operation_date DATE NOT NULL DEFAULT GETDATE(),
