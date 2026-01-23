@@ -92,7 +92,7 @@ export function configureUserStatusSwitchHandler() {
             const isActive = this.checked;
             const userId = this.dataset.userId;
 
-            fetch(`update_user_status/${userId}`, {
+            fetch(`control/users/update_user_status/${userId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
