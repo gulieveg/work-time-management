@@ -40,7 +40,7 @@ CREATE TABLE tasks (
     employee_name NVARCHAR(100) NOT NULL,
     personnel_number NVARCHAR(100) NOT NULL,
     department NVARCHAR(100) NOT NULL,
-    work_name NVARCHAR(100) NOT NULL,
+    work_name NVARCHAR(MAX) NOT NULL,
     hours DECIMAL(10,2) NOT NULL DEFAULT 0,
     order_number NVARCHAR(100) NOT NULL,
     order_name NVARCHAR(100) NOT NULL,
