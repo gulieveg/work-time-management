@@ -81,9 +81,8 @@ document.addEventListener("click", function(event) {
                 const hiddenContainer = document.querySelector("#hidden-work-hours-container");
 
                 data.forEach(work => {
-                    // ищем существующий скрытый input
                     const hiddenInputName = `work_hours[${orderNumber}][${work.work_name}]`;
-                    let existingInput = hiddenContainer.querySelector(`input[name="${hiddenInputName}"]`);
+                    let existingInput = hiddenContainer.querySelector(`input[name="${CSS.escape(hiddenInputName)}"]`);
 
                     // если нет — создаем
                     if (!existingInput) {
@@ -148,6 +147,13 @@ document.addEventListener("keydown", function(event) {
 });
 
 
-document.querySelector("#save-works").addEventListener("click", function() {
-    document.querySelector(".works-modal-container").style.display = "none";
-});
+const saveWorksButton = document.querySelector("#save-works");
+const worksModal = document.querySelector(".works-modal-container");
+
+if (saveWorksButton) {
+    saveWorksButton.addEventListener("click", function () {
+        if (worksModal) {
+            worksModal.style.display = "none";
+        }
+    });
+}
