@@ -9,7 +9,7 @@
                 <button class="tab-button"><i class="fas fa-list"></i>Список работ</button>
             </form>
             <form method="GET" action="{{ url_for('control.hours.add_hours') }}">
-                <button class="tab-button active"><i class="fas fa-clock"></i>Ввести трудоемкость</button>
+                <button class="tab-button active"><i class="fas fa-clock"></i>Внести трудоемкость</button>
             </form>
         </div>
 
@@ -67,7 +67,7 @@
 
             <div class="form-buttons">
                 <button type="submit" class="default-button">
-                    <i class="fas fa-save"></i>Сохранить работу
+                    <i class="fas fa-save"></i>Сохранить
                 </button>
 
                 <a href="{{ url_for('control.works.works_table') }}" class="default-button">
