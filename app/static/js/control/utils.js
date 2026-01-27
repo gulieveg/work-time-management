@@ -2,17 +2,8 @@ export function processInput(inputElement, suggestionsList, url) {
     inputElement.addEventListener("input", function () {
         const query = inputElement.value;
 
-        const params = new URLSearchParams();
-
-        const orderInput = document.querySelector(".order-number");
-        const orderNumber = orderInput ? orderInput.value : "";
-
-        if (orderNumber) {
-            params.append("order_number", orderNumber);
-        }
-
         if (query.length >= 2) {
-            fetch(`${url}?query=${encodeURIComponent(query)}&${params.toString()}`)
+            fetch(`${url}?query=${query}`)
             .then(response => response.json())
             .then(data => {
                 suggestionsList.innerHTML = "";

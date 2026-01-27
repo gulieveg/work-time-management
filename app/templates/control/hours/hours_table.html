@@ -17,23 +17,23 @@
             <thead>
                 <tr>
                     <th style="width: 5%;">&numero;</th>
-                    <th style="width: 15;">Номер заказа</th>
-                    <th style="width: 35%;">Наименование работы</th>
-                    <th style="width: 20%;">Фактическая трудоемкость</th>
+                    <th style="width: 15%;">Номер заказа</th>
+                    <th style="width: 45%;">Наименование заказа</th>
+                    <th style="width: 10%;">Часы</th>
                     <th style="width: 15%;">Дата добавления</th>
                     <th style="width: 10%;">Действия</th>
                 </tr>
             </thead>
             <tbody>
-                {% for hours_id, order_id, work_name, spent_hours, created_date, created_time in hours_list %}
+                {% for hours_id, order_name, order_number, spent_hours, created_date, created_time in hours_list %}
                     {% set page = page | default(1) %}
                     {% set page_size = 10 %}
                     <tr>
                         <td>{{ loop.index + (page - 1) * page_size }}</td>
-                        <td>{{ order_id }}</td>
-                        <td>{{ work_name }}</td>
+                        <td>{{ order_number }}</td>
+                        <td>{{ order_name }}</td>
                         <td>{{ spent_hours }}</td>
-                        <td>{{ created_date }} {{ created_time }}</td>
+                        <td>{{ created_date }}</td>
                         <td class="actions-container">
                             {# <form method="GET" action="#">
                                 <button type="submit" class="icon-button edit-button tooltip">

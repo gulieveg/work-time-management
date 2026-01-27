@@ -37,10 +37,9 @@ CREATE TABLE works (
 IF OBJECT_ID('hours', 'U') IS NULL
 CREATE TABLE hours (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    order_id INT NOT NULL,
-    work_name NVARCHAR(MAX) NOT NULL,
+    order_name NVARCHAR(MAX) NOT NULL,
+    order_number NVARCHAR(255) UNIQUE NOT NULL,
     spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     created_date DATE NOT NULL DEFAULT CAST(GETDATE() AS DATE),
     created_time TIME(0) NOT NULL DEFAULT CAST(GETDATE() AS TIME)
 );

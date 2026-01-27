@@ -32,24 +32,7 @@
             </div>
 
             <div class="form-group">
-                <label for="work_name">Наименование работы</label>
-                <div>
-                    <i class="fas fa-briefcase"></i>
-                    <input
-                        type="text"
-                        name="work_name"
-                        value="{{ request.form.get('work_name', '') }}"
-                        class="work-name"
-                        placeholder="Наименование работы"
-                        autocomplete="off"
-                        required
-                    />
-                    <div class="work-name-suggestions suggestions-list"></div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="spent_hours">Фактическая трудоемкость</label>
+                <label for="spent_hours">Часы</label>
                 <div>
                     <i class="fas fa-clock"></i>
                     <input
