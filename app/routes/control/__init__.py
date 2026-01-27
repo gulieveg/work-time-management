@@ -7,6 +7,7 @@ from app.db import DatabaseManager
 from app.utils import permission_required
 
 from .employees import employees_bp
+from .hours import hours_bp
 from .logs import logs_bp
 from .orders import orders_bp
 from .tasks import tasks_bp
