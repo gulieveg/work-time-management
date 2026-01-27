@@ -40,7 +40,9 @@ CREATE TABLE hours (
     order_id INT NOT NULL,
     work_name NVARCHAR(MAX) NOT NULL,
     spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    created_date DATE NOT NULL DEFAULT CAST(GETDATE() AS DATE),
+    created_time TIME(0) NOT NULL DEFAULT CAST(GETDATE() AS TIME)
 );
 
 IF OBJECT_ID('tasks', 'U') IS NULL

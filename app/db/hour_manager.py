@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, List, Tuple
 
 from .db_connection import DatabaseConnection
 
@@ -42,7 +42,7 @@ class HourManager(DatabaseConnection):
             connection.commit()
 
     def get_hours_list(self) -> List:
-        query: str = "SELECT id, order_id, work_name, spent_hours FROM hours"
+        query: str = "SELECT id, order_id, work_name, spent_hours, created_date, created_time FROM hours"
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
