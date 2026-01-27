@@ -7,6 +7,7 @@ export function configureSuggestionListBlurHandler() {
             ".user-login-suggestions",
             ".employee-name-suggestions",
             ".personnel-number-suggestions",
+            ".work-name-suggestions",
         ];
 
         document.querySelectorAll(selectors.join(", ")).forEach(suggestionsList => {
@@ -34,6 +35,7 @@ export function configureSuggestionListEscapeHandler() {
             ".user-login-suggestions",
             ".employee-name-suggestions",
             ".personnel-number-suggestions",
+            ".work-name-suggestions",
         ];
 
         document.querySelectorAll(selectors.join(", ")).forEach(suggestionsList => {

@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Dict, List, Tuple, Union
 
-from flask import Blueprint, Response, flash, redirect, render_template, request, url_for
+from flask import Blueprint, Response, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import login_required
 
 from app.db import DatabaseManager
@@ -128,3 +128,11 @@ def delete_work(work_id: int) -> Response:
 
     db_manager.works.delete_work(work_id)
     return redirect(url_for("control.works.works_table", **args))
+
+
+@works_bp.route("/names", methods=["GET"])
+@login_required
+def get_work_names() -> Response:
+    query: str = request.args.get("query", "")
+    work_names: List[str] = db_manager.works.get_work_names_by_partial_match(query)
+    return jsonify(work_names)
