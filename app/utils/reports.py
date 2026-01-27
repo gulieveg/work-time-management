@@ -72,11 +72,17 @@ def write_data_to_task_worksheet(workbook: Workbook, tasks: Tasks) -> None:
         "Часы",
     ]
 
+    categories: Dict[str, str] = {
+        "worker": "Рабочий",
+        "specialist": "Специалист",
+        "manager": "Ведущий специалист",
+    }
+
     grouped_data: GroupedData = [
         [
             task["employee_name"],
             task["personnel_number"],
-            task["employee_category"],
+            categories[task["employee_category"]],
             task["department"],
             datetime.strptime(task["operation_date"], "%Y-%m-%d").date(),
             task["order_number"],
