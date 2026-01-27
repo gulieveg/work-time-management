@@ -25,7 +25,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for hours_id, order_name, order_number, spent_hours, created_date, created_time in hours_list %}
+                {% for hours_id, order_name, order_number, work_name, spent_hours, created_date, created_time in hours_list %}
                     {% set page = page | default(1) %}
                     {% set page_size = 10 %}
                     <tr>
@@ -41,7 +41,7 @@
                                     <span class="tooltiptext">Редактировать часы</span>
                                 </button>
                             </form> #}
-                            <form method="POST" action="{{ url_for('control.hours.delete_hours', hours_id=hours_id) }}">
+                            <form method="POST" action="{{ url_for('control.hours.delete_hours', hours_id=hours_id, order_number=order_number, work_name=work_name) }}">
                                 {# <input type="hidden" name="page" value="{{ page }}"> #}
                                 <button type="submit" class="icon-button delete-button tooltip" data-action="delete-hours">
                                     <i class="fas fa-trash"></i>
