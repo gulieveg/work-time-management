@@ -5,11 +5,11 @@
 {% block content %}
     <div class="content-section">
         <div class="tabs">
-            <form method="GET" action="{{ url_for('control.works.works_table') }}">
-                <button class="tab-button"><i class="fas fa-list"></i>Список работ</button>
+            <form method="GET" action="{{ url_for('control.hours.hours_table') }}">
+                <button class="tab-button"><i class="fas fa-list"></i>Список часов</button>
             </form>
             <form method="GET" action="{{ url_for('control.hours.add_hours') }}">
-                <button class="tab-button active"><i class="fas fa-clock"></i>Внести трудоемкость</button>
+                <button class="tab-button active"><i class="fas fa-plus"></i>Внести трудоемкость</button>
             </form>
         </div>
 

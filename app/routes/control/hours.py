@@ -27,3 +27,15 @@ def add_hours() -> Union[str, Response]:
         flash(message=MESSAGES["hours"]["hours_added"], category="info")
         return render_template("control/hours/add_hours.html")
     return render_template("control/hours/add_hours.html")
+
+
+@hours_bp.route("", methods=["GET"])
+@login_required
+@permission_required(["advanced"])
+def hours_table() -> str:
+    hours_list: List[Tuple[str]] = db_manager.hours.get_hours_list()
+
+    context: Dict[str, Union[int, List[Tuple[str]]]] = {
+        "hours_list": hours_list,
+    }
+    return render_template("control/hours/hours_table.html", **context)
