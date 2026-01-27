@@ -69,14 +69,12 @@ CREATE TABLE logs (
     action NVARCHAR(50) NOT NULL,
     entity_id INT NOT NULL,
     entity_type NVARCHAR(50) NOT NULL,
-    user_id INT NOT NULL,
     user_name NVARCHAR(100) NOT NULL,
     ip_address NVARCHAR(50) NOT NULL,
     platform NVARCHAR(50) NOT NULL,
     os_version NVARCHAR(50) NOT NULL,
     browser NVARCHAR(50) NOT NULL,
     browser_version NVARCHAR(50) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
     created_date DATE NOT NULL DEFAULT CAST(GETDATE() AS DATE),
     created_time TIME(0) NOT NULL DEFAULT CAST(GETDATE() AS TIME)
 );
