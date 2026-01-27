@@ -23,10 +23,10 @@ class HourManager(DatabaseConnection):
 
                 query: str = """
                     UPDATE works
-                    SET planned_hours = ?, spent_hours = ?
+                    SET spent_hours = ?
                     WHERE order_id = ? AND name = ?
                 """
-                cursor.execute(query, (spent_hours, spent_hours, order_id, work_name))
+                cursor.execute(query, (spent_hours, order_id, work_name))
             connection.commit()
 
     def delete_hours(self, hours_id: int, order_id: int, work_name: str) -> None:
