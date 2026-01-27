@@ -11,7 +11,7 @@ hours_bp: Blueprint = Blueprint("hours", __name__, url_prefix="/hours")
 db_manager: DatabaseManager = DatabaseManager()
 
 
-@hours_bp.route("/add-spent-hours", methods=["GET", "POST"])
+@hours_bp.route("/add", methods=["GET", "POST"])
 @login_required
 @permission_required(["advanced"])
 def add_hours() -> Union[str, Response]:
