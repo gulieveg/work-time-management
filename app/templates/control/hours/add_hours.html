@@ -1,6 +1,6 @@
 {% extends "control/base.html" %}
 
-{% block title %}Добавление работы{% endblock title %}
+{% block title %}Ввод трудоемкости{% endblock title %}
 
 {% block content %}
     <div class="content-section">
@@ -8,8 +8,8 @@
             <form method="GET" action="{{ url_for('control.works.works_table') }}">
                 <button class="tab-button"><i class="fas fa-list"></i>Список работ</button>
             </form>
-            <form method="GET" action="{{ url_for('control.works.add_work') }}">
-                <button class="tab-button active"><i class="fas fa-plus"></i>Добавить работу</button>
+            <form method="GET" action="{{ url_for('control.works.add_spent_hours') }}">
+                <button class="tab-button active"><i class="fas fa-clock"></i>Ввести трудоемкость</button>
             </form>
         </div>
 
