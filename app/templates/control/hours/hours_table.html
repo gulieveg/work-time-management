@@ -33,14 +33,14 @@
                         <td>{{ work_name }}</td>
                         <td>{{ spent_hours }}</td>
                         <td class="actions-container">
-                            <form method="GET" action="#">
+                            {# <form method="GET" action="#">
                                 <button type="submit" class="icon-button edit-button tooltip">
                                     <i class="fas fa-edit"></i>
                                     <span class="tooltiptext">Редактировать часы</span>
                                 </button>
-                            </form>
-                            <form method="POST" action="#">
-                                <input type="hidden" name="page" value="{{ page }}">
+                            </form> #}
+                            <form method="POST" action="{{ url_for('control.hours.delete_hours', hours_id=hours_id) }}">
+                                {# <input type="hidden" name="page" value="{{ page }}"> #}
                                 <button type="submit" class="icon-button delete-button tooltip" data-action="delete-hours">
                                     <i class="fas fa-trash"></i>
                                     <span class="tooltiptext">Удалить часы</span>

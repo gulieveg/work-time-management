@@ -133,7 +133,12 @@ export function configureUserConfirmationModal() {
         "delete-work": {
             message: "Вы уверены, что хотите удалить работу?",
             button: "Удалить",
-        }
+        },
+        "delete-hours": {
+            message: "Вы уверены, что хотите удалить часы?",
+            button: "Удалить",
+        },
+
     };
 
     const modal = document.getElementById("confirmation-modal");

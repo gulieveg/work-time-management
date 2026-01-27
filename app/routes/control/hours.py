@@ -29,6 +29,14 @@ def add_hours() -> Union[str, Response]:
     return render_template("control/hours/add_hours.html")
 
 
+@hours_bp.route("/delete/<int:hours_id>", methods=["POST"])
+@login_required
+@permission_required(["advanced"])
+def delete_hours(hours_id: int) -> Response:
+    db_manager.hours.delete_hours(hours_id)
+    return redirect(url_for("control.hours.hours_table"))
+
+
 @hours_bp.route("", methods=["GET"])
 @login_required
 @permission_required(["advanced"])
