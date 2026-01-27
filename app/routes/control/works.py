@@ -134,5 +134,9 @@ def delete_work(work_id: int) -> Response:
 @login_required
 def get_work_names() -> Response:
     query: str = request.args.get("query", "")
-    work_names: List[str] = db_manager.works.get_work_names_by_partial_match(query)
+    order_number: str = request.args.get("order_number", "")
+
+    order_id: int = db_manager.orders.get_order_id_by_number(order_number)
+
+    work_names: List[str] = db_manager.works.get_work_names_by_partial_match(query, order_id)
     return jsonify(work_names)

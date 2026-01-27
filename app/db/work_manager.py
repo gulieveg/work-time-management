@@ -155,11 +155,12 @@ class WorkManager(DatabaseConnection):
                 ]
                 return works
 
-    def get_work_names_by_partial_match(self, query: str) -> List[str]:
-        query_string: str = "SELECT name FROM works WHERE name LIKE ?"
+    def get_work_names_by_partial_match(self, query: str, order_id: int) -> List[str]:
+
+        query_string: str = "SELECT name FROM works WHERE name LIKE ? AND order_id = ?"
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query_string, ("%" + query + "%",))
+                cursor.execute(query_string, ("%" + query + "%", order_id))
                 work_names: List[str] = [data[0] for data in cursor.fetchall()]
                 return work_names

@@ -34,6 +34,15 @@ CREATE TABLE works (
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
 
+IF OBJECT_ID('hours', 'U') IS NULL
+CREATE TABLE hours (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    order_id INT NOT NULL,
+    work_name NVARCHAR(MAX) NOT NULL,
+    spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
+
 IF OBJECT_ID('tasks', 'U') IS NULL
 CREATE TABLE tasks (
     id INT IDENTITY(1,1) PRIMARY KEY,
