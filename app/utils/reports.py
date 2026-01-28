@@ -142,7 +142,7 @@ def write_data_to_order_worksheet(workbook: Workbook, tasks: Tasks) -> None:
     headers: Headers = [
         "Номер заказа",
         "Наименование заказа",
-        "Часы",
+        "Фактическая трудоемкость, ч",
     ]
 
     aggregated_hours: Dict[OrderKey, Decimal] = defaultdict(Decimal)
