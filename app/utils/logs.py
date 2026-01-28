@@ -6,7 +6,6 @@ from flask_login import current_user
 
 def get_user_and_request_log_info() -> Dict[str, Union[str, int]]:
     return {
-        "user_id": current_user.id,
         "user_name": current_user.name,
         "ip_address": request.remote_addr,
         "platform": request.platform,
@@ -22,7 +21,6 @@ def get_log_data() -> Dict[str, Union[str, int]]:
         "action": None,
         "entity_id": None,
         "entity_type": None,
-        "user_id": user_and_request_log_info["user_id"],
         "user_name": user_and_request_log_info["user_name"],
         "ip_address": user_and_request_log_info["ip_address"],
         "platform": user_and_request_log_info["platform"],
