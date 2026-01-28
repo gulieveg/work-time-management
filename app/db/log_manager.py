@@ -37,7 +37,7 @@ class LogManager(DatabaseConnection):
                 browser,
                 browser_version
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
 
         with self.get_connection() as connection:
