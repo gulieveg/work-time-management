@@ -7,11 +7,11 @@ from flask_login import login_required
 from app.db import DatabaseManager
 from app.utils import permission_required
 
+Tasks = List[Dict[str, Union[str, Decimal]]]
+
+
 reports_bp: Blueprint = Blueprint("reports", __name__, url_prefix="/reports")
 db_manager: DatabaseManager = DatabaseManager()
-
-
-Tasks = List[Dict[str, Union[str, Decimal]]]
 
 
 @reports_bp.route("", methods=["GET"])
