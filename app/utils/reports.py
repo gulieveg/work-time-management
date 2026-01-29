@@ -175,8 +175,8 @@ def write_data_to_order_worksheet(workbook: Workbook, tasks: Tasks) -> None:
 def generate_report(tasks: Tasks) -> BytesIO:
     workbook: Workbook = Workbook()
 
-    write_data_to_task_worksheet(workbook, tasks)
-    write_data_to_employee_worksheet(workbook, tasks)
+    # write_data_to_task_worksheet(workbook, tasks)
+    # write_data_to_employee_worksheet(workbook, tasks)
     write_data_to_order_worksheet(workbook, tasks)
 
     file: BytesIO = BytesIO()
