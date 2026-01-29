@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Dict, List, Optional, Tuple, Union
 
 from .db_connection import DatabaseConnection
@@ -148,4 +149,23 @@ class OrderManager(DatabaseConnection):
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(query)
+                return cursor.fetchone()[0]
+
+    def get_spent_hours_for_order_2025(self, order_number: str) -> Decimal:
+        query: str = "SELECT spent_hours FROM hours WHERE order_number = ?"
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, (order_number,))
+                return cursor.fetchone()[0]
+
+    def get_planned_hours_for_order(self, order_number: str) -> Decimal:
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                query: str = "SELECT id FROM orders WHERE number = ?"
+                cursor.execute(query, (order_number,))
+                order_id: int = cursor.fetchone()[0]
+
+                query: str = "SELECT SUM(planned_hours) FROM works WHERE order_id = ?"
+                cursor.execute(query, (order_id,))
                 return cursor.fetchone()[0]

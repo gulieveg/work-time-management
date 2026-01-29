@@ -59,7 +59,7 @@ def write_data_to_worksheet(
 
 def write_data_to_task_worksheet(workbook: Workbook, tasks: Tasks) -> None:
     worksheet: Worksheet = workbook.active
-    worksheet.title = "Все задания"
+    worksheet.title = "Задания"
 
     headers: Headers = [
         "ФИО сотрудника",
@@ -69,7 +69,7 @@ def write_data_to_task_worksheet(workbook: Workbook, tasks: Tasks) -> None:
         "Дата",
         "Номер заказа",
         "Наименование заказа",
-        "Часы",
+        "Фактическая трудоемкость, ч",
     ]
 
     categories: Dict[str, str] = {
@@ -97,7 +97,7 @@ def write_data_to_task_worksheet(workbook: Workbook, tasks: Tasks) -> None:
 
 def write_data_to_employee_worksheet(workbook: Workbook, tasks: Tasks) -> None:
     worksheet: Worksheet = workbook.create_sheet()
-    worksheet.title = "Загруженность сотрудников"
+    worksheet.title = "Сотрудники"
 
     headers: Headers = [
         "ФИО сотрудника",
@@ -105,7 +105,7 @@ def write_data_to_employee_worksheet(workbook: Workbook, tasks: Tasks) -> None:
         "Роль сотрудника",
         "Наименование подразделения",
         "Дата",
-        "Часы",
+        "Фактическая трудоемкость, ч",
     ]
 
     aggregated_hours: Dict[EmployeeKey, Decimal] = defaultdict(Decimal)
@@ -120,29 +120,56 @@ def write_data_to_employee_worksheet(workbook: Workbook, tasks: Tasks) -> None:
         )
         aggregated_hours[key] += task["hours"]
 
+    categories: Dict[str, str] = {
+        "worker": "Рабочий",
+        "specialist": "Специалист",
+        "manager": "Ведущий специалист",
+    }
+
     grouped_data: GroupedData = [
         [
             key.employee_name,
             key.personnel_number,
-            key.employee_category,
+            categories[key.employee_category],
             key.department,
             datetime.strptime(key.operation_date, "%Y-%m-%d").date(),
-            total_hours,
+            spent_hours,
         ]
-        for key, total_hours in aggregated_hours.items()
+        for key, spent_hours in aggregated_hours.items()
     ]
 
     write_data_to_worksheet(worksheet, grouped_data, headers)
 
 
 def write_data_to_order_worksheet(workbook: Workbook, tasks: Tasks) -> None:
+    from app.db import DatabaseManager
+
+    db_manager: DatabaseManager = DatabaseManager()
+
+    def get_grouped_data(key: OrderKey, spent_hours: Decimal) -> GroupedData:
+        spent_hours_2025: Decimal = db_manager.orders.get_spent_hours_for_order_2025(key.order_number)
+        planned_hours: Decimal = db_manager.orders.get_planned_hours_for_order(key.order_number)
+        return [
+            key.order_number,
+            key.order_name,
+            planned_hours,
+            spent_hours_2025,
+            spent_hours,
+            spent_hours_2025 + spent_hours,
+            planned_hours - spent_hours_2025 - spent_hours,
+        ]
+
     worksheet: Worksheet = workbook.create_sheet()
-    worksheet.title = "Данные по заказам"
+    worksheet.title = "Заказы"
 
     headers: Headers = [
         "Номер заказа",
         "Наименование заказа",
-        "Фактическая трудоемкость, ч",
+        "Плановая трудоемкость, ч",
+        "Фактическая трудоемкость (2025 г.), ч",
+        "Фактическая трудоемкость (за период), ч",
+        "Фактическая трудоемкость (суммарная), ч",
+        "Остаточная трудоемкость (на период), ч",
     ]
 
     aggregated_hours: Dict[OrderKey, Decimal] = defaultdict(Decimal)
@@ -154,14 +181,7 @@ def write_data_to_order_worksheet(workbook: Workbook, tasks: Tasks) -> None:
         )
         aggregated_hours[key] += task["hours"]
 
-    grouped_data: GroupedData = [
-        [
-            key.order_number,
-            key.order_name,
-            total_hours,
-        ]
-        for key, total_hours in aggregated_hours.items()
-    ]
+    grouped_data: GroupedData = [get_grouped_data(key, spent_hours) for key, spent_hours in aggregated_hours.items()]
 
     write_data_to_worksheet(worksheet, grouped_data, headers)
 
