@@ -122,7 +122,7 @@ class TaskManager(DatabaseConnection):
 
     def get_tasks(
         self,
-        departments: List[str],
+        departments: Optional[List[str]] = None,
         start_date: Optional[str] = None,
         end_date: Optional[str] = None,
         employee_data: Optional[str] = None,
@@ -145,9 +145,8 @@ class TaskManager(DatabaseConnection):
             FROM tasks
         """
 
-        departments: List[str] = list(filter(None, departments))
-
         if departments:
+            departments: List[str] = list(filter(None, departments))
             placeholders: str = ", ".join(["?"] * len(departments))
             query: str = f"{base_query} WHERE department IN ({placeholders})"
             params: List[str] = departments
