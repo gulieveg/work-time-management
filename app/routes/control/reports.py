@@ -17,9 +17,6 @@ db_manager: DatabaseManager = DatabaseManager()
 @login_required
 @permission_required(["advanced"])
 def generate_reports() -> str:
-    start_date: str = request.form.get("start_date")
-    end_date: str = request.form.get("end_date")
-
     args: Dict[str, str] = {
         "start_date": request.args.get("start_date"),
         "end_date": request.args.get("end_date"),
