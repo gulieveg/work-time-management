@@ -3,38 +3,40 @@
 {% block title %}Все задания{% endblock title %}
 
 {% block content %}
-    <form method="GET">
-        <div class="filter-container">
-            <div class="filter-item">
-                <label for="start_date">Начало периода</label>
-                <input
-                    type="date"
-                    name="start_date"
-                    value="{{ request.args.get('start_date', today) }}"
-                    style="cursor: pointer;"
-                />
+    <div class="content-section">
+        <form method="GET" style="width: 900px">
+            <div class="filter-container">
+                <div class="filter-item">
+                    <label for="start_date">Начало периода</label>
+                    <input
+                        type="date"
+                        name="start_date"
+                        value="{{ request.args.get('start_date', today) }}"
+                        style="cursor: pointer; padding-left: 12px;"
+                    />
+                </div>
+                <div class="filter-item">
+                    <label for="end_date">Конец периода</label>
+                    <input
+                        type="date"
+                        name="end_date"
+                        value="{{ request.args.get('end_date', today) }}"
+                        style="cursor: pointer; padding-left: 12px;"
+                    />
+                </div>
             </div>
-            <div class="filter-item">
-                <label for="end_date">Конец периода</label>
-                <input
-                    type="date"
-                    name="end_date"
-                    value="{{ request.args.get('end_date', today) }}"
-                    style="cursor: pointer;"
-                />
-            </div>
-        </div>
 
-        <div class="filter-buttons-container">
-            <button type="submit" class="default-button">
-                <i class="fas fa-play"></i>Применить фильтры
-            </button>
-            <button type="button" class="default-button reset-filters-button">
-                <i class="fas fa-eraser"></i>Сбросить фильтры
-            </button>
-            <button type="submit" name="export" value="true" class="default-button">
-                <i class="fas fa-arrow-down"></i>Скачать отчет
-            </button>
-        </div>
-    </form>
+            <div class="filter-buttons-container">
+                <button type="submit" class="default-button">
+                    <i class="fas fa-play"></i>Применить фильтры
+                </button>
+                <button type="button" class="default-button reset-filters-button">
+                    <i class="fas fa-eraser"></i>Сбросить фильтры
+                </button>
+                <button type="submit" name="export" value="true" class="default-button">
+                    <i class="fas fa-arrow-down"></i>Скачать отчет
+                </button>
+            </div>
+        </form>
+    </div>
 {% endblock content %}
