@@ -23,6 +23,8 @@ def reports() -> str:
     start_date: str = request.args.get("start_date")
     end_date: str = request.args.get("end_date")
 
+    today: str = datetime.today().strftime("%Y-%m-%d")
+
     if request.args.get("export"):
         tasks: Tasks = db_manager.tasks.get_tasks(start_date=start_date, end_date=end_date)
 
@@ -48,8 +50,6 @@ def reports() -> str:
                 spent_hours: Decimal = spent_hours_by_order[order_number]
                 remaining_hours: Decimal = planned_hours - spent_hours
                 grouped_data.append([order_number, order_name, planned_hours, spent_hours, remaining_hours])
-
-        today: str = datetime.today().strftime("%Y-%m-%d")
 
         file: BytesIO = generate_report(grouped_data)
         filename: str = f"report_{today}.xlsx"
