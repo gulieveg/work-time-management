@@ -186,13 +186,13 @@ class OrderManager(DatabaseConnection):
     def get_orders_data(self, order_numbers: Tuple[str]) -> List[Union[str, Decimal]]:
         query: str = f"""
             SELECT
-                o.number,
-                o.name,
-                COALESCE(SUM(w.planned_hours), 0) AS planned_hours
-            FROM orders o
-            LEFT JOIN works w ON w.order_id = o.id
-            WHERE o.number IN ({", ".join("?" for _ in order_numbers)})
-            GROUP BY o.number, o.name
+                orders.number,
+                orders.name,
+                COALESCE(SUM(works.planned_hours), 0) AS planned_hours
+            FROM orders
+            LEFT JOIN works ON works.order_id = orders.id
+            WHERE orders.number IN ({", ".join("?" for _ in order_numbers)})
+            GROUP BY orders.number, orders.name
         """
 
         with self.get_connection() as connection:
