@@ -10,6 +10,7 @@ from .employees import employees_bp
 from .hours import hours_bp
 from .logs import logs_bp
 from .orders import orders_bp
+from .reports import reports_bp
 from .tasks import tasks_bp
 from .users import users_bp
 from .works import works_bp
