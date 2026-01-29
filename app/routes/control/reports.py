@@ -9,7 +9,6 @@ from app.utils import permission_required
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
 
-
 reports_bp: Blueprint = Blueprint("reports", __name__, url_prefix="/reports")
 db_manager: DatabaseManager = DatabaseManager()
 
