@@ -12,4 +12,5 @@ db_manager: DatabaseManager = DatabaseManager()
 @login_required
 @permission_required(["advanced"])
 def reports() -> str:
-    start_date: str = request
+    start_date: str = request.form.get("start_date")
+    end_date: str = request.form.get("end_date")
