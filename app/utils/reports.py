@@ -141,43 +141,27 @@ def write_data_to_employee_worksheet(workbook: Workbook, tasks: Tasks) -> None:
     write_data_to_worksheet(worksheet, grouped_data, headers)
 
 
-def write_data_to_order_worksheet(workbook: Workbook, tasks: Tasks) -> None:
-    worksheet: Worksheet = workbook.create_sheet()
-    worksheet.title = "Заказы"
+def write_data_to_order_worksheet(workbook: Workbook, grouped_data: GroupedData) -> None:
+    worksheet: Worksheet = workbook.active
+    # worksheet.title = "Заказы"
 
     headers: Headers = [
         "Номер заказа",
         "Наименование заказа",
+        "Плановая трудоемкость, ч",
         "Фактическая трудоемкость, ч",
-    ]
-
-    aggregated_hours: Dict[OrderKey, Decimal] = defaultdict(Decimal)
-
-    for task in tasks:
-        key: OrderKey = OrderKey(
-            order_number=task["order_number"],
-            order_name=task["order_name"],
-        )
-        aggregated_hours[key] += task["hours"]
-
-    grouped_data: GroupedData = [
-        [
-            key.order_number,
-            key.order_name,
-            spent_hours,
-        ]
-        for key, spent_hours in aggregated_hours.items()
+        "Остаточная трудоемкость, ч",
     ]
 
     write_data_to_worksheet(worksheet, grouped_data, headers)
 
 
-def generate_report(tasks: Tasks) -> BytesIO:
+def generate_report(grouped_data: GroupedData) -> BytesIO:
     workbook: Workbook = Workbook()
 
     # write_data_to_task_worksheet(workbook, tasks)
     # write_data_to_employee_worksheet(workbook, tasks)
-    write_data_to_order_worksheet(workbook, tasks)
+    write_data_to_order_worksheet(workbook, grouped_data)
 
     file: BytesIO = BytesIO()
     workbook.save(file)

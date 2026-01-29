@@ -1,3 +1,4 @@
+from collections import defaultdict
 from decimal import Decimal
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -159,6 +160,18 @@ class OrderManager(DatabaseConnection):
                 cursor.execute(query, (order_number,))
                 return cursor.fetchone()[0]
 
+    def get_spent_hours_by_order_2025(self) -> Dict[str, Decimal]:
+        query: str = "SELECT order_number, spent_hours FROM hours"
+
+        spent_hours_by_order: Dict[str, Decimal] = defaultdict(Decimal)
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                for order_number, spent_hours in cursor.fetchall():
+                    spent_hours_by_order[order_number] = spent_hours
+                return spent_hours_by_order
+
     def get_planned_hours_for_order(self, order_number: str) -> Decimal:
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
@@ -169,3 +182,21 @@ class OrderManager(DatabaseConnection):
                 query: str = "SELECT SUM(planned_hours) FROM works WHERE order_id = ?"
                 cursor.execute(query, (order_id,))
                 return cursor.fetchone()[0]
+
+    def get_orders_data(self, order_numbers: Tuple[str]) -> List[Union[str, Decimal]]:
+        query: str = f"""
+            SELECT
+                o.number,
+                o.name,
+                COALESCE(SUM(w.planned_hours), 0) AS planned_hours
+            FROM orders o
+            LEFT JOIN works w ON w.order_id = o.id
+            WHERE o.number IN ({", ".join("?" for _ in order_numbers)})
+            GROUP BY o.number, o.name
+        """
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, order_numbers)
+                orders_data: List[Union[str, Decimal]] = cursor.fetchall()
+                return orders_data

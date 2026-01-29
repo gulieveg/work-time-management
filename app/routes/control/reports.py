@@ -1,7 +1,8 @@
+from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal
 from io import BytesIO
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from flask import Blueprint, render_template, request, send_file
 from flask_login import login_required
@@ -19,31 +20,57 @@ db_manager: DatabaseManager = DatabaseManager()
 @login_required
 @permission_required(["advanced"])
 def reports() -> str:
-    args: Dict[str, Optional[str]] = {
-        "start_date": request.args.get("start_date"),
-        "end_date": request.args.get("end_date"),
-    }
+    start_date: str = request.args.get("start_date")
+    end_date: str = request.args.get("end_date")
 
-    tasks: Tasks = db_manager.tasks.get_tasks(**args)
+    if request.args.get("export"):
+        tasks: Tasks = db_manager.tasks.get_tasks(start_date=start_date, end_date=end_date)
 
-    # {
-    #     "id": task[0],
-    #     "employee_name": task[1],
-    #     "personnel_number": task[2],
-    #     "department": task[3],
-    #     "work_name": task[4],
-    #     "hours": task[5],
-    #     "order_number": task[6],
-    #     "order_name": task[7],
-    #     "operation_date": task[8].strftime("%Y-%m-%d"),
-    #     "employee_category": task[9],
-    # }
+        spent_hours_by_order: Dict[str, Decimal] = defaultdict(Decimal)  # { "order_number": "spent_hours" }
 
-    # file: BytesIO = generate_report(tasks)
-    # return send_file(file, as_attachment=True, download_name="report.xlsx")
+        for task in tasks:
+            spent_hours_by_order[task["order_number"]] += task["hours"]
 
-    today: str = datetime.today().strftime("%Y-%m-%d")
+        if not start_date or datetime.strptime(start_date, "%Y-%m-%d") < datetime(2026, 1, 1):
+            spent_hours_by_order_2025: Dict[str, Decimal] = db_manager.orders.get_spent_hours_by_order_2025()
+
+            for order_number, spent_hours in spent_hours_by_order_2025.items():
+                spent_hours_by_order[order_number] += spent_hours
+
+        grouped_data: List[List[Union[str, Decimal]]] = []
+
+        order_numbers: Tuple[str] = tuple(spent_hours_by_order.keys())
+
+        if order_numbers:
+            orders_data: List[Union[str, Decimal]] = db_manager.orders.get_orders_data(order_numbers)
+
+            for order_number, order_name, planned_hours in orders_data:
+                spent_hours: Decimal = spent_hours_by_order[order_number]
+                remaining_hours: Decimal = planned_hours - spent_hours
+                grouped_data.append([order_number, order_name, planned_hours, spent_hours, remaining_hours])
+
+        today: str = datetime.today().strftime("%Y-%m-%d")
+
+        file: BytesIO = generate_report(grouped_data)
+        filename: str = f"report_{today}.xlsx"
+        return send_file(file, as_attachment=True, download_name=filename)
+
     context: Dict[str, str] = {
         "today": today,
     }
     return render_template("control/reports/generate_report.html", **context)
+
+    # for order_number, spent_hours in spent_hours_by_order.items():
+    #     order_name: str = db_manager.orders.get_order_name_by_number(order_number)
+    #     planned_hours: Decimal = db_manager.orders.get_planned_hours_for_order(order_number)
+    #     remaining_hours: Decimal = planned_hours - spent_hours
+
+    #     order_data: List[Union[str, Decimal]] = [
+    #         order_number,
+    #         order_name,
+    #         planned_hours,
+    #         spent_hours,
+    #         remaining_hours,
+    #     ]
+
+    #     grouped_data.append(order_data)
