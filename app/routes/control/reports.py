@@ -25,6 +25,25 @@ def reports() -> str:
 
     today: str = datetime.today().strftime("%Y-%m-%d")
 
+    if start_date:
+        start_date: Union[str, datetime] = datetime.strptime(start_date, "%Y-%m-%d")
+    if end_date:
+        end_date: Union[str, datetime] = datetime.strptime(end_date, "%Y-%m-%d")
+
+    is_date_range_valid: bool = False
+
+    lower_bound: datetime = datetime(2024, 12, 31)
+    upper_bound: datetime = datetime(2026, 1, 1)
+
+    if not start_date and not end_date:
+        is_date_range_valid = True
+    elif not start_date and end_date and end_date > lower_bound:
+        is_date_range_valid = True
+    elif start_date and end_date and lower_bound < start_date < upper_bound and end_date >= start_date:
+        is_date_range_valid = True
+    elif start_date and lower_bound < start_date < upper_bound and not end_date:
+        is_date_range_valid = True
+
     if request.args.get("export"):
         tasks: Tasks = db_manager.tasks.get_tasks(start_date=start_date, end_date=end_date)
 
@@ -33,7 +52,7 @@ def reports() -> str:
         for task in tasks:
             spent_hours_by_order[task["order_number"]] += task["hours"]
 
-        if not start_date or datetime.strptime(start_date, "%Y-%m-%d") < datetime(2026, 1, 1):
+        if is_date_range_valid:
             spent_hours_by_order_2025: Dict[str, Decimal] = db_manager.orders.get_spent_hours_by_order_2025()
 
             for order_number, spent_hours in spent_hours_by_order_2025.items():
