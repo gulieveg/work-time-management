@@ -1,7 +1,9 @@
 from flask import Flask, render_template
 from werkzeug.exceptions import NotFound, ServiceUnavailable
 
-from app.db import DatabaseUnavailable
+
+class DatabaseUnavailable(Exception):
+    pass
 
 
 def handle_error_404(app: Flask) -> callable:
