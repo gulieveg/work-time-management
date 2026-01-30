@@ -52,25 +52,7 @@ def reports() -> str:
                 grouped_data.append([order_number, order_name, planned_hours, spent_hours, remaining_hours])
 
         file: BytesIO = generate_report(grouped_data)
-        filename: str = f"report_{today}.xlsx"
+        filename: str = "report_{}.xlsx".format(today)
         return send_file(file, as_attachment=True, download_name=filename)
 
-    context: Dict[str, str] = {
-        "today": today,
-    }
-    return render_template("control/reports/generate_report.html", **context)
-
-    # for order_number, spent_hours in spent_hours_by_order.items():
-    #     order_name: str = db_manager.orders.get_order_name_by_number(order_number)
-    #     planned_hours: Decimal = db_manager.orders.get_planned_hours_for_order(order_number)
-    #     remaining_hours: Decimal = planned_hours - spent_hours
-
-    #     order_data: List[Union[str, Decimal]] = [
-    #         order_number,
-    #         order_name,
-    #         planned_hours,
-    #         spent_hours,
-    #         remaining_hours,
-    #     ]
-
-    #     grouped_data.append(order_data)
+    return render_template("control/reports/generate_report.html")

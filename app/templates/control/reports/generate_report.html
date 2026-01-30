@@ -11,7 +11,7 @@
                     <input
                         type="date"
                         name="start_date"
-                        value="{{ request.args.get('start_date', today) }}"
+                        value="{{ request.args.get('start_date') }}"
                         style="cursor: pointer; padding-left: 12px;"
                     />
                 </div>
@@ -20,7 +20,7 @@
                     <input
                         type="date"
                         name="end_date"
-                        value="{{ request.args.get('end_date', today) }}"
+                        value="{{ request.args.get('end_date') }}"
                         style="cursor: pointer; padding-left: 12px;"
                     />
                 </div>
