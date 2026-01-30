@@ -238,7 +238,6 @@ def delete_task(task_id: str) -> Response:
     db_manager.tasks.delete_task(task_id)
     return redirect(url_for("tasks.tasks_table", **params))
 
-    #####  TASK ADDING #####
     # if not hours_list:
     #     flash(message=MESSAGES["tasks"]["no_tasks_provided"], category="warning")
     #     return redirect(url_for("tasks.add_task"))

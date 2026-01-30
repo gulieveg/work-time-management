@@ -2,7 +2,7 @@ from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal
 from io import BytesIO
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
 from flask import Blueprint, render_template, request, send_file
 from flask_login import login_required
