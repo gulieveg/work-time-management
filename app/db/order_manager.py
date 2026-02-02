@@ -119,14 +119,20 @@ class OrderManager(DatabaseConnection):
         order_name: Optional[str] = None,
         page: Optional[int] = None,
     ) -> List[Tuple[str]]:
-        query: str = """
-            SELECT id, number, name
-            FROM orders
-            WHERE (? IS NULL OR ? = '' OR number = ?)
-            AND (? IS NULL OR ? = '' OR name = ?)
-        """
+        query: str = "SELECT id, number, name FROM orders"
 
-        params: List[str] = [order_number.strip()] * 3 + [order_name.strip()] * 3
+        conditions: List[str] = []
+        params: List[str] = []
+
+        if order_number:
+            conditions.append("number = ?")
+            params.append(order_number.strip())
+        if order_name:
+            conditions.append("name = ?")
+            params.append(order_name.strip())
+
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
