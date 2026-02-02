@@ -11,7 +11,7 @@ class OrderManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (order_number, order_name))
+                cursor.execute(query, (order_number.strip(), order_name.strip()))
                 order_id: int = cursor.fetchone()[0]
                 connection.commit()
         return order_id
@@ -19,7 +19,7 @@ class OrderManager(DatabaseConnection):
     def order_exists(self, order_number: str, exclude_id: Optional[int] = None) -> bool:
         query: str = "SELECT * FROM orders WHERE number = ?"
 
-        params: List[str] = [order_number]
+        params: List[str] = [order_number.strip()]
 
         if exclude_id is not None:
             query += " AND id <> ?"
@@ -54,7 +54,7 @@ class OrderManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (order_name,))
+                cursor.execute(query, (order_name.strip(),))
 
                 res: Optional[Tuple[str]] = cursor.fetchone()
                 if res:
@@ -65,7 +65,7 @@ class OrderManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (order_number,))
+                cursor.execute(query, (order_number.strip(),))
 
                 res: Optional[Tuple[str]] = cursor.fetchone()
                 if res:
@@ -76,7 +76,7 @@ class OrderManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (order_number,))
+                cursor.execute(query, (order_number.strip(),))
 
                 res: Optional[Tuple[str]] = cursor.fetchone()
                 if res:
@@ -110,7 +110,7 @@ class OrderManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (order_number, order_name, order_id))
+                cursor.execute(query, (order_number.strip(), order_name.strip(), order_id))
                 connection.commit()
 
     def get_orders(
@@ -126,7 +126,7 @@ class OrderManager(DatabaseConnection):
             AND (? IS NULL OR ? = '' OR name = ?)
         """
 
-        params: List[str] = [order_number] * 3 + [order_name] * 3
+        params: List[str] = [order_number.strip()] * 3 + [order_name.strip()] * 3
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
@@ -157,7 +157,7 @@ class OrderManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (order_number,))
+                cursor.execute(query, (order_number.strip(),))
                 return cursor.fetchone()[0]
 
     def get_spent_hours_by_order_2025(self) -> Dict[str, Decimal]:
@@ -176,7 +176,7 @@ class OrderManager(DatabaseConnection):
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
                 query: str = "SELECT id FROM orders WHERE number = ?"
-                cursor.execute(query, (order_number,))
+                cursor.execute(query, (order_number.strip(),))
                 order_id: int = cursor.fetchone()[0]
 
                 query: str = "SELECT SUM(planned_hours) FROM works WHERE order_id = ?"

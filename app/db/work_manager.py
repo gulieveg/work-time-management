@@ -13,7 +13,7 @@ class WorkManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (order_id, work_name, planned_hours))
+                cursor.execute(query, (order_id, work_name.strip(), planned_hours))
                 connection.commit()
 
     def update_work(self, work_id: int, work_name: str, planned_hours: Decimal) -> None:
@@ -21,7 +21,7 @@ class WorkManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (work_name, planned_hours, work_id))
+                cursor.execute(query, (work_name.strip(), planned_hours, work_id))
                 connection.commit()
 
     def delete_work(self, work_id: int) -> None:
@@ -39,7 +39,7 @@ class WorkManager(DatabaseConnection):
             WHERE order_id = ? AND name = ?
         """
 
-        params: List[str] = [order_id, work_name]
+        params: List[str] = [order_id, work_name.strip()]
 
         if exclude_id is not None:
             query += " AND id <> ?"
@@ -78,11 +78,11 @@ class WorkManager(DatabaseConnection):
             params.append(order_id)
         elif order_number:
             conditions.append("orders.number = ?")
-            params.append(order_number)
+            params.append(order_number.strip())
 
         if work_name:
             conditions.append("works.name = ?")
-            params.append(work_name)
+            params.append(work_name.strip())
 
         if conditions:
             query += " WHERE " + " AND ".join(conditions)
@@ -141,7 +141,7 @@ class WorkManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (order_number,))
+                cursor.execute(query, (order_number.strip(),))
 
                 works: List[Dict[str, Union[str, Decimal]]] = [
                     {

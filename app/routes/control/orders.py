@@ -76,21 +76,21 @@ def add_order() -> str:
             for work_name, planned_hours in dataframe.itertuples(index=False, name=None):
                 if pandas.isna(work_name) or pandas.isna(planned_hours):
                     continue
-                if db_manager.works.work_exists(order_id, str(work_name).strip()):
+                if db_manager.works.work_exists(order_id, str(work_name)):
                     continue
 
                 planned_hours: str = str(planned_hours).replace(" ", "").replace(",", ".")
-                db_manager.works.add_work(order_id, str(work_name).strip(), Decimal(planned_hours))
+                db_manager.works.add_work(order_id, str(work_name), Decimal(planned_hours))
 
         if work_names and work_planned_hours:
             for work_name, planned_hours in zip(work_names, work_planned_hours):
                 if not work_name or not planned_hours:
                     continue
-                if db_manager.works.work_exists(order_id, work_name.strip()):
+                if db_manager.works.work_exists(order_id, work_name):
                     continue
 
                 planned_hours: str = planned_hours.replace(" ", "").replace(",", ".")
-                db_manager.works.add_work(order_id, work_name.strip(), Decimal(planned_hours))
+                db_manager.works.add_work(order_id, work_name, Decimal(planned_hours))
 
         flash(message=MESSAGES["orders"]["order_added"], category="info")
         return render_template("control/orders/add_order.html")
