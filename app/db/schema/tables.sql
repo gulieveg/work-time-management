@@ -1,7 +1,7 @@
 IF OBJECT_ID('departments', 'U') IS NULL
 CREATE TABLE departments (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    name NVARCHAR(255) NOT NULL,
+    name NVARCHAR(100) NOT NULL,
     is_production BIT NOT NULL DEFAULT 0
 );
 
@@ -11,7 +11,7 @@ CREATE TABLE employees (
     name NVARCHAR(255) NOT NULL,
     personnel_number NVARCHAR(100) UNIQUE NOT NULL,
     department NVARCHAR(100) NOT NULL,
-    category NVARCHAR(50) NOT NULL,
+    category NVARCHAR(100) NOT NULL,
     CONSTRAINT check_employee_category
         CHECK (category IN (N'worker', N'specialist', N'manager'))
 );
@@ -48,25 +48,25 @@ CREATE TABLE hours (
 IF OBJECT_ID('tasks', 'U') IS NULL
 CREATE TABLE tasks (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    employee_name NVARCHAR(100) NOT NULL,
+    employee_name NVARCHAR(255) NOT NULL,
     personnel_number NVARCHAR(100) NOT NULL,
     department NVARCHAR(100) NOT NULL,
     work_name NVARCHAR(MAX) NOT NULL,
     hours DECIMAL(10,2) NOT NULL DEFAULT 0,
-    order_number NVARCHAR(100) NOT NULL,
-    order_name NVARCHAR(100) NOT NULL,
+    order_number NVARCHAR(255) NOT NULL,
+    order_name NVARCHAR(MAX) NOT NULL,
     operation_date DATE NOT NULL DEFAULT GETDATE(),
-    employee_category NVARCHAR(50) NOT NULL
+    employee_category NVARCHAR(100) NOT NULL
 );
 
 IF OBJECT_ID('users', 'U') IS NULL
 CREATE TABLE users (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    name NVARCHAR(100) NOT NULL,
+    name NVARCHAR(255) NOT NULL,
     department NVARCHAR(100) NOT NULL,
     login NVARCHAR(100) UNIQUE NOT NULL,
     password_hash NVARCHAR(255),
-    permissions_level NVARCHAR(50) NOT NULL DEFAULT 'standard',
+    permissions_level NVARCHAR(100) NOT NULL DEFAULT 'standard',
     is_account_enabled BIT NOT NULL DEFAULT 0,
     is_factory_worker BIT NOT NULL DEFAULT 0,
     CONSTRAINT check_permissions_level
