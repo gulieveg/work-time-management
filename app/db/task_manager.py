@@ -41,15 +41,15 @@ class TaskManager(DatabaseConnection):
                 cursor.execute(
                     query,
                     (
-                        employee_name,
-                        personnel_number,
-                        department,
-                        work_name,
+                        employee_name.strip(),
+                        personnel_number.strip(),
+                        department.strip(),
+                        work_name.strip(),
                         hours,
-                        order_number,
-                        order_name,
+                        order_number.strip(),
+                        order_name.strip(),
                         operation_date,
-                        employee_category,
+                        employee_category.strip(),
                     ),
                 )
 
@@ -178,15 +178,15 @@ class TaskManager(DatabaseConnection):
 
         if order_number:
             query += " AND order_number = ?"
-            params.append(order_number)
+            params.append(order_number.strip())
 
         if work_name:
             query += " AND work_name = ?"
-            params.append(work_name)
+            params.append(work_name.strip())
 
         if order_name:
             query += " AND order_name = ?"
-            params.append(order_name)
+            params.append(order_name.strip())
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
@@ -241,13 +241,13 @@ class TaskManager(DatabaseConnection):
                 cursor.execute(
                     query,
                     (
-                        employee_name,
-                        personnel_number,
-                        department,
-                        work_name,
+                        employee_name.strip(),
+                        personnel_number.strip(),
+                        department.strip(),
+                        work_name.strip(),
                         hours,
-                        order_number,
-                        order_name,
+                        order_number.strip(),
+                        order_name.strip(),
                         operation_date,
                         task_id,
                     ),

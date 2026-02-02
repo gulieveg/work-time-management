@@ -38,9 +38,9 @@ class UserManager(DatabaseConnection):
                 cursor.execute(
                     query,
                     (
-                        name,
-                        department,
-                        login,
+                        name.strip(),
+                        department.strip(),
+                        login.strip(),
                         password_hash,
                         permissions_level,
                         is_user_factory_worker,
@@ -69,7 +69,7 @@ class UserManager(DatabaseConnection):
         is_user_account_enabled: str,
     ) -> None:
         fields: List[str] = ["name = ?", "department = ?", "login = ?"]
-        params: List[str] = [user_name, user_department, user_login]
+        params: List[str] = [user_name.strip(), user_department.strip(), user_login.strip()]
 
         if user_password and user_password.strip():
             fields.append("password_hash = ?")
@@ -109,7 +109,7 @@ class UserManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (password_hash, login))
+                cursor.execute(query, (password_hash, login.strip()))
                 connection.commit()
 
     def authenticate_user(self, login: str, password: str) -> bool:
@@ -119,7 +119,7 @@ class UserManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (login, password_hash))
+                cursor.execute(query, (login.strip(), password_hash))
                 return cursor.fetchone() is not None
 
     def is_user_existing(self, login: str) -> bool:
@@ -127,13 +127,13 @@ class UserManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (login,))
+                cursor.execute(query, (login.strip(),))
                 return cursor.fetchone() is not None
 
     def is_login_available(self, login: str, exclude_id: Optional[int] = None) -> bool:
         query: str = "SELECT login FROM users WHERE login = ?"
 
-        params: List[str] = [login]
+        params: List[str] = [login.strip()]
 
         if exclude_id is not None:
             query += " AND id <> ?"
@@ -150,7 +150,7 @@ class UserManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (login,))
+                cursor.execute(query, (login.strip(),))
                 return cursor.fetchone()[0]
 
     def is_user_disabled(self, user_id: int) -> bool:
@@ -166,7 +166,7 @@ class UserManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (login,))
+                cursor.execute(query, (login.strip(),))
                 record: Optional[Tuple[str]] = cursor.fetchone()
                 return bool(record and record[0])
 
@@ -220,7 +220,7 @@ class UserManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (login,))
+                cursor.execute(query, (login.strip(),))
 
                 user_data: Optional[Tuple[str]] = cursor.fetchone()
                 if user_data:
@@ -251,10 +251,10 @@ class UserManager(DatabaseConnection):
 
         if user_name:
             conditions.append("name = ?")
-            params.append(user_name)
+            params.append(user_name.strip())
         if user_login:
             conditions.append("login = ?")
-            params.append(user_login)
+            params.append(user_login.strip())
 
         if conditions:
             query += " WHERE " + " AND ".join(conditions)
@@ -299,7 +299,7 @@ class UserManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (user_login,))
+                cursor.execute(query, (user_login.strip(),))
 
                 row: Optional[Tuple[str]] = cursor.fetchone()
                 return row and row[0]
@@ -309,7 +309,7 @@ class UserManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (user_name,))
+                cursor.execute(query, (user_name.strip(),))
 
                 row: Optional[Tuple[str]] = cursor.fetchone()
                 return row and row[0]

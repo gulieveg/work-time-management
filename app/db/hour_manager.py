@@ -19,7 +19,7 @@ class HourManager(DatabaseConnection):
                     INSERT INTO hours (order_name, order_number, work_name, spent_hours)
                     VALUES (?, ?, ?, ?)
                 """
-                cursor.execute(query, (order_name, order_number, work_name, spent_hours))
+                cursor.execute(query, (order_name.strip(), order_number.strip(), work_name.strip(), spent_hours))
 
                 query: str = """
                     UPDATE works
@@ -37,7 +37,7 @@ class HourManager(DatabaseConnection):
                     SET planned_hours = 0, spent_hours = 0
                     WHERE order_id = ? AND name = ?
                 """
-                cursor.execute(query, (order_id, work_name))
+                cursor.execute(query, (order_id, work_name.strip()))
 
                 query: str = "DELETE FROM hours WHERE id = ?"
                 cursor.execute(query, (hours_id,))

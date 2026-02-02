@@ -14,7 +14,7 @@ class EmployeeManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (name, personnel_number, department, category))
+                cursor.execute(query, (name.strip(), personnel_number.strip(), department.strip(), category.strip()))
                 connection.commit()
 
     def update_employee(
@@ -40,10 +40,10 @@ class EmployeeManager(DatabaseConnection):
                 cursor.execute(
                     query,
                     (
-                        employee_name,
-                        personnel_number,
-                        employee_department,
-                        employee_category,
+                        employee_name.strip(),
+                        personnel_number.strip(),
+                        employee_department.strip(),
+                        employee_category.strip(),
                         employee_id,
                     ),
                 )
@@ -66,7 +66,7 @@ class EmployeeManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (personnel_number, operation_date))
+                cursor.execute(query, (personnel_number.strip(), operation_date))
                 used_hours: Decimal = cursor.fetchone()[0]
 
                 if used_hours is None:
@@ -75,7 +75,7 @@ class EmployeeManager(DatabaseConnection):
 
     def get_employee_free_hours(self, personnel_number: str, operation_date: str) -> Decimal:
         hours_per_day: Decimal = Decimal(8.25)
-        used_hours: Decimal = self.get_employee_used_hours(personnel_number, operation_date)
+        used_hours: Decimal = self.get_employee_used_hours(personnel_number.strip(), operation_date)
         return hours_per_day - used_hours
 
     def get_employee_department(self, personnel_number: str) -> Optional[str]:
@@ -83,7 +83,7 @@ class EmployeeManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (personnel_number,))
+                cursor.execute(query, (personnel_number.strip(),))
 
                 res: Optional[Tuple[str]] = cursor.fetchone()
                 if res:
@@ -94,7 +94,7 @@ class EmployeeManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (personnel_number,))
+                cursor.execute(query, (personnel_number.strip(),))
 
                 res: Optional[Tuple[str]] = cursor.fetchone()
                 if res:
@@ -116,7 +116,7 @@ class EmployeeManager(DatabaseConnection):
     def employee_exists(self, personnel_number: str, exclude_id: Optional[int] = None) -> bool:
         query: str = "SELECT * FROM employees WHERE personnel_number = ?"
 
-        params: List[str] = [personnel_number]
+        params: List[str] = [personnel_number.strip()]
 
         if exclude_id is not None:
             query += " AND id <> ?"
@@ -172,10 +172,10 @@ class EmployeeManager(DatabaseConnection):
 
         if employee_name:
             conditions.append("name = ?")
-            params.append(employee_name)
+            params.append(employee_name.strip())
         if personnel_number:
             conditions.append("personnel_number = ?")
-            params.append(personnel_number)
+            params.append(personnel_number.strip())
 
         if conditions:
             query += " WHERE " + " AND ".join(conditions)
@@ -220,7 +220,7 @@ class EmployeeManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (personnel_number,))
+                cursor.execute(query, (personnel_number.strip(),))
 
                 row: Optional[Tuple[str]] = cursor.fetchone()
                 return row and row[0]
@@ -230,7 +230,7 @@ class EmployeeManager(DatabaseConnection):
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, (employee_name,))
+                cursor.execute(query, (employee_name.strip(),))
 
                 row: Optional[Tuple[str]] = cursor.fetchone()
                 return row and row[0]
