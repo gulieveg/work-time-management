@@ -135,7 +135,7 @@ class EmployeeManager(DatabaseConnection):
             return None
         return matched.group("employee_name"), matched.group("personnel_number")
 
-    def get_total_employee_count(self) -> int:
+    def get_employees_count(self) -> int:
         query: str = "SELECT COUNT(*) FROM employees"
 
         with self.get_connection() as connection:

@@ -150,7 +150,7 @@ class OrderManager(DatabaseConnection):
                 orders: List[Tuple[str]] = cursor.fetchall()
                 return orders
 
-    def get_total_order_count(self) -> int:
+    def get_orders_count(self) -> int:
         query: str = "SELECT COUNT(*) FROM orders"
 
         with self.get_connection() as connection:

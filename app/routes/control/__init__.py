@@ -33,8 +33,8 @@ db_manager: DatabaseManager = DatabaseManager()
 def index() -> str:
     context: Dict[str, int] = {
         "user_name": current_user.name,
-        "total_orders": db_manager.orders.get_total_order_count(),
-        "total_employees": db_manager.employees.get_total_employee_count(),
-        "total_tasks": db_manager.tasks.get_total_task_count(),
+        "orders_count": db_manager.orders.get_orders_count(),
+        "employees_count": db_manager.employees.get_employees_count(),
+        "tasks_count": db_manager.tasks.get_tasks_count(),
     }
     return render_template("control/index.html", **context)

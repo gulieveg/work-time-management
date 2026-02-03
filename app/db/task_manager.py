@@ -254,7 +254,7 @@ class TaskManager(DatabaseConnection):
                 )
                 connection.commit()
 
-    def get_total_task_count(self) -> int:
+    def get_tasks_count(self) -> int:
         query: str = "SELECT COUNT(*) FROM tasks"
 
         with self.get_connection() as connection:
