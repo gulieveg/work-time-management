@@ -20,8 +20,6 @@ def works_table() -> str:
     order_number: str = request.args.get("order_number")
     work_name: str = request.args.get("work_name")
 
-    print(work_name)
-
     args: Dict[str, str] = {
         "order_id": order_id,
         "order_number": order_number,
