@@ -26,15 +26,14 @@ def load_user(user_id: int) -> Optional[User]:
 
 def load_settings() -> Dict[str, Union[bool, str, int]]:
     with open(file="config.json", mode="r") as file:
-        data: Dict[str, Dict[str, Union[bool, str, int]]] = json.load(file)
-    config_mode: str = encoding.decode_base64(config("APP_ENV"))
-    return data[config_mode]
+        data: Dict[str, Union[bool, str, int]] = json.load(file)
+    return data
 
 
 def create_app() -> Flask:
     app: Flask = Flask(__name__, static_folder="static", template_folder="templates")
 
-    app.secret_key = encoding.decode_base64(config("APP_SECRET_KEY"))
+    app.secret_key = encoding.decode_base64(config("SECRET_KEY"))
     app.config["MAINTENANCE_MODE"] = False
 
     app.permanent_session_lifetime = datetime.timedelta(hours=9)
