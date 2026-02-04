@@ -40,7 +40,7 @@ def create_app() -> Flask:
 
     register_template_filters(app)
     register_routes(app)
-    register_middlewares(app)
+    # register_middlewares(app)
     register_error_handlers(app)
 
     login_manager.init_app(app)
