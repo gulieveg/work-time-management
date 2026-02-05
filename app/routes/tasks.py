@@ -96,6 +96,7 @@ def add_task() -> Union[str, Response]:
                         "operation_date": operation_date,
                         "employee_category": employee_category,
                     }
+                    db_manager.tasks.add_task(**args)
         flash(message="Задания успешно добавлены.", category="info")
         return redirect(url_for("tasks.add_task"))
     return render_template("tasks/add_task.html")
