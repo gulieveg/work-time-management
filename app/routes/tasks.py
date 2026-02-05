@@ -8,7 +8,7 @@ from flask_login import login_required
 from werkzeug.wrappers import Response
 
 from app.db import DatabaseManager
-from app.utils import MESSAGES, generate_report, get_log_data, permission_required
+from app.utils import MESSAGES, generate_report, permission_required
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
 
@@ -96,16 +96,6 @@ def add_task() -> Union[str, Response]:
                         "operation_date": operation_date,
                         "employee_category": employee_category,
                     }
-                    task_id: int = db_manager.tasks.add_task(**args)
-
-                    log_data: Dict[str, Union[str, int]] = get_log_data()
-
-                    log_data["action"] = "create"
-                    log_data["entity_id"] = task_id
-                    log_data["entity_type"] = "task"
-
-                    db_manager.logs.create_log(**log_data)
-
         flash(message="Задания успешно добавлены.", category="info")
         return redirect(url_for("tasks.add_task"))
     return render_template("tasks/add_task.html")
@@ -192,14 +182,6 @@ def edit_task(task_id: int) -> Union[str, Response]:
         }
         db_manager.tasks.update_task(**args)
 
-        log_data: Dict[str, Union[str, int]] = get_log_data()
-
-        log_data["action"] = "update"
-        log_data["entity_id"] = task_id
-        log_data["entity_type"] = "task"
-
-        db_manager.logs.create_log(**log_data)
-
         params: Dict[str, str] = {
             "departments[]": request.args.getlist("departments[]"),
             "start_date": request.args.get("start_date"),
@@ -226,15 +208,6 @@ def delete_task(task_id: str) -> Response:
         "work_name": request.form.get("work_name"),
         "order_name": request.form.get("order_name"),
     }
-
-    log_data: Dict[str, Union[str, int]] = get_log_data()
-
-    log_data["action"] = "delete"
-    log_data["entity_id"] = task_id
-    log_data["entity_type"] = "task"
-
-    db_manager.logs.create_log(**log_data)
-
     db_manager.tasks.delete_task(task_id)
     return redirect(url_for("tasks.tasks_table", **params))
 

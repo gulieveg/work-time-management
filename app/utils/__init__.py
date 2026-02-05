@@ -1,7 +1,6 @@
 from flask import Flask
 
 from .errors import handle_error_404
-from .logs import get_log_data
 from .messages import MESSAGES
 from .permissions import permission_required
 from .reports import generate_report
