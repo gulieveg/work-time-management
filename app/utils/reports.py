@@ -6,7 +6,7 @@ from typing import Dict, List, NamedTuple, Union
 
 import pandas
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font
+from openpyxl.styles import Alignment, Border, Font, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.worksheet import Worksheet
 
@@ -28,33 +28,76 @@ class OrderKey(NamedTuple):
     order_name: str
 
 
-def write_data_to_worksheet(
-    worksheet: Worksheet,
-    grouped_data: GroupedData,
-    headers: Headers,
-) -> None:
+def write_data_to_worksheet(worksheet: Worksheet, grouped_data: GroupedData, headers: Headers) -> None:
     dataframe: pandas.DataFrame = pandas.DataFrame(data=grouped_data, columns=headers)
 
     for r in dataframe_to_rows(dataframe, index=False, header=True):
         worksheet.append(r)
 
-    worksheet.auto_filter.ref = worksheet.dimensions
+    worksheet.auto_filter.ref = "A1:B1"
 
     for cell in worksheet[1]:
         cell.font = Font(bold=True)
 
-    for col_index, col in enumerate(worksheet.columns):
-        width: int = len(str(worksheet[1][col_index].value))
-        column: str = col[0].column_letter
+    column_widths: Dict[str, int] = {
+        "A": 22,
+        "B": 44,
+        "C": 22,
+        "D": 22,
+        "E": 22,
+    }
+
+    for col in worksheet.columns:
+        column_letter = col[0].column_letter
+
+        worksheet.column_dimensions[column_letter].width = column_widths[column_letter]
+
         for cell in col:
-            if len(str(cell.value)) > width:
-                width: int = len(str(cell.value))
-        adjusted_width: int = width + 10
-        worksheet.column_dimensions[column].width = adjusted_width
+            cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+
+    border_style = Border(
+        Side(border_style="thin"),
+        Side(border_style="thin"),
+        Side(border_style="thin"),
+        Side(border_style="thin"),
+    )
+
+    last_row = worksheet.max_row
+
+    worksheet.merge_cells(f"A{last_row}:B{last_row}")
 
     for row in worksheet.iter_rows():
         for cell in row:
-            cell.alignment = Alignment(horizontal="center", vertical="center")
+            cell.border = border_style
+
+
+def write_data_to_order_worksheet(workbook: Workbook, grouped_data: GroupedData) -> None:
+    worksheet: Worksheet = workbook.active
+    # worksheet.title = "Заказы"
+
+    headers: Headers = [
+        "Номер заказа",
+        "Наименование заказа",
+        "Плановая трудоемкость, ч",
+        "Фактическая трудоемкость, ч",
+        "Остаточная трудоемкость, ч",
+    ]
+
+    write_data_to_worksheet(worksheet, grouped_data, headers)
+
+
+def generate_report(grouped_data: GroupedData) -> BytesIO:
+    workbook: Workbook = Workbook()
+
+    # write_data_to_task_worksheet(workbook, grouped_data)
+    # write_data_to_employee_worksheet(workbook, grouped_data)
+
+    write_data_to_order_worksheet(workbook, grouped_data)
+
+    file: BytesIO = BytesIO()
+    workbook.save(file)
+    file.seek(0)
+    return file
 
 
 def write_data_to_task_worksheet(workbook: Workbook, tasks: Tasks) -> None:
@@ -139,32 +182,3 @@ def write_data_to_employee_worksheet(workbook: Workbook, tasks: Tasks) -> None:
     ]
 
     write_data_to_worksheet(worksheet, grouped_data, headers)
-
-
-def write_data_to_order_worksheet(workbook: Workbook, grouped_data: GroupedData) -> None:
-    worksheet: Worksheet = workbook.active
-    # worksheet.title = "Заказы"
-
-    headers: Headers = [
-        "Номер заказа",
-        "Наименование заказа",
-        "Плановая трудоемкость, ч",
-        "Фактическая трудоемкость, ч",
-        "Остаточная трудоемкость, ч",
-    ]
-
-    write_data_to_worksheet(worksheet, grouped_data, headers)
-
-
-def generate_report(grouped_data: GroupedData) -> BytesIO:
-    workbook: Workbook = Workbook()
-
-    # write_data_to_task_worksheet(workbook, grouped_data)
-    # write_data_to_employee_worksheet(workbook, grouped_data)
-
-    write_data_to_order_worksheet(workbook, grouped_data)
-
-    file: BytesIO = BytesIO()
-    workbook.save(file)
-    file.seek(0)
-    return file
