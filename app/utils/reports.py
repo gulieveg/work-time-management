@@ -12,20 +12,8 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
 GroupedData = List[List[Union[str, Decimal]]]
+
 Headers = List[str]
-
-
-class EmployeeKey(NamedTuple):
-    employee_name: str
-    personnel_number: str
-    employee_category: str
-    department: str
-    operation_date: str
-
-
-class OrderKey(NamedTuple):
-    order_number: str
-    order_name: str
 
 
 def write_data_to_worksheet(worksheet: Worksheet, grouped_data: GroupedData, headers: Headers) -> None:
@@ -41,7 +29,7 @@ def write_data_to_worksheet(worksheet: Worksheet, grouped_data: GroupedData, hea
 
     column_widths: Dict[str, int] = {
         "A": 22,
-        "B": 44,
+        "B": 66,
         "C": 22,
         "D": 22,
         "E": 22,
@@ -93,96 +81,9 @@ def write_data_to_order_worksheet(workbook: Workbook, grouped_data: GroupedData)
 def generate_report(grouped_data: GroupedData) -> BytesIO:
     workbook: Workbook = Workbook()
 
-    # write_data_to_task_worksheet(workbook, grouped_data)
-    # write_data_to_employee_worksheet(workbook, grouped_data)
-
     write_data_to_order_worksheet(workbook, grouped_data)
 
     file: BytesIO = BytesIO()
     workbook.save(file)
     file.seek(0)
     return file
-
-
-def write_data_to_task_worksheet(workbook: Workbook, tasks: Tasks) -> None:
-    worksheet: Worksheet = workbook.active
-    worksheet.title = "Задания"
-
-    headers: Headers = [
-        "ФИО сотрудника",
-        "Таб. номер",
-        "Роль сотрудника",
-        "Наименование подразделения",
-        "Дата",
-        "Номер заказа",
-        "Наименование заказа",
-        "Фактическая трудоемкость, ч",
-    ]
-
-    categories: Dict[str, str] = {
-        "worker": "Рабочий",
-        "specialist": "Специалист",
-        "manager": "Ведущий специалист",
-    }
-
-    grouped_data: GroupedData = [
-        [
-            task["employee_name"],
-            task["personnel_number"],
-            categories[task["employee_category"]],
-            task["department"],
-            datetime.strptime(task["operation_date"], "%Y-%m-%d").date(),
-            task["order_number"],
-            task["order_name"],
-            task["hours"],
-        ]
-        for task in tasks
-    ]
-
-    write_data_to_worksheet(worksheet, grouped_data, headers)
-
-
-def write_data_to_employee_worksheet(workbook: Workbook, tasks: Tasks) -> None:
-    worksheet: Worksheet = workbook.create_sheet()
-    worksheet.title = "Сотрудники"
-
-    headers: Headers = [
-        "ФИО сотрудника",
-        "Таб. номер",
-        "Роль сотрудника",
-        "Наименование подразделения",
-        "Дата",
-        "Фактическая трудоемкость, ч",
-    ]
-
-    aggregated_hours: Dict[EmployeeKey, Decimal] = defaultdict(Decimal)
-
-    for task in tasks:
-        key: EmployeeKey = EmployeeKey(
-            employee_name=task["employee_name"],
-            personnel_number=task["personnel_number"],
-            employee_category=task["employee_category"],
-            department=task["department"],
-            operation_date=task["operation_date"],
-        )
-        aggregated_hours[key] += task["hours"]
-
-    categories: Dict[str, str] = {
-        "worker": "Рабочий",
-        "specialist": "Специалист",
-        "manager": "Ведущий специалист",
-    }
-
-    grouped_data: GroupedData = [
-        [
-            key.employee_name,
-            key.personnel_number,
-            categories[key.employee_category],
-            key.department,
-            datetime.strptime(key.operation_date, "%Y-%m-%d").date(),
-            spent_hours,
-        ]
-        for key, spent_hours in aggregated_hours.items()
-    ]
-
-    write_data_to_worksheet(worksheet, grouped_data, headers)
