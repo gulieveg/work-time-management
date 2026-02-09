@@ -86,7 +86,7 @@ def reports() -> str:
             total_spent_hours += order_data[3]
             total_remaining_hours += order_data[4]
 
-        total_hours: List[Decimal] = [
+        total_hours: List[Union[str, Decimal]] = [
             "ИТОГО",
             "",
             total_planned_hours,
