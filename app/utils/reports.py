@@ -6,7 +6,7 @@ from typing import Dict, List, NamedTuple, Union
 
 import pandas
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Border, Font, Side
+from openpyxl.styles import Alignment, Border, Font, NamedStyle, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.worksheet import Worksheet
 
@@ -47,12 +47,16 @@ def write_data_to_worksheet(worksheet: Worksheet, grouped_data: GroupedData, hea
         "E": 22,
     }
 
+    number_style = NamedStyle(name="number_style", number_format="0.00")
+
     for col in worksheet.columns:
         column_letter = col[0].column_letter
 
         worksheet.column_dimensions[column_letter].width = column_widths[column_letter]
 
         for cell in col:
+            if cell.row > 1 and column_letter in ["C", "D", "E"]:
+                cell.style = number_style
             cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
 
     border_style = Border(
