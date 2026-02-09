@@ -96,8 +96,6 @@ def reports() -> str:
 
         grouped_data.append(total_hours)
 
-        print(grouped_data)
-
         file: BytesIO = generate_report(grouped_data)
         filename: str = "report_{}.xlsx".format(today)
         return send_file(file, as_attachment=True, download_name=filename)
