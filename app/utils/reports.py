@@ -1,8 +1,6 @@
-from collections import defaultdict
-from datetime import datetime
 from decimal import Decimal
 from io import BytesIO
-from typing import Dict, List, NamedTuple, Union
+from typing import Dict, List, Union
 
 import pandas
 from openpyxl import Workbook
@@ -65,7 +63,6 @@ def write_data_to_worksheet(worksheet: Worksheet, grouped_data: GroupedData, hea
 
 def write_data_to_order_worksheet(workbook: Workbook, grouped_data: GroupedData) -> None:
     worksheet: Worksheet = workbook.active
-    # worksheet.title = "Заказы"
 
     headers: Headers = [
         "Номер заказа",
