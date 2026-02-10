@@ -33,9 +33,9 @@ def tasks_table() -> Union[str, Response]:
     tasks: Tasks = db_manager.tasks.get_tasks(**args)
     departments: List[str] = db_manager.employees.get_departments()
 
-    if request.args.get("export"):
-        file: BytesIO = generate_report(tasks)
-        return send_file(file, as_attachment=True, download_name="report.xlsx")
+    # if request.args.get("export"):
+    #     file: BytesIO = generate_report(tasks)
+    #     return send_file(file, as_attachment=True, download_name="report.xlsx")
 
     today: str = datetime.today().strftime("%Y-%m-%d")
     context: Dict[str, Union[str, Tasks]] = {

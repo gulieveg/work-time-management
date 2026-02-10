@@ -131,8 +131,6 @@ def reports() -> str:
             for key, value in aggregated_hours.items()
         ]
 
-        print(employees_data)
-
         file: BytesIO = generate_report(tasks_data, employees_data, grouped_orders_data)
         return send_file(file, as_attachment=True, download_name=f"{today}.xlsx")
 
