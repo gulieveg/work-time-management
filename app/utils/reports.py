@@ -14,11 +14,21 @@ GroupedData = List[List[Union[str, Decimal]]]
 Headers = List[str]
 
 
-def write_data_to_worksheet(worksheet: Worksheet, grouped_data: GroupedData, headers: Headers) -> None:
+def write_orders_data(workbook: Workbook, grouped_data: GroupedData) -> None:
+    headers: Headers = [
+        "Номер заказа",
+        "Наименование заказа",
+        "Плановая трудоемкость, ч",
+        "Фактическая трудоемкость, ч",
+        "Остаточная трудоемкость, ч",
+    ]
+
     dataframe: pandas.DataFrame = pandas.DataFrame(data=grouped_data, columns=headers)
 
-    for r in dataframe_to_rows(dataframe, index=False, header=True):
-        worksheet.append(r)
+    worksheet: Worksheet = workbook.active
+
+    for row in dataframe_to_rows(dataframe, index=False, header=True):
+        worksheet.append(row)
 
     worksheet.auto_filter.ref = "A1:B1"
 
@@ -33,17 +43,24 @@ def write_data_to_worksheet(worksheet: Worksheet, grouped_data: GroupedData, hea
         "E": 22,
     }
 
-    number_style = NamedStyle(name="number_style", number_format="0.00")
+    cell_style: NamedStyle = NamedStyle(name="cell_style", number_format="0.00")
 
     for col in worksheet.columns:
-        column_letter = col[0].column_letter
+        column_letter: str = col[0].column_letter
 
         worksheet.column_dimensions[column_letter].width = column_widths[column_letter]
 
         for cell in col:
             if cell.row > 1 and column_letter in ["C", "D", "E"]:
-                cell.style = number_style
+                cell.style = cell_style
             cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+
+    last_row: int = worksheet.max_row
+
+    worksheet.merge_cells(f"A{last_row}:B{last_row}")
+
+    for cell in worksheet[last_row]:
+        cell.font = Font(bold=True)
 
     border_style = Border(
         Side(border_style="thin"),
@@ -52,33 +69,15 @@ def write_data_to_worksheet(worksheet: Worksheet, grouped_data: GroupedData, hea
         Side(border_style="thin"),
     )
 
-    last_row = worksheet.max_row
-
-    worksheet.merge_cells(f"A{last_row}:B{last_row}")
-
     for row in worksheet.iter_rows():
         for cell in row:
             cell.border = border_style
 
 
-def write_data_to_order_worksheet(workbook: Workbook, grouped_data: GroupedData) -> None:
-    worksheet: Worksheet = workbook.active
-
-    headers: Headers = [
-        "Номер заказа",
-        "Наименование заказа",
-        "Плановая трудоемкость, ч",
-        "Фактическая трудоемкость, ч",
-        "Остаточная трудоемкость, ч",
-    ]
-
-    write_data_to_worksheet(worksheet, grouped_data, headers)
-
-
 def generate_report(grouped_data: GroupedData) -> BytesIO:
     workbook: Workbook = Workbook()
 
-    write_data_to_order_worksheet(workbook, grouped_data)
+    write_orders_data(workbook, grouped_data)
 
     file: BytesIO = BytesIO()
     workbook.save(file)

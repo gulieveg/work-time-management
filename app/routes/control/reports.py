@@ -77,24 +77,14 @@ def reports() -> str:
                 ]
                 grouped_data.append(order_data)
 
-        total_planned_hours: Decimal = Decimal(0)
-        total_spent_hours: Decimal = Decimal(0)
-        total_remaining_hours: Decimal = Decimal(0)
+        planned_hours, spent_hours, remaining_hours = Decimal(0), Decimal(0), Decimal(0)
 
         for order_data in grouped_data:
-            total_planned_hours += order_data[2]
-            total_spent_hours += order_data[3]
-            total_remaining_hours += order_data[4]
+            planned_hours += order_data[2]
+            spent_hours += order_data[3]
+            remaining_hours += order_data[4]
 
-        total_hours: List[Union[str, Decimal]] = [
-            "ИТОГО",
-            "",
-            total_planned_hours,
-            total_spent_hours,
-            total_remaining_hours,
-        ]
-
-        grouped_data.append(total_hours)
+        grouped_data.append(["ИТОГО", "", planned_hours, spent_hours, remaining_hours])
 
         file: BytesIO = generate_report(grouped_data)
         filename: str = "report_{}.xlsx".format(today)
