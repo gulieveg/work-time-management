@@ -47,7 +47,7 @@ def reports() -> str:
     if request.args.get("export"):
         tasks: Tasks = db_manager.tasks.get_tasks(start_date=start_date, end_date=end_date)
 
-        spent_hours_by_order: Dict[str, Decimal] = defaultdict(Decimal)  # { "order_number": "spent_hours" }
+        spent_hours_by_order: Dict[str, Decimal] = defaultdict(Decimal)  # key: order_number, value: spent_hours
 
         for task in tasks:
             spent_hours_by_order[task["order_number"]] += task["hours"]
@@ -86,7 +86,7 @@ def reports() -> str:
 
         grouped_orders_data.append(["ИТОГО", "", planned_hours, spent_hours, remaining_hours])
 
-        file: BytesIO = generate_report(grouped_orders_data)
+        file: BytesIO = generate_report(grouped_orders_data, tasks)
         return send_file(file, as_attachment=True, download_name=f"{today}.xlsx")
 
     return render_template("control/reports/generate_report.html")

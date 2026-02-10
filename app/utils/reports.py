@@ -9,13 +9,11 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.worksheet import Worksheet
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
-GroupedData = List[List[Union[str, Decimal]]]
-
-Headers = List[str]
+GroupedOrdersData = List[List[Union[str, Decimal]]]
 
 
-def write_orders_data(workbook: Workbook, grouped_data: GroupedData) -> None:
-    headers: Headers = [
+def write_orders_data(workbook: Workbook, grouped_data: GroupedOrdersData) -> None:
+    headers: List[str] = [
         "Номер заказа",
         "Наименование заказа",
         "Плановая трудоемкость, ч",
@@ -74,7 +72,7 @@ def write_orders_data(workbook: Workbook, grouped_data: GroupedData) -> None:
             cell.border = border_style
 
 
-def generate_report(grouped_data: GroupedData) -> BytesIO:
+def generate_report(grouped_data: GroupedOrdersData) -> BytesIO:
     workbook: Workbook = Workbook()
 
     write_orders_data(workbook, grouped_data)
