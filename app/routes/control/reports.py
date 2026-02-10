@@ -86,7 +86,54 @@ def reports() -> str:
 
         grouped_orders_data.append(["ИТОГО", "", planned_hours, spent_hours, remaining_hours])
 
-        file: BytesIO = generate_report(grouped_orders_data, tasks)
+        employee_categories: Dict[str, str] = {
+            "worker": "Рабочий",
+            "specialist": "Специалист",
+            "manager": "Ведущий специалист",
+        }
+
+        tasks_data: List[List[Union[str, Decimal]]] = [
+            [
+                task["employee_name"],
+                task["personnel_number"],
+                employee_categories[task["employee_category"]],
+                task["department"],
+                task["order_number"],
+                task["order_name"],
+                task["work_name"],
+                task["hours"],
+                task["operation_date"],
+            ]
+            for task in tasks
+        ]
+
+        aggregated_hours: defaultdict = defaultdict(Decimal)
+
+        for task in tasks:
+            key = (
+                task["employee_name"],
+                task["personnel_number"],
+                task["employee_category"],
+                task["department"],
+                task["operation_date"],
+            )
+            aggregated_hours[key] += task["hours"]
+
+        employees_data: List[List[Union[str, Decimal]]] = [
+            [
+                key[0],
+                key[1],
+                employee_categories[key[2]],
+                key[3],
+                key[4],
+                value,
+            ]
+            for key, value in aggregated_hours.items()
+        ]
+
+        print(employees_data)
+
+        file: BytesIO = generate_report(tasks_data, employees_data, grouped_orders_data)
         return send_file(file, as_attachment=True, download_name=f"{today}.xlsx")
 
     return render_template("control/reports/generate_report.html")
