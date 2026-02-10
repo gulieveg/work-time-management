@@ -58,7 +58,7 @@ def reports() -> str:
             for order_number, spent_hours in spent_hours_by_order_2025.items():
                 spent_hours_by_order[order_number] += spent_hours
 
-        grouped_data: List[List[Union[str, Decimal]]] = []
+        grouped_orders_data: List[List[Union[str, Decimal]]] = []
 
         order_numbers: Tuple[str] = tuple(spent_hours_by_order.keys())
 
@@ -75,19 +75,18 @@ def reports() -> str:
                     spent_hours,
                     remaining_hours,
                 ]
-                grouped_data.append(order_data)
+                grouped_orders_data.append(order_data)
 
         planned_hours, spent_hours, remaining_hours = Decimal(0), Decimal(0), Decimal(0)
 
-        for order_data in grouped_data:
+        for order_data in grouped_orders_data:
             planned_hours += order_data[2]
             spent_hours += order_data[3]
             remaining_hours += order_data[4]
 
-        grouped_data.append(["ИТОГО", "", planned_hours, spent_hours, remaining_hours])
+        grouped_orders_data.append(["ИТОГО", "", planned_hours, spent_hours, remaining_hours])
 
-        file: BytesIO = generate_report(grouped_data)
-        filename: str = "report_{}.xlsx".format(today)
-        return send_file(file, as_attachment=True, download_name=filename)
+        file: BytesIO = generate_report(grouped_orders_data)
+        return send_file(file, as_attachment=True, download_name=f"{today}.xlsx")
 
     return render_template("control/reports/generate_report.html")
