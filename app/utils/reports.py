@@ -49,7 +49,7 @@ def write_tasks_data(workbook: Workbook, tasks_data: Data) -> None:
         "I": 24,
     }
 
-    cell_style: NamedStyle = NamedStyle(name="cell_style-1", number_format="0.00")
+    cell_style: NamedStyle = NamedStyle(name="cell-style-1", number_format="0.00")
 
     for col in worksheet.columns:
         column_letter: str = col[0].column_letter
@@ -105,7 +105,7 @@ def write_employees_data(workbook: Workbook, employees_data: Data) -> None:
         "F": 18,
     }
 
-    cell_style: NamedStyle = NamedStyle(name="cell_style-2", number_format="0.00")
+    cell_style: NamedStyle = NamedStyle(name="cell-style-2", number_format="0.00")
 
     for col in worksheet.columns:
         column_letter: str = col[0].column_letter
@@ -159,7 +159,7 @@ def write_orders_data(workbook: Workbook, orders_data: Data) -> None:
         "E": 22,
     }
 
-    cell_style: NamedStyle = NamedStyle(name="cell_style-3", number_format="0.00")
+    cell_style: NamedStyle = NamedStyle(name="cell-style-3", number_format="0.00")
 
     for col in worksheet.columns:
         column_letter: str = col[0].column_letter
