@@ -79,8 +79,8 @@ def write_employees_data(workbook: Workbook, employees_data: Data) -> None:
         "Таб. номер",
         "Категория сотрудника",
         "Наименование подразделения",
-        "Затраченное время, ч",
         "Дата выполнения",
+        "Затраченное время, ч",
     ]
 
     dataframe: pandas.DataFrame = pandas.DataFrame(data=employees_data, columns=headers)
@@ -101,8 +101,8 @@ def write_employees_data(workbook: Workbook, employees_data: Data) -> None:
         "B": 18,
         "C": 18,
         "D": 22,
-        "E": 18,
-        "F": 24,
+        "E": 24,
+        "F": 18,
     }
 
     cell_style: NamedStyle = NamedStyle(name="cell_style-2", number_format="0.00")
