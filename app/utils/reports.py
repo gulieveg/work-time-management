@@ -27,7 +27,7 @@ def write_tasks_data(workbook: Workbook, tasks_data: Data) -> None:
     dataframe: pandas.DataFrame = pandas.DataFrame(data=tasks_data, columns=headers)
 
     worksheet: Worksheet = workbook.active
-    worksheet.title = "Sheet 1"
+    worksheet.title = "1"
 
     for row in dataframe_to_rows(dataframe, index=False, header=True):
         worksheet.append(row)
@@ -86,7 +86,7 @@ def write_employees_data(workbook: Workbook, employees_data: Data) -> None:
     dataframe: pandas.DataFrame = pandas.DataFrame(data=employees_data, columns=headers)
 
     worksheet: Worksheet = workbook.create_sheet()
-    worksheet.title = "Sheet 2"
+    worksheet.title = "2"
 
     for row in dataframe_to_rows(dataframe, index=False, header=True):
         worksheet.append(row)
@@ -141,7 +141,7 @@ def write_orders_data(workbook: Workbook, orders_data: Data) -> None:
     dataframe: pandas.DataFrame = pandas.DataFrame(data=orders_data, columns=headers)
 
     worksheet: Worksheet = workbook.create_sheet()
-    worksheet.title = "Sheet 3"
+    worksheet.title = "3"
 
     for row in dataframe_to_rows(dataframe, index=False, header=True):
         worksheet.append(row)

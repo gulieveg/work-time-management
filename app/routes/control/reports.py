@@ -86,6 +86,11 @@ def reports() -> str:
 
         grouped_orders_data.append(["ИТОГО", "", planned_hours, spent_hours, remaining_hours])
 
+        # --------------------------------------------------------------------------
+        # Начало кода для формирования листа со всеми заданиями за выбранный период.
+        # Накопительная трудоемкость за 2025 год тут не нужна.
+        # --------------------------------------------------------------------------
+
         employee_categories: Dict[str, str] = {
             "worker": "Рабочий",
             "specialist": "Специалист",
@@ -119,6 +124,10 @@ def reports() -> str:
             )
             aggregated_hours[key] += task["hours"]
 
+        # --------------------------------------------------------------------------
+        # Конец кода для формирования листа с заданиями за выбранный период
+        # --------------------------------------------------------------------------
+
         employees_data: List[List[Union[str, Decimal]]] = [
             [
                 key[0],
@@ -130,6 +139,9 @@ def reports() -> str:
             ]
             for key, value in aggregated_hours.items()
         ]
+
+        for task in tasks:
+            ...
 
         file: BytesIO = generate_report(tasks_data, employees_data, grouped_orders_data)
         return send_file(file, as_attachment=True, download_name=f"{today}.xlsx")
