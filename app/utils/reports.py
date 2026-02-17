@@ -31,6 +31,19 @@ def set_column_styles(worksheet: Worksheet, column_widths: Dict[str, int], style
             cell.border = border_style
 
 
+def style_last_row(
+    worksheet: Worksheet, merge_columns: Optional[List[str]] = None, bold_columns: Optional[List[str]] = None
+) -> None:
+    last_row: int = worksheet.max_row
+
+    if merge_columns:
+        worksheet.merge_cells(f"{merge_columns[0]}{last_row}:{merge_columns[-1]}{last_row}")
+
+    for cell in worksheet[last_row]:
+        if bold_columns and cell.column_letter in bold_columns:
+            cell.font = Font(bold=True)
+
+
 def write_data(
     workbook: Workbook,
     headers: List[str],
