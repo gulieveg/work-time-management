@@ -59,7 +59,7 @@ def write_data(
     dataframe: DataFrame = DataFrame(data=data, columns=headers)
     worksheet: Worksheet = workbook.create_sheet()
 
-    if sheet_name is not None:
+    if sheet_name:
         worksheet.title = sheet_name
 
     for row in dataframe_to_rows(dataframe, index=False, header=True):
