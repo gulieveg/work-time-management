@@ -130,12 +130,6 @@ def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -
         bold_last_row_columns=["A", "B", "C", "D", "E"],
     )
 
-    worksheet: Worksheet = workbook.worksheets[2]
-    last_row: int = worksheet.max_row
-    worksheet.merge_cells(f"A{last_row}:B{last_row}")
-    for cell in worksheet[last_row]:
-        cell.font = Font(bold=True)
-
     file: BytesIO = BytesIO()
     workbook.save(file)
     file.seek(0)
