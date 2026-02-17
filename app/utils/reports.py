@@ -32,7 +32,9 @@ def set_column_styles(worksheet: Worksheet, column_widths: Dict[str, int], style
 
 
 def style_last_row(
-    worksheet: Worksheet, merge_columns: Optional[List[str]] = None, bold_columns: Optional[List[str]] = None
+    worksheet: Worksheet,
+    merge_columns: Optional[List[str]] = None,
+    bold_columns: Optional[List[str]] = None,
 ) -> None:
     last_row: int = worksheet.max_row
 
