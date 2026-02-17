@@ -16,6 +16,21 @@ reports_bp: Blueprint = Blueprint("reports", __name__, url_prefix="/reports")
 db_manager: DatabaseManager = DatabaseManager()
 
 
+def is_valid_date_range(start_date: datetime = None, end_date: datetime = None) -> bool:
+    lower_bound: datetime = datetime(2024, 12, 31)
+    upper_bound: datetime = datetime(2026, 1, 1)
+
+    if not start_date and not end_date:
+        return True
+    elif not start_date and end_date and end_date > lower_bound:
+        return True
+    elif start_date and end_date and lower_bound < start_date < upper_bound and end_date >= start_date:
+        return True
+    elif start_date and lower_bound < start_date < upper_bound and not end_date:
+        return True
+    return False
+
+
 @reports_bp.route("", methods=["GET"])
 @login_required
 @permission_required(["advanced"])
@@ -23,26 +38,10 @@ def reports() -> str:
     start_date: str = request.args.get("start_date")
     end_date: str = request.args.get("end_date")
 
-    today: str = datetime.today().strftime("%Y-%m-%d")
-
     if start_date:
         start_date: Union[str, datetime] = datetime.strptime(start_date, "%Y-%m-%d")
     if end_date:
         end_date: Union[str, datetime] = datetime.strptime(end_date, "%Y-%m-%d")
-
-    is_date_range_valid: bool = False
-
-    lower_bound: datetime = datetime(2024, 12, 31)
-    upper_bound: datetime = datetime(2026, 1, 1)
-
-    if not start_date and not end_date:
-        is_date_range_valid = True
-    elif not start_date and end_date and end_date > lower_bound:
-        is_date_range_valid = True
-    elif start_date and end_date and lower_bound < start_date < upper_bound and end_date >= start_date:
-        is_date_range_valid = True
-    elif start_date and lower_bound < start_date < upper_bound and not end_date:
-        is_date_range_valid = True
 
     if request.args.get("export"):
         tasks: Tasks = db_manager.tasks.get_tasks(start_date=start_date, end_date=end_date)
@@ -52,7 +51,7 @@ def reports() -> str:
         for task in tasks:
             spent_hours_by_order[task["order_number"]] += task["hours"]
 
-        if is_date_range_valid:
+        if is_valid_date_range(start_date, end_date):
             spent_hours_by_order_2025: Dict[str, Decimal] = db_manager.orders.get_spent_hours_by_order_2025()
 
             for order_number, spent_hours in spent_hours_by_order_2025.items():
@@ -141,6 +140,6 @@ def reports() -> str:
         ]
 
         file: BytesIO = generate_report(tasks_data, employees_data, grouped_orders_data)
-        return send_file(file, as_attachment=True, download_name=f"{today}.xlsx")
+        return send_file(file, download_name="report.xlsx", as_attachment=True)
 
     return render_template("control/reports/generate_report.html")

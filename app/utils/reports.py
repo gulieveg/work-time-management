@@ -46,7 +46,7 @@ def style_last_row(
         worksheet.merge_cells(f"{merge_columns[0]}{last_row}:{merge_columns[-1]}{last_row}")
 
 
-def write_data(
+def write_data_to_worksheet(
     workbook: Workbook,
     headers: List[str],
     data: Data,
@@ -80,7 +80,7 @@ def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -
 
     workbook.remove(workbook.active)
 
-    write_data(
+    write_data_to_worksheet(
         workbook,
         [
             "ФИО сотрудника",
@@ -98,7 +98,7 @@ def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -
         style_columns=["H"],
     )
 
-    write_data(
+    write_data_to_worksheet(
         workbook,
         [
             "ФИО сотрудника",
@@ -113,7 +113,7 @@ def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -
         style_columns=["F"],
     )
 
-    write_data(
+    write_data_to_worksheet(
         workbook,
         [
             "Номер заказа",
