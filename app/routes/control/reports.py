@@ -112,6 +112,10 @@ def reports() -> str:
             for task in tasks
         ]
 
+        # --------------------------------------------------------------------------
+        # Конец кода для формирования листа с заданиями за выбранный период
+        # --------------------------------------------------------------------------
+
         aggregated_hours: defaultdict = defaultdict(Decimal)
 
         for task in tasks:
@@ -124,10 +128,6 @@ def reports() -> str:
             )
             aggregated_hours[key] += task["hours"]
 
-        # --------------------------------------------------------------------------
-        # Конец кода для формирования листа с заданиями за выбранный период
-        # --------------------------------------------------------------------------
-
         employees_data: List[List[Union[str, Decimal]]] = [
             [
                 key[0],
@@ -139,9 +139,6 @@ def reports() -> str:
             ]
             for key, value in aggregated_hours.items()
         ]
-
-        for task in tasks:
-            ...
 
         file: BytesIO = generate_report(tasks_data, employees_data, grouped_orders_data)
         return send_file(file, as_attachment=True, download_name=f"{today}.xlsx")

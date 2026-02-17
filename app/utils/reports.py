@@ -1,17 +1,17 @@
 from decimal import Decimal
 from io import BytesIO
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
-import pandas
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, NamedStyle, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.worksheet import Worksheet
+from pandas import DataFrame
 
 Data = List[List[Union[str, Decimal]]]
 
 
-def set_column_styles(worksheet: Worksheet, columns: Dict[str, int], style_columns: List[str]) -> None:
+def set_column_styles(worksheet: Worksheet, column_widths: Dict[str, int], style_columns: List[str]) -> None:
     cell_style: NamedStyle = NamedStyle(name="cell-style", number_format="0.00")
     border_style = Border(
         Side(border_style="thin"),
@@ -22,7 +22,7 @@ def set_column_styles(worksheet: Worksheet, columns: Dict[str, int], style_colum
 
     for column in worksheet.columns:
         column_letter: str = column[0].column_letter
-        worksheet.column_dimensions[column_letter].width = columns[column_letter]
+        worksheet.column_dimensions[column_letter].width = column_widths[column_letter]
 
         for cell in column:
             if cell.row > 1 and column_letter in style_columns:
@@ -33,14 +33,17 @@ def set_column_styles(worksheet: Worksheet, columns: Dict[str, int], style_colum
 
 def write_data(
     workbook: Workbook,
-    sheet_name: str,
     headers: List[str],
     data: Data,
     column_widths: Dict[str, int],
     style_columns: List[str],
+    sheet_name: Optional[str] = None,
 ) -> None:
-    dataframe = pandas.DataFrame(data=data, columns=headers)
-    worksheet = workbook.create_sheet(sheet_name)
+    dataframe: DataFrame = DataFrame(data=data, columns=headers)
+    worksheet: Worksheet = workbook.create_sheet()
+
+    if sheet_name is not None:
+        worksheet.title = sheet_name
 
     for row in dataframe_to_rows(dataframe, index=False, header=True):
         worksheet.append(row)
@@ -52,16 +55,13 @@ def write_data(
     set_column_styles(worksheet, column_widths, style_columns)
 
 
-# Основная функция для генерации отчета
 def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -> BytesIO:
-    workbook = Workbook()
+    workbook: Workbook = Workbook()
 
     workbook.remove(workbook.active)
 
-    # Настройка данных для каждой таблицы
     write_data(
         workbook,
-        "Tasks",
         [
             "ФИО сотрудника",
             "Таб. номер",
@@ -80,7 +80,6 @@ def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -
 
     write_data(
         workbook,
-        "Employees",
         [
             "ФИО сотрудника",
             "Таб. номер",
@@ -96,7 +95,6 @@ def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -
 
     write_data(
         workbook,
-        "Orders",
         [
             "Номер заказа",
             "Наименование заказа",
@@ -109,15 +107,13 @@ def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -
         style_columns=["C", "D", "E"],
     )
 
-    # Добавляем жирный шрифт для последней строки в таблице "Orders"
-    worksheet = workbook["Orders"]
-    last_row = worksheet.max_row
+    worksheet: Worksheet = workbook.worksheets[2]
+    last_row: int = worksheet.max_row
     worksheet.merge_cells(f"A{last_row}:B{last_row}")
     for cell in worksheet[last_row]:
         cell.font = Font(bold=True)
 
-    # Сохраняем в файл
-    file = BytesIO()
+    file: BytesIO = BytesIO()
     workbook.save(file)
     file.seek(0)
     return file
