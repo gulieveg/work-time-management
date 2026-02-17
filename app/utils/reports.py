@@ -11,56 +11,8 @@ from openpyxl.worksheet.worksheet import Worksheet
 Data = List[List[Union[str, Decimal]]]
 
 
-def write_tasks_data(workbook: Workbook, tasks_data: Data) -> None:
-    headers: List[str] = [
-        "ФИО сотрудника",
-        "Таб. номер",
-        "Категория сотрудника",
-        "Наименование подразделения",
-        "Номер заказа",
-        "Наименование заказа",
-        "Наименование работы",
-        "Затраченное время, ч",
-        "Дата выполнения",
-    ]
-
-    dataframe: pandas.DataFrame = pandas.DataFrame(data=tasks_data, columns=headers)
-
-    worksheet: Worksheet = workbook.active
-    worksheet.title = "1"
-
-    for row in dataframe_to_rows(dataframe, index=False, header=True):
-        worksheet.append(row)
-
-    worksheet.auto_filter.ref = worksheet.dimensions
-
-    for cell in worksheet[1]:
-        cell.font = Font(bold=True)
-
-    column_widths: Dict[str, int] = {
-        "A": 28,
-        "B": 18,
-        "C": 18,
-        "D": 22,
-        "E": 22,
-        "F": 44,
-        "G": 44,
-        "H": 18,
-        "I": 24,
-    }
-
-    cell_style: NamedStyle = NamedStyle(name="cell-style-1", number_format="0.00")
-
-    for col in worksheet.columns:
-        column_letter: str = col[0].column_letter
-
-        worksheet.column_dimensions[column_letter].width = column_widths[column_letter]
-
-        for cell in col:
-            if cell.row > 1 and column_letter == "H":
-                cell.style = cell_style
-            cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-
+def set_column_styles(worksheet: Worksheet, columns: Dict[str, int], style_columns: List[str]) -> None:
+    cell_style: NamedStyle = NamedStyle(name="cell-style", number_format="0.00")
     border_style = Border(
         Side(border_style="thin"),
         Side(border_style="thin"),
@@ -68,136 +20,105 @@ def write_tasks_data(workbook: Workbook, tasks_data: Data) -> None:
         Side(border_style="thin"),
     )
 
-    for row in worksheet.iter_rows():
-        for cell in row:
+    for column in worksheet.columns:
+        column_letter = column[0].column_letter
+        worksheet.column_dimensions[column_letter].width = columns.get(column_letter, 15)
+
+        for cell in column:
+            if cell.row > 1 and column_letter in style_columns:
+                cell.style = cell_style
+            cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
             cell.border = border_style
 
 
-def write_employees_data(workbook: Workbook, employees_data: Data) -> None:
-    headers: List[str] = [
-        "ФИО сотрудника",
-        "Таб. номер",
-        "Категория сотрудника",
-        "Наименование подразделения",
-        "Дата выполнения",
-        "Затраченное время, ч",
-    ]
-
-    dataframe: pandas.DataFrame = pandas.DataFrame(data=employees_data, columns=headers)
-
-    worksheet: Worksheet = workbook.create_sheet()
-    worksheet.title = "2"
+def write_data(
+    workbook: Workbook,
+    sheet_name: str,
+    headers: List[str],
+    data: Data,
+    column_widths: Dict[str, int],
+    style_columns: List[str] = [],
+    number_format: str = "0.00",
+) -> None:
+    dataframe = pandas.DataFrame(data=data, columns=headers)
+    worksheet = workbook.create_sheet(sheet_name)
 
     for row in dataframe_to_rows(dataframe, index=False, header=True):
         worksheet.append(row)
 
     worksheet.auto_filter.ref = worksheet.dimensions
-
     for cell in worksheet[1]:
         cell.font = Font(bold=True)
 
-    column_widths: Dict[str, int] = {
-        "A": 28,
-        "B": 18,
-        "C": 18,
-        "D": 22,
-        "E": 24,
-        "F": 18,
-    }
+    set_column_styles(worksheet, column_widths, style_columns, number_format)
 
-    cell_style: NamedStyle = NamedStyle(name="cell-style-2", number_format="0.00")
 
-    for col in worksheet.columns:
-        column_letter: str = col[0].column_letter
+# Основная функция для генерации отчета
+def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -> BytesIO:
+    workbook = Workbook()
 
-        worksheet.column_dimensions[column_letter].width = column_widths[column_letter]
+    workbook.remove(workbook.active)
 
-        for cell in col:
-            if cell.row > 1 and column_letter == "F":
-                cell.style = cell_style
-            cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-
-    border_style = Border(
-        Side(border_style="thin"),
-        Side(border_style="thin"),
-        Side(border_style="thin"),
-        Side(border_style="thin"),
+    # Настройка данных для каждой таблицы
+    write_data(
+        workbook,
+        "Tasks",
+        [
+            "ФИО сотрудника",
+            "Таб. номер",
+            "Категория сотрудника",
+            "Наименование подразделения",
+            "Номер заказа",
+            "Наименование заказа",
+            "Наименование работы",
+            "Затраченное время, ч",
+            "Дата выполнения",
+        ],
+        tasks_data,
+        {"A": 28, "B": 18, "C": 18, "D": 22, "E": 22, "F": 44, "G": 44, "H": 18, "I": 24},
+        style_columns=["H"],
     )
 
-    for row in worksheet.iter_rows():
-        for cell in row:
-            cell.border = border_style
+    write_data(
+        workbook,
+        "Employees",
+        [
+            "ФИО сотрудника",
+            "Таб. номер",
+            "Категория сотрудника",
+            "Наименование подразделения",
+            "Дата выполнения",
+            "Затраченное время, ч",
+        ],
+        employees_data,
+        {"A": 28, "B": 18, "C": 18, "D": 22, "E": 24, "F": 18},
+        style_columns=["F"],
+    )
 
+    write_data(
+        workbook,
+        "Orders",
+        [
+            "Номер заказа",
+            "Наименование заказа",
+            "Плановая трудоемкость, ч",
+            "Фактическая трудоемкость, ч",
+            "Остаточная трудоемкость, ч",
+        ],
+        orders_data,
+        {"A": 22, "B": 66, "C": 22, "D": 22, "E": 22},
+        style_columns=["C", "D", "E"],
+    )
 
-def write_orders_data(workbook: Workbook, orders_data: Data) -> None:
-    headers: List[str] = [
-        "Номер заказа",
-        "Наименование заказа",
-        "Плановая трудоемкость, ч",
-        "Фактическая трудоемкость, ч",
-        "Остаточная трудоемкость, ч",
-    ]
-
-    dataframe: pandas.DataFrame = pandas.DataFrame(data=orders_data, columns=headers)
-
-    worksheet: Worksheet = workbook.create_sheet()
-    worksheet.title = "3"
-
-    for row in dataframe_to_rows(dataframe, index=False, header=True):
-        worksheet.append(row)
-
-    worksheet.auto_filter.ref = "A1:B1"
-
-    for cell in worksheet[1]:
-        cell.font = Font(bold=True)
-
-    column_widths: Dict[str, int] = {
-        "A": 22,
-        "B": 66,
-        "C": 22,
-        "D": 22,
-        "E": 22,
-    }
-
-    cell_style: NamedStyle = NamedStyle(name="cell-style-3", number_format="0.00")
-
-    for col in worksheet.columns:
-        column_letter: str = col[0].column_letter
-
-        worksheet.column_dimensions[column_letter].width = column_widths[column_letter]
-
-        for cell in col:
-            if cell.row > 1 and column_letter in ["C", "D", "E"]:
-                cell.style = cell_style
-            cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-
-    last_row: int = worksheet.max_row
-
+    # Добавляем жирный шрифт для последней строки в таблице "Orders"
+    worksheet = workbook["Orders"]
+    last_row = worksheet.max_row
     worksheet.merge_cells(f"A{last_row}:B{last_row}")
-
     for cell in worksheet[last_row]:
         cell.font = Font(bold=True)
 
-    border_style = Border(
-        Side(border_style="thin"),
-        Side(border_style="thin"),
-        Side(border_style="thin"),
-        Side(border_style="thin"),
-    )
-
-    for row in worksheet.iter_rows():
-        for cell in row:
-            cell.border = border_style
-
-
-def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -> BytesIO:
-    workbook: Workbook = Workbook()
-
-    write_tasks_data(workbook, tasks_data)
-    write_employees_data(workbook, employees_data)
-    write_orders_data(workbook, orders_data)
-
-    file: BytesIO = BytesIO()
+    # Сохраняем в файл
+    file = BytesIO()
     workbook.save(file)
     file.seek(0)
     return file
