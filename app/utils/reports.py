@@ -21,8 +21,8 @@ def set_column_styles(worksheet: Worksheet, columns: Dict[str, int], style_colum
     )
 
     for column in worksheet.columns:
-        column_letter = column[0].column_letter
-        worksheet.column_dimensions[column_letter].width = columns.get(column_letter, 15)
+        column_letter: str = column[0].column_letter
+        worksheet.column_dimensions[column_letter].width = columns[column_letter]
 
         for cell in column:
             if cell.row > 1 and column_letter in style_columns:
@@ -37,8 +37,7 @@ def write_data(
     headers: List[str],
     data: Data,
     column_widths: Dict[str, int],
-    style_columns: List[str] = [],
-    number_format: str = "0.00",
+    style_columns: List[str],
 ) -> None:
     dataframe = pandas.DataFrame(data=data, columns=headers)
     worksheet = workbook.create_sheet(sheet_name)
@@ -50,7 +49,7 @@ def write_data(
     for cell in worksheet[1]:
         cell.font = Font(bold=True)
 
-    set_column_styles(worksheet, column_widths, style_columns, number_format)
+    set_column_styles(worksheet, column_widths, style_columns)
 
 
 # Основная функция для генерации отчета
