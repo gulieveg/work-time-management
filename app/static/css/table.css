@@ -19,7 +19,7 @@ table th {
     background-color: #213977;
     color: white;
     position: sticky;
-    top: 0;
+    top: 20px;
     z-index: 1000;
 }
 
