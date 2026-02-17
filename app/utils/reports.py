@@ -54,8 +54,8 @@ def write_data(
     column_widths: Dict[str, int],
     style_columns: List[str],
     sheet_name: Optional[str] = None,
-    bold_last_row_columns: Optional[List[str]] = None,
     merge_last_row_columns: Optional[List[str]] = None,
+    bold_last_row_columns: Optional[List[str]] = None,
 ) -> None:
     dataframe: DataFrame = DataFrame(data=data, columns=headers)
     worksheet: Worksheet = workbook.create_sheet()
@@ -72,7 +72,7 @@ def write_data(
 
     set_column_styles(worksheet, column_widths, style_columns)
 
-    if bold_last_row_columns or merge_last_row_columns:
+    if merge_last_row_columns or bold_last_row_columns:
         style_last_row(worksheet, merge_last_row_columns, bold_last_row_columns)
 
 
@@ -126,6 +126,8 @@ def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -
         orders_data,
         {"A": 22, "B": 66, "C": 22, "D": 22, "E": 22},
         style_columns=["C", "D", "E"],
+        merge_last_row_columns=["A", "B"],
+        bold_last_row_columns=["A", "B", "C", "D", "E"],
     )
 
     worksheet: Worksheet = workbook.worksheets[2]
