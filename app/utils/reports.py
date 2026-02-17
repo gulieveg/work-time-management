@@ -12,7 +12,6 @@ Data = List[List[Union[str, Decimal]]]
 
 
 def set_column_styles(worksheet: Worksheet, column_widths: Dict[str, int], style_columns: List[str]) -> None:
-    cell_style: NamedStyle = NamedStyle(name="cell-style", number_format="0.00")
     border_style = Border(
         Side(border_style="thin"),
         Side(border_style="thin"),
@@ -26,7 +25,7 @@ def set_column_styles(worksheet: Worksheet, column_widths: Dict[str, int], style
 
         for cell in column:
             if cell.row > 1 and column_letter in style_columns:
-                cell.style = cell_style
+                cell.number_format = "0.00"
             cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
             cell.border = border_style
 
@@ -38,13 +37,13 @@ def style_last_row(
 ) -> None:
     last_row: int = worksheet.max_row
 
-    if merge_columns:
-        worksheet.merge_cells(f"{merge_columns[0]}{last_row}:{merge_columns[-1]}{last_row}")
-
     if bold_columns:
         for cell in worksheet[last_row]:
             if cell.column_letter in bold_columns:
                 cell.font = Font(bold=True)
+
+    if merge_columns:
+        worksheet.merge_cells(f"{merge_columns[0]}{last_row}:{merge_columns[-1]}{last_row}")
 
 
 def write_data(
