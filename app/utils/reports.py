@@ -3,7 +3,7 @@ from io import BytesIO
 from typing import Dict, List, Optional, Union
 
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Border, Font, NamedStyle, Side
+from openpyxl.styles import Alignment, Border, Font, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.worksheet import Worksheet
 from pandas import DataFrame
