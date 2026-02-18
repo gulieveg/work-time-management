@@ -16,7 +16,7 @@ reports_bp: Blueprint = Blueprint("reports", __name__, url_prefix="/reports")
 db_manager: DatabaseManager = DatabaseManager()
 
 
-def is_date_range_valid(start_date: datetime = None, end_date: datetime = None) -> bool:
+def should_export_data_for_2025(start_date: datetime = None, end_date: datetime = None) -> bool:
     lower_bound: datetime = datetime(2024, 12, 31)
     upper_bound: datetime = datetime(2026, 1, 1)
 
@@ -51,10 +51,10 @@ def reports() -> str:
         for task in tasks:
             spent_hours_by_order[task["order_number"]] += task["hours"]
 
-        if is_date_range_valid(start_date, end_date):
-            spent_hours_by_order_2025: Dict[str, Decimal] = db_manager.orders.get_spent_hours_by_order_2025()
+        if should_export_data_for_2025(start_date, end_date):
+            spent_hours_by_order_in_2025: Dict[str, Decimal] = db_manager.orders.get_spent_hours_by_order_in_2025()
 
-            for order_number, spent_hours in spent_hours_by_order_2025.items():
+            for order_number, spent_hours in spent_hours_by_order_in_2025.items():
                 spent_hours_by_order[order_number] += spent_hours
 
         grouped_orders_data: List[List[Union[str, Decimal]]] = []
