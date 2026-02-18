@@ -12,7 +12,7 @@ Data = List[List[Union[str, Decimal]]]
 
 
 def set_column_styles(worksheet: Worksheet, column_widths: Dict[str, int], style_columns: List[str]) -> None:
-    border_style = Border(
+    border_style: Border = Border(
         Side(border_style="thin"),
         Side(border_style="thin"),
         Side(border_style="thin"),
@@ -53,8 +53,9 @@ def write_data_to_worksheet(
     column_widths: Dict[str, int],
     style_columns: List[str],
     sheet_name: Optional[str] = None,
-    bold_last_row_columns: Optional[List[str]] = None,
-    merge_last_row_columns: Optional[List[str]] = None,
+    filter_columns: Optional[List[str]] = None,
+    bold_columns: Optional[List[str]] = None,
+    merge_columns: Optional[List[str]] = None,
 ) -> None:
     dataframe: DataFrame = DataFrame(data=data, columns=headers)
     worksheet: Worksheet = workbook.create_sheet()
@@ -65,14 +66,20 @@ def write_data_to_worksheet(
     for row in dataframe_to_rows(dataframe, index=False, header=True):
         worksheet.append(row)
 
-    worksheet.auto_filter.ref = worksheet.dimensions
+    if filter_columns:
+        filter_range = f"{filter_columns[0]}{worksheet.min_row}:{filter_columns[-1]}{worksheet.min_row}"
+    else:
+        filter_range = worksheet.dimensions
+
+    worksheet.auto_filter.ref = filter_range
+
     for cell in worksheet[1]:
         cell.font = Font(bold=True)
 
     set_column_styles(worksheet, column_widths, style_columns)
 
-    if bold_last_row_columns or merge_last_row_columns:
-        style_last_row(worksheet, bold_last_row_columns, merge_last_row_columns)
+    if bold_columns or merge_columns:
+        style_last_row(worksheet, bold_columns, merge_columns)
 
 
 def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -> BytesIO:
@@ -125,8 +132,9 @@ def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -
         orders_data,
         {"A": 22, "B": 66, "C": 22, "D": 22, "E": 22},
         style_columns=["C", "D", "E"],
-        bold_last_row_columns=["A", "B", "C", "D", "E"],
-        merge_last_row_columns=["A", "B"],
+        filter_columns=["A", "B"],
+        bold_columns=["A", "B", "C", "D", "E"],
+        merge_columns=["A", "B"],
     )
 
     file: BytesIO = BytesIO()
