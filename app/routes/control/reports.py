@@ -140,6 +140,7 @@ def reports() -> str:
         ]
 
         file: BytesIO = generate_report(tasks_data, employees_data, grouped_orders_data)
-        return send_file(file, download_name="report.xlsx", as_attachment=True)
+        timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
 
     return render_template("control/reports/generate_report.html")
