@@ -66,10 +66,10 @@ def write_data_to_worksheet(
     for row in dataframe_to_rows(dataframe, index=False, header=True):
         worksheet.append(row)
 
+    filter_range: str = worksheet.dimensions
+
     if filter_columns:
-        filter_range = f"{filter_columns[0]}{worksheet.min_row}:{filter_columns[-1]}{worksheet.min_row}"
-    else:
-        filter_range = worksheet.dimensions
+        filter_range: str = f"{filter_columns[0]}1:{filter_columns[-1]}1"
 
     worksheet.auto_filter.ref = filter_range
 
