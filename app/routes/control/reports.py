@@ -46,7 +46,7 @@ def reports() -> str:
     if request.args.get("export"):
         tasks: Tasks = db_manager.tasks.get_tasks(start_date=start_date, end_date=end_date)
 
-        spent_hours_by_order: Dict[str, Decimal] = defaultdict(Decimal)  # key: order_number, value: spent_hours
+        spent_hours_by_order: Dict[str, Decimal] = defaultdict(Decimal)
 
         for task in tasks:
             spent_hours_by_order[task["order_number"]] += task["hours"]
@@ -85,11 +85,6 @@ def reports() -> str:
 
         grouped_orders_data.append(["ИТОГО", "", planned_hours, spent_hours, remaining_hours])
 
-        # --------------------------------------------------------------------------
-        # Начало кода для формирования листа со всеми заданиями за выбранный период.
-        # Накопительная трудоемкость за 2025 год тут не нужна.
-        # --------------------------------------------------------------------------
-
         employee_categories: Dict[str, str] = {
             "worker": "Рабочий",
             "specialist": "Специалист",
@@ -110,10 +105,6 @@ def reports() -> str:
             ]
             for task in tasks
         ]
-
-        # --------------------------------------------------------------------------
-        # Конец кода для формирования листа с заданиями за выбранный период
-        # --------------------------------------------------------------------------
 
         aggregated_hours: defaultdict = defaultdict(Decimal)
 
