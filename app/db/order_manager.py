@@ -166,7 +166,7 @@ class OrderManager(DatabaseConnection):
                 cursor.execute(query, (order_number.strip(),))
                 return cursor.fetchone()[0]
 
-    def get_spent_hours_by_order_in_2025(self) -> Dict[str, Decimal]:
+    def get_spent_hours_for_2025(self) -> Dict[str, Decimal]:
         query: str = "SELECT order_number, spent_hours FROM hours"
 
         spent_hours_by_order: Dict[str, Decimal] = defaultdict(Decimal)
@@ -189,7 +189,7 @@ class OrderManager(DatabaseConnection):
                 cursor.execute(query, (order_id,))
                 return cursor.fetchone()[0]
 
-    def get_orders_data(self, order_numbers: Tuple[str]) -> List[Union[str, Decimal]]:
+    def get_planned_hours_per_order(self, order_numbers: Tuple[str]) -> List[Union[str, Decimal]]:
         query: str = f"""
             SELECT
                 orders.number,
