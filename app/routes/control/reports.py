@@ -11,13 +11,23 @@ from app.db import DatabaseManager
 from app.utils import generate_report, permission_required
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
-OrdersData = List[List[Union[str, Decimal]]]
+Data = List[List[Union[str, Decimal]]]
 
 reports_bp: Blueprint = Blueprint("reports", __name__, url_prefix="/reports")
 db_manager: DatabaseManager = DatabaseManager()
 
 
-def should_export_data_for_2025(start_date: datetime = None, end_date: datetime = None) -> bool:
+def does_period_contain_2025(start_date: datetime = None, end_date: datetime = None) -> bool:
+    """
+    Checks if the given period contains any date in the year 2025.
+
+    Args:
+        start_date (datetime, optional): The start of the period. Defaults to None.
+        end_date (datetime, optional): The end of the period. Defaults to None.
+
+    Returns:
+        bool: True if the period includes any date in 2025, False otherwise.
+    """
     lower_bound: datetime = datetime(2024, 12, 31)
     upper_bound: datetime = datetime(2026, 1, 1)
 
@@ -32,7 +42,90 @@ def should_export_data_for_2025(start_date: datetime = None, end_date: datetime 
     return False
 
 
-def get_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime) -> OrdersData:
+def get_tasks_data(tasks: Tasks) -> Data:
+    """
+    Converts tasks object into list of lists for report generation.
+
+    Args:
+        tasks (Tasks): List of task records, each containing employee details,
+            order information, and work metrics.
+
+    Returns:
+        tasks_data (Data): List of lists, where each inner list contains the data for one specific task.
+    """
+
+    employee_categories: Dict[str, str] = {
+        "worker": "Рабочий",
+        "specialist": "Специалист",
+        "manager": "Руководитель",
+    }
+
+    tasks_data: Data = [
+        [
+            task["employee_name"],
+            task["personnel_number"],
+            employee_categories[task["employee_category"]],
+            task["department"],
+            task["order_number"],
+            task["order_name"],
+            task["work_name"],
+            task["hours"],
+            task["operation_date"],
+        ]
+        for task in tasks
+    ]
+    return tasks_data
+
+
+def get_employees_data(tasks: Tasks) -> Data:
+    """
+    Groups tasks by employee and date, summing hours for report generation.
+
+    Creates unique key from employee details and date to aggregate hours,
+    then formats the result with translated category names.
+
+    Args:
+        tasks (Tasks): List of task records, each containing employee details,
+            order information, and work metrics.
+
+    Returns:
+        employees_data (Data):  List of lists, where each inner list contains the data for one specific employee
+            on specific date.
+    """
+
+    spent_hours_by_employee: Dict[Tuple[str, ...], Decimal] = defaultdict(Decimal)
+
+    for task in tasks:
+        key: Tuple[str, ...] = (
+            task["employee_name"],
+            task["personnel_number"],
+            task["employee_category"],
+            task["department"],
+            task["operation_date"],
+        )
+        spent_hours_by_employee[key] += task["hours"]
+
+    employee_categories: Dict[str, str] = {
+        "worker": "Рабочий",
+        "specialist": "Специалист",
+        "manager": "Руководитель",
+    }
+
+    employees_data: Data = [
+        [
+            key[0],
+            key[1],
+            employee_categories[key[2]],
+            key[3],
+            key[4],
+            value,
+        ]
+        for key, value in spent_hours_by_employee.items()
+    ]
+    return employees_data
+
+
+def get_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime) -> Data:
     """
     Returns orders data including planned, spent, and remaining hours.
 
@@ -40,36 +133,30 @@ def get_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime) -> O
     optionally includes spent hours for the year 2025, if the specified date range requires it.
 
     Args:
-        tasks (Tasks): Collection of completed employee tasks.
+        tasks (Tasks): List of task records, each containing employee details,
+            order information, and work metrics.
         start_date (datetime): The start date for selecting tasks from the database.
         end_date (datetime): The end date for selecting tasks from the database.
 
     Returns:
-        orders_data (OrdersData): List of lists.
-            Each list has the following structure:
-                [
-                    order_number (str),
-                    order_name (str),
-                    planned_hours (Decimal),
-                    spent_hours (Decimal),
-                    remaining_hours (Decimal),
-                ]
-        The last list contains totals for planned, spent, and remaining hours.
+        orders_data (Data): List of lists, where each inner list contains the data for one specific order,
+            including its number, name, planned hours, spent hours, and remaining hours.
+            The final inner list in the outer list contains the totals for planned hours, spent hours,
+            and remaining hours calculated across all orders in the dataset.
     """
 
-    # Total spent hours per order: {order_number: spent_hours}
     spent_hours_by_order: Dict[str, Decimal] = defaultdict(Decimal)
 
     for task in tasks:
         spent_hours_by_order[task["order_number"]] += task["hours"]
 
-    if should_export_data_for_2025(start_date, end_date):
+    if does_period_contain_2025(start_date=start_date, end_date=end_date):
         spent_hours_for_2025: Dict[str, Decimal] = db_manager.orders.get_spent_hours_for_2025()
 
         for order_number, spent_hours in spent_hours_for_2025.items():
             spent_hours_by_order[order_number] += spent_hours
 
-    orders_data: OrdersData = []
+    orders_data: Data = []
 
     order_numbers: Tuple[str] = tuple(spent_hours_by_order.keys())
 
@@ -115,57 +202,11 @@ def reports() -> str:
     if request.args.get("export"):
         tasks: Tasks = db_manager.tasks.get_tasks(start_date=start_date, end_date=end_date)
 
-        orders_data: OrdersData = get_orders_data(tasks=tasks, start_date=start_date, end_date=end_date)
+        tasks_data: Data = get_tasks_data(tasks=tasks)
+        employees_data: Data = get_employees_data(tasks=tasks)
+        orders_data: Data = get_orders_data(tasks=tasks, start_date=start_date, end_date=end_date)
 
-        employee_categories: Dict[str, str] = {
-            "worker": "Рабочий",
-            "specialist": "Специалист",
-            "manager": "Ведущий специалист",
-        }
-
-        tasks_data: List[List[Union[str, Decimal]]] = [
-            [
-                task["employee_name"],
-                task["personnel_number"],
-                employee_categories[task["employee_category"]],
-                task["department"],
-                task["order_number"],
-                task["order_name"],
-                task["work_name"],
-                task["hours"],
-                task["operation_date"],
-            ]
-            for task in tasks
-        ]
-
-        aggregated_hours: defaultdict = defaultdict(Decimal)
-
-        for task in tasks:
-            key = (
-                task["employee_name"],
-                task["personnel_number"],
-                task["employee_category"],
-                task["department"],
-                task["operation_date"],
-            )
-            aggregated_hours[key] += task["hours"]
-
-        employees_data: List[List[Union[str, Decimal]]] = [
-            [
-                key[0],
-                key[1],
-                employee_categories[key[2]],
-                key[3],
-                key[4],
-                value,
-            ]
-            for key, value in aggregated_hours.items()
-        ]
-
-        file: BytesIO = generate_report(
-            tasks_data,
-            employees_data,
-        )
+        file: BytesIO = generate_report(tasks_data, employees_data, orders_data)
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
 
