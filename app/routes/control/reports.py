@@ -208,10 +208,18 @@ def get_detailed_orders_data(tasks: Tasks, start_date: datetime, end_date: datet
 
     Returns:
         orders_data (Data): List of lists, where each inner list contains the data for one specific order,
-            including its number, name, work type, planned hours, spent hours, and remaining hours.
+            including its number, name, work name, planned hours, spent hours, and remaining hours.
     """
 
-    ...
+    spent_hours_by_work: Dict[str, Decimal] = defaultdict(Decimal)
+
+    for task in tasks:
+        key: Tuple[str, ...] = (
+            task["order_number"],
+            task["order_name"],
+            task["work_name"],
+        )
+        spent_hours_by_work[key] += tasks["hours"]
 
 
 @reports_bp.route("", methods=["GET"])

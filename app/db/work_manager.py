@@ -164,3 +164,23 @@ class WorkManager(DatabaseConnection):
                 cursor.execute(query_string, ("%" + query + "%", order_id))
                 work_names: List[str] = [data[0] for data in cursor.fetchall()]
                 return work_names
+
+    def get_planned_hours_for_works(self, order_number: str, work_name: str) -> Decimal: ...
+
+    def get_planned_hours_per_order(self, order_numbers: Tuple[str]) -> List[Union[str, Decimal]]:
+        query: str = f"""
+            SELECT
+                orders.number,
+                orders.name,
+                COALESCE(SUM(works.planned_hours), 0) AS planned_hours
+            FROM orders
+            LEFT JOIN works ON works.order_id = orders.id
+            WHERE orders.number IN ({", ".join("?" for _ in order_numbers)})
+            GROUP BY orders.number, orders.name
+        """
+
+        with self.get_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query, order_numbers)
+                orders_data: List[Union[str, Decimal]] = cursor.fetchall()
+                return orders_data

@@ -19,7 +19,7 @@ CREATE TABLE employees (
 IF OBJECT_ID('orders', 'U') IS NULL
 CREATE TABLE orders (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    name NVARCHAR(MAX) NOT NULL,
+    name NVARCHAR(450) NOT NULL,
     number NVARCHAR(255) UNIQUE NOT NULL
 );
 
@@ -27,7 +27,7 @@ IF OBJECT_ID('works', 'U') IS NULL
 CREATE TABLE works (
     id INT IDENTITY(1,1) PRIMARY KEY,
     order_id INT NOT NULL,
-    name NVARCHAR(MAX) NOT NULL,
+    name NVARCHAR(450) NOT NULL,
     planned_hours DECIMAL(10,2) NOT NULL,
     spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
     remaining_hours AS (planned_hours - spent_hours),
@@ -37,9 +37,9 @@ CREATE TABLE works (
 IF OBJECT_ID('hours', 'U') IS NULL
 CREATE TABLE hours (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    order_name NVARCHAR(MAX) NOT NULL,
+    order_name NVARCHAR(450) NOT NULL,
     order_number NVARCHAR(255) UNIQUE NOT NULL,
-    work_name NVARCHAR(MAX) NOT NULL,
+    work_name NVARCHAR(450) NOT NULL,
     spent_hours DECIMAL(10,2) NOT NULL DEFAULT 0,
     created_date DATE NOT NULL DEFAULT CAST(GETDATE() AS DATE),
     created_time TIME(0) NOT NULL DEFAULT CAST(GETDATE() AS TIME)
@@ -51,10 +51,10 @@ CREATE TABLE tasks (
     employee_name NVARCHAR(255) NOT NULL,
     personnel_number NVARCHAR(100) NOT NULL,
     department NVARCHAR(100) NOT NULL,
-    work_name NVARCHAR(MAX) NOT NULL,
+    work_name NVARCHAR(450) NOT NULL,
     hours DECIMAL(10,2) NOT NULL DEFAULT 0,
     order_number NVARCHAR(255) NOT NULL,
-    order_name NVARCHAR(MAX) NOT NULL,
+    order_name NVARCHAR(450) NOT NULL,
     operation_date DATE NOT NULL DEFAULT GETDATE(),
     employee_category NVARCHAR(100) NOT NULL
 );
