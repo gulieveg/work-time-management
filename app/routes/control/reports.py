@@ -17,13 +17,13 @@ reports_bp: Blueprint = Blueprint("reports", __name__, url_prefix="/reports")
 db_manager: DatabaseManager = DatabaseManager()
 
 
-def does_period_contain_2025(start_date: datetime = None, end_date: datetime = None) -> bool:
+def does_period_contain_2025(start_date: datetime, end_date: datetime) -> bool:
     """
     Checks if the given period contains any date in the year 2025.
 
     Args:
-        start_date (datetime, optional): The start of the period. Defaults to None.
-        end_date (datetime, optional): The end of the period. Defaults to None.
+        start_date (datetime, optional): The start of the period.
+        end_date (datetime, optional): The end of the period.
 
     Returns:
         bool: True if the period includes any date in 2025, False otherwise.
