@@ -108,7 +108,7 @@ document.addEventListener("click", function(event) {
                                 type="number"
                                 name="work_hours[${orderNumber}][${work.work_name}]"
                                 min="0"
-                                max="8.25"
+                                max="12.25"
                                 step="0.01"
                                 value="${value}"
                             />

@@ -86,7 +86,7 @@ def add_task() -> Union[str, Response]:
                     return render_template("tasks/add_task.html")
                 total_spent_hours += spent_hours
 
-        if total_spent_hours > Decimal(8.25):
+        if total_spent_hours > Decimal(12.25):
             flash(message=MESSAGES["tasks"]["hours_exceed_limit"], category="error")
             return render_template("tasks/add_task.html")
 

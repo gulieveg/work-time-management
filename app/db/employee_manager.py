@@ -74,7 +74,7 @@ class EmployeeManager(DatabaseConnection):
                 return used_hours
 
     def get_employee_free_hours(self, personnel_number: str, operation_date: str) -> Decimal:
-        hours_per_day: Decimal = Decimal(8.25)
+        hours_per_day: Decimal = Decimal(12.25)
         used_hours: Decimal = self.get_employee_used_hours(personnel_number.strip(), operation_date)
         return hours_per_day - used_hours
 
