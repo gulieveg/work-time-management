@@ -187,7 +187,32 @@ def get_basic_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime
     return orders_data
 
 
-def get_detailed_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime) -> Data: ...
+def get_detailed_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime) -> Data:
+    """
+    Returns order data with detailed information by types of work.
+
+    This function extends the basic orders data by providing information on work types
+    associated with each order. For each order it displays list of work types with their planned,
+    spent and remaining hours. Optionally includes spent hours for the year 2025,
+    if the specified date range requires it.
+
+    The function calculates spent hours of work types from the provided tasks for each order and
+    displays all associated work types with their corresponding planned, spent and remaining hours.
+
+    This provides detailed view of hour distribution across different work types within each order.
+
+    Args:
+        tasks (Tasks): List of task records, each containing employee details,
+            order information, and work metrics.
+        start_date (datetime): The start date for selecting tasks from the database.
+        end_date (datetime): The end date for selecting tasks from the database.
+
+    Returns:
+        orders_data (Data): List of lists, where each inner list contains the data for one specific order,
+            including its number, name, work type, planned hours, spent hours, and remaining hours.
+    """
+
+    ...
 
 
 @reports_bp.route("", methods=["GET"])
