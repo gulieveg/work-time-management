@@ -158,14 +158,6 @@ class OrderManager(DatabaseConnection):
                 cursor.execute(query)
                 return cursor.fetchone()[0]
 
-    def get_spent_hours_for_order_in_2025(self, order_number: str) -> Decimal:
-        query: str = "SELECT spent_hours FROM hours WHERE order_number = ?"
-
-        with self.get_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(query, (order_number.strip(),))
-                return cursor.fetchone()[0]
-
     def get_spent_hours_for_2025(self) -> Dict[str, Decimal]:
         query: str = "SELECT order_number, spent_hours FROM hours"
 
