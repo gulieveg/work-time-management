@@ -193,8 +193,7 @@ def get_detailed_orders_data(tasks: Tasks, start_date: datetime, end_date: datet
 
     This function extends the basic orders data by providing information on work types
     associated with each order. For each order it displays list of work types with their planned,
-    spent and remaining hours. Optionally includes spent hours for the year 2025,
-    if the specified date range requires it.
+    spent and remaining hours.
 
     The function calculates spent hours of work types from the provided tasks for each order and
     displays all associated work types with their corresponding planned, spent and remaining hours.
