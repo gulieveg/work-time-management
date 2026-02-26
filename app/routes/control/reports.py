@@ -125,7 +125,7 @@ def get_employees_data(tasks: Tasks) -> Data:
     return employees_data
 
 
-def get_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime) -> Data:
+def get_basic_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime) -> Data:
     """
     Returns orders data including planned, spent, and remaining hours.
 
@@ -187,6 +187,9 @@ def get_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime) -> D
     return orders_data
 
 
+def get_detailed_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime) -> Data: ...
+
+
 @reports_bp.route("", methods=["GET"])
 @login_required
 @permission_required(["advanced"])
@@ -204,9 +207,10 @@ def reports() -> str:
 
         tasks_data: Data = get_tasks_data(tasks=tasks)
         employees_data: Data = get_employees_data(tasks=tasks)
-        orders_data: Data = get_orders_data(tasks=tasks, start_date=start_date, end_date=end_date)
+        basic_orders_data: Data = get_basic_orders_data(tasks=tasks, start_date=start_date, end_date=end_date)
+        detailed_orders_data: Data = get_detailed_orders_data(tasks=tasks, start_date=start_date, end_date=end_date)
 
-        file: BytesIO = generate_report(tasks_data, employees_data, orders_data)
+        file: BytesIO = generate_report(tasks_data, employees_data, basic_orders_data, detailed_orders_data)
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
 
