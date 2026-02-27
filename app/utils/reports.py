@@ -82,60 +82,65 @@ def write_data_to_worksheet(
         style_last_row(worksheet, bold_columns, merge_columns)
 
 
-def generate_report(tasks_data: Data, employees_data: Data, basic_orders_data: Data) -> BytesIO:
+def generate_report(
+    tasks_data: Optional[Data] = None, employees_data: Optional[Data] = None, basic_orders_data: Optional[Data] = None
+) -> BytesIO:
     workbook: Workbook = Workbook()
 
     workbook.remove(workbook.active)
 
-    write_data_to_worksheet(
-        workbook,
-        [
-            "ФИО сотрудника",
-            "Таб. номер",
-            "Категория сотрудника",
-            "Наименование подразделения",
-            "Номер заказа",
-            "Наименование заказа",
-            "Наименование работы",
-            "Затраченное время, ч",
-            "Дата выполнения",
-        ],
-        tasks_data,
-        {"A": 28, "B": 18, "C": 18, "D": 22, "E": 22, "F": 44, "G": 44, "H": 18, "I": 24},
-        style_columns=["H"],
-    )
+    if tasks_data:
+        write_data_to_worksheet(
+            workbook,
+            [
+                "ФИО сотрудника",
+                "Таб. номер",
+                "Категория сотрудника",
+                "Наименование подразделения",
+                "Номер заказа",
+                "Наименование заказа",
+                "Наименование работы",
+                "Затраченное время, ч",
+                "Дата выполнения",
+            ],
+            tasks_data,
+            {"A": 28, "B": 18, "C": 18, "D": 22, "E": 22, "F": 44, "G": 44, "H": 18, "I": 24},
+            style_columns=["H"],
+        )
 
-    write_data_to_worksheet(
-        workbook,
-        [
-            "ФИО сотрудника",
-            "Таб. номер",
-            "Категория сотрудника",
-            "Наименование подразделения",
-            "Дата выполнения",
-            "Затраченное время, ч",
-        ],
-        employees_data,
-        {"A": 28, "B": 18, "C": 18, "D": 22, "E": 24, "F": 18},
-        style_columns=["F"],
-    )
+    if employees_data:
+        write_data_to_worksheet(
+            workbook,
+            [
+                "ФИО сотрудника",
+                "Таб. номер",
+                "Категория сотрудника",
+                "Наименование подразделения",
+                "Дата выполнения",
+                "Затраченное время, ч",
+            ],
+            employees_data,
+            {"A": 28, "B": 18, "C": 18, "D": 22, "E": 24, "F": 18},
+            style_columns=["F"],
+        )
 
-    write_data_to_worksheet(
-        workbook,
-        [
-            "Номер заказа",
-            "Наименование заказа",
-            "Плановая трудоемкость, ч",
-            "Фактическая трудоемкость, ч",
-            "Остаточная трудоемкость, ч",
-        ],
-        basic_orders_data,
-        {"A": 22, "B": 66, "C": 22, "D": 22, "E": 22},
-        style_columns=["C", "D", "E"],
-        filter_columns=["A", "B"],
-        bold_columns=["A", "B", "C", "D", "E"],
-        merge_columns=["A", "B"],
-    )
+    if basic_orders_data:
+        write_data_to_worksheet(
+            workbook,
+            [
+                "Номер заказа",
+                "Наименование заказа",
+                "Плановая трудоемкость, ч",
+                "Фактическая трудоемкость, ч",
+                "Остаточная трудоемкость, ч",
+            ],
+            basic_orders_data,
+            {"A": 22, "B": 66, "C": 22, "D": 22, "E": 22},
+            style_columns=["C", "D", "E"],
+            filter_columns=["A", "B"],
+            bold_columns=["A", "B", "C", "D", "E"],
+            merge_columns=["A", "B"],
+        )
 
     file: BytesIO = BytesIO()
     workbook.save(file)
