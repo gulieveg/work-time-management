@@ -165,21 +165,4 @@ class WorkManager(DatabaseConnection):
                 work_names: List[str] = [data[0] for data in cursor.fetchall()]
                 return work_names
 
-    def get_planned_hours_per_work(self, keys: Tuple[Tuple[str, ...], ...]):
-        query: str = f"""
-            SELECT
-                orders.number,
-                orders.name,
-                works.name,
-                works.planned_hours
-            FROM orders
-            INNER JOIN works ON orders.id = works.order_id
-            WHERE
-                (orders.number, orders.name, works.name) IN ({placeholders})
-        """
-
-        with self.get_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(query, order_numbers)
-                orders_data: List[Union[str, Decimal]] = cursor.fetchall()
-                return orders_data
+    def get_planned_hours_per_work(self): ...

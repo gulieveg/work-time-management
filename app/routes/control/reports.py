@@ -93,7 +93,7 @@ def get_employees_data(tasks: Tasks) -> Data:
             on specific date.
     """
 
-    spent_hours_by_employee: Dict[Tuple[str, ...], Decimal] = defaultdict(Decimal)
+    spent_hours_per_employee: Dict[Tuple[str, ...], Decimal] = defaultdict(Decimal)
 
     for task in tasks:
         key: Tuple[str, ...] = (
@@ -103,7 +103,7 @@ def get_employees_data(tasks: Tasks) -> Data:
             task["department"],
             task["operation_date"],
         )
-        spent_hours_by_employee[key] += task["hours"]
+        spent_hours_per_employee[key] += task["hours"]
 
     employee_categories: Dict[str, str] = {
         "worker": "Рабочий",
@@ -120,7 +120,7 @@ def get_employees_data(tasks: Tasks) -> Data:
             key[4],
             value,
         ]
-        for key, value in spent_hours_by_employee.items()
+        for key, value in spent_hours_per_employee.items()
     ]
     return employees_data
 
@@ -145,26 +145,26 @@ def get_basic_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime
             and remaining hours calculated across all orders in the dataset.
     """
 
-    spent_hours_by_order: Dict[str, Decimal] = defaultdict(Decimal)
+    spent_hours_per_order: Dict[str, Decimal] = defaultdict(Decimal)
 
     for task in tasks:
-        spent_hours_by_order[task["order_number"]] += task["hours"]
+        spent_hours_per_order[task["order_number"]] += task["hours"]
 
     if does_period_contain_2025(start_date=start_date, end_date=end_date):
         spent_hours_for_2025: Dict[str, Decimal] = db_manager.orders.get_spent_hours_for_2025()
 
         for order_number, spent_hours in spent_hours_for_2025.items():
-            spent_hours_by_order[order_number] += spent_hours
+            spent_hours_per_order[order_number] += spent_hours
 
     orders_data: Data = []
 
-    order_numbers: Tuple[str] = tuple(spent_hours_by_order.keys())
+    order_numbers: Tuple[str] = tuple(spent_hours_per_order.keys())
 
     if order_numbers:
         planned_hours_per_order: List = db_manager.orders.get_planned_hours_per_order(order_numbers)
 
         for order_number, order_name, planned_hours in planned_hours_per_order:
-            spent_hours: Decimal = spent_hours_by_order[order_number]
+            spent_hours: Decimal = spent_hours_per_order[order_number]
             remaining_hours: Decimal = planned_hours - spent_hours
             orders_data.append(
                 [
@@ -187,7 +187,7 @@ def get_basic_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime
     return orders_data
 
 
-def get_detailed_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime) -> Data:
+def get_detailed_orders_data(tasks: Tasks) -> Data:
     """
     Returns order data with detailed information by types of work.
 
@@ -203,15 +203,13 @@ def get_detailed_orders_data(tasks: Tasks, start_date: datetime, end_date: datet
     Args:
         tasks (Tasks): List of task records, each containing employee details,
             order information, and work metrics.
-        start_date (datetime): The start date for selecting tasks from the database.
-        end_date (datetime): The end date for selecting tasks from the database.
 
     Returns:
         orders_data (Data): List of lists, where each inner list contains the data for one specific order,
             including its number, name, work name, planned hours, spent hours, and remaining hours.
     """
 
-    spent_hours_by_work: Dict[str, Decimal] = defaultdict(Decimal)
+    spent_hours_per_work: Dict[str, Decimal] = defaultdict(Decimal)
 
     for task in tasks:
         key: Tuple[str, ...] = (
@@ -219,9 +217,15 @@ def get_detailed_orders_data(tasks: Tasks, start_date: datetime, end_date: datet
             task["order_name"],
             task["work_name"],
         )
-        spent_hours_by_work[key] += task["hours"]
+        spent_hours_per_work[key] += task["hours"]
 
-    keys: Tuple[Tuple[str, ...], ...] = tuple(spent_hours_by_work.keys())
+    order_numbers, order_names, work_names = [], [], []
+
+    for order_number, order_name, work_name in spent_hours_per_work.keys():
+        order_numbers.append(order_number)
+        order_names.append(order_name)
+        work_names.append(work_name)
+
     ...
 
 
