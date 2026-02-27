@@ -83,7 +83,9 @@ def write_data_to_worksheet(
 
 
 def generate_report(
-    tasks_data: Optional[Data] = None, employees_data: Optional[Data] = None, basic_orders_data: Optional[Data] = None
+    tasks_data: Optional[Data] = None,
+    employees_data: Optional[Data] = None,
+    basic_orders_data: Optional[Data] = None,
 ) -> BytesIO:
     workbook: Workbook = Workbook()
 
