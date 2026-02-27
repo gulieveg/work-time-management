@@ -12,14 +12,49 @@ from app.db import DatabaseManager
 from app.utils import MESSAGES, generate_report, permission_required
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
-OrdersData = List[List[Union[str, Decimal]]]
+Data = List[List[Union[str, Decimal]]]
 GroupedData = Dict[str, Dict[str, Union[str, Dict[str, Decimal]]]]
 
 tasks_bp: Blueprint = Blueprint("tasks", __name__, url_prefix="/tasks")
 db_manager: DatabaseManager = DatabaseManager()
 
 
-def get_basic_orders_data(tasks: Tasks) -> OrdersData:
+def get_tasks_data(tasks: Tasks) -> Data:
+    """
+    Converts tasks object into list of lists for report generation.
+
+    Args:
+        tasks (Tasks): List of task records, each containing employee details,
+            order information, and work metrics.
+
+    Returns:
+        tasks_data (Data): List of lists, where each inner list contains the data for one specific task.
+    """
+
+    employee_categories: Dict[str, str] = {
+        "worker": "Рабочий",
+        "specialist": "Специалист",
+        "manager": "Руководитель",
+    }
+
+    tasks_data: Data = [
+        [
+            task["employee_name"],
+            task["personnel_number"],
+            employee_categories[task["employee_category"]],
+            task["department"],
+            task["order_number"],
+            task["order_name"],
+            task["work_name"],
+            task["hours"],
+            task["operation_date"],
+        ]
+        for task in tasks
+    ]
+    return tasks_data
+
+
+def get_basic_orders_data(tasks: Tasks) -> Data:
     """
     Returns orders data including planned, spent, and remaining hours.
 
@@ -30,7 +65,7 @@ def get_basic_orders_data(tasks: Tasks) -> OrdersData:
             order information, and work metrics.
 
     Returns:
-        orders_data (OrdersData): List of lists, where each inner list contains the data for one specific order,
+        orders_data (Data): List of lists, where each inner list contains the data for one specific order,
             including its number, name, planned hours, spent hours, and remaining hours.
             The final inner list in the outer list contains the totals for planned hours, spent hours,
             and remaining hours calculated across all orders in the dataset.
@@ -41,7 +76,7 @@ def get_basic_orders_data(tasks: Tasks) -> OrdersData:
     for task in tasks:
         spent_hours_per_order[task["order_number"]] += task["hours"]
 
-    orders_data: OrdersData = []
+    orders_data: Data = []
 
     order_numbers: Tuple[str] = tuple(spent_hours_per_order.keys())
 
@@ -89,8 +124,9 @@ def tasks_table() -> Union[str, Response]:
     departments: List[str] = db_manager.employees.get_departments()
 
     if request.args.get("export"):
-        basic_orders_data: OrdersData = get_basic_orders_data(tasks=tasks)
-        file: BytesIO = generate_report(basic_orders_data=basic_orders_data)
+        tasks_data: Tasks = get_tasks_data(tasks=tasks)
+        basic_orders_data: Data = get_basic_orders_data(tasks=tasks)
+        file: BytesIO = generate_report(tasks_data=tasks_data, basic_orders_data=basic_orders_data)
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
 
