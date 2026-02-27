@@ -54,7 +54,7 @@ def get_tasks_data(tasks: Tasks) -> Data:
     return tasks_data
 
 
-def get_basic_orders_data(tasks: Tasks) -> Data:
+def get_orders_data(tasks: Tasks) -> Data:
     """
     Returns orders data including planned, spent, and remaining hours.
 
@@ -74,36 +74,16 @@ def get_basic_orders_data(tasks: Tasks) -> Data:
     spent_hours_per_order: Dict[str, Decimal] = defaultdict(Decimal)
 
     for task in tasks:
-        spent_hours_per_order[task["order_number"]] += task["hours"]
+        key: Tuple[str, str] = (
+            task["order_number"],
+            task["order_name"],
+        )
+        spent_hours_per_order[key] += task["hours"]
 
     orders_data: Data = []
 
-    order_numbers: Tuple[str] = tuple(spent_hours_per_order.keys())
-
-    if order_numbers:
-        planned_hours_per_order: List = db_manager.orders.get_planned_hours_per_order(order_numbers)
-
-        for order_number, order_name, planned_hours in planned_hours_per_order:
-            spent_hours: Decimal = spent_hours_per_order[order_number]
-            remaining_hours: Decimal = planned_hours - spent_hours
-            orders_data.append(
-                [
-                    order_number,
-                    order_name,
-                    planned_hours,
-                    spent_hours,
-                    remaining_hours,
-                ]
-            )
-
-    planned_hours, spent_hours, remaining_hours = Decimal(0), Decimal(0), Decimal(0)
-
-    for order_data in orders_data:
-        planned_hours += order_data[2]
-        spent_hours += order_data[3]
-        remaining_hours += order_data[4]
-
-    orders_data.append(["ИТОГО", "", planned_hours, spent_hours, remaining_hours])
+    for key, spent_hours in spent_hours_per_order:
+        orders_data.append([key[0], key[1], spent_hours])
     return orders_data
 
 
@@ -125,8 +105,8 @@ def tasks_table() -> Union[str, Response]:
 
     if request.args.get("export"):
         tasks_data: Tasks = get_tasks_data(tasks=tasks)
-        basic_orders_data: Data = get_basic_orders_data(tasks=tasks)
-        file: BytesIO = generate_report(tasks_data=tasks_data, basic_orders_data=basic_orders_data)
+        orders_data: Data = get_orders_data(tasks=tasks)
+        file: BytesIO = generate_report(tasks_data=tasks_data, orders_data=orders_data)
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
 
