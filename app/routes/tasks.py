@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal
 from io import BytesIO
@@ -11,10 +12,64 @@ from app.db import DatabaseManager
 from app.utils import MESSAGES, generate_report, permission_required
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
+OrdersData = List[List[Union[str, Decimal]]]
 GroupedData = Dict[str, Dict[str, Union[str, Dict[str, Decimal]]]]
 
 tasks_bp: Blueprint = Blueprint("tasks", __name__, url_prefix="/tasks")
 db_manager: DatabaseManager = DatabaseManager()
+
+
+def get_basic_orders_data(tasks: Tasks) -> OrdersData:
+    """
+    Returns orders data including planned, spent, and remaining hours.
+
+    This function calculates the total spent hours per order based on the provided tasks.
+
+    Args:
+        tasks (Tasks): List of task records, each containing employee details,
+            order information, and work metrics.
+
+    Returns:
+        orders_data (OrdersData): List of lists, where each inner list contains the data for one specific order,
+            including its number, name, planned hours, spent hours, and remaining hours.
+            The final inner list in the outer list contains the totals for planned hours, spent hours,
+            and remaining hours calculated across all orders in the dataset.
+    """
+
+    spent_hours_per_order: Dict[str, Decimal] = defaultdict(Decimal)
+
+    for task in tasks:
+        spent_hours_per_order[task["order_number"]] += task["hours"]
+
+    orders_data: OrdersData = []
+
+    order_numbers: Tuple[str] = tuple(spent_hours_per_order.keys())
+
+    if order_numbers:
+        planned_hours_per_order: List = db_manager.orders.get_planned_hours_per_order(order_numbers)
+
+        for order_number, order_name, planned_hours in planned_hours_per_order:
+            spent_hours: Decimal = spent_hours_per_order[order_number]
+            remaining_hours: Decimal = planned_hours - spent_hours
+            orders_data.append(
+                [
+                    order_number,
+                    order_name,
+                    planned_hours,
+                    spent_hours,
+                    remaining_hours,
+                ]
+            )
+
+    planned_hours, spent_hours, remaining_hours = Decimal(0), Decimal(0), Decimal(0)
+
+    for order_data in orders_data:
+        planned_hours += order_data[2]
+        spent_hours += order_data[3]
+        remaining_hours += order_data[4]
+
+    orders_data.append(["ИТОГО", "", planned_hours, spent_hours, remaining_hours])
+    return orders_data
 
 
 @tasks_bp.route("/table", methods=["GET"])
@@ -34,7 +89,8 @@ def tasks_table() -> Union[str, Response]:
     departments: List[str] = db_manager.employees.get_departments()
 
     if request.args.get("export"):
-        file: BytesIO = generate_report(tasks_data=tasks)
+        basic_orders_data: OrdersData = get_basic_orders_data(tasks=tasks)
+        file: BytesIO = generate_report(basic_orders_data=basic_orders_data)
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
 
