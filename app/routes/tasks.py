@@ -34,7 +34,7 @@ def tasks_table() -> Union[str, Response]:
     departments: List[str] = db_manager.employees.get_departments()
 
     if request.args.get("export"):
-        file: BytesIO = generate_report(tasks)
+        file: BytesIO = generate_report(tasks_data=tasks)
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
 
