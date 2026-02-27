@@ -247,7 +247,6 @@ def reports() -> str:
         tasks_data: Data = get_tasks_data(tasks=tasks)
         employees_data: Data = get_employees_data(tasks=tasks)
         basic_orders_data: Data = get_basic_orders_data(tasks=tasks, start_date=start_date, end_date=end_date)
-        detailed_orders_data: Data = get_detailed_orders_data(tasks=tasks, start_date=start_date, end_date=end_date)
 
         file: BytesIO = generate_report(
             tasks_data=tasks_data, employees_data=employees_data, basic_orders_data=basic_orders_data

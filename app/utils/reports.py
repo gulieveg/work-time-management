@@ -127,21 +127,33 @@ def generate_report(
         )
 
     if basic_orders_data:
-        write_data_to_worksheet(
-            workbook,
-            [
+        if len(basic_orders_data[0]) == 3:
+            column_headers: List[str] = [
+                "Номер заказа",
+                "Наименование заказа",
+                "Фактическая трудоемкость, ч",
+            ]
+            bold_columns: List[str] = []
+            merge_columns: List[str] = []
+        if len(basic_orders_data[0]) == 5:
+            column_headers: List[str] = [
                 "Номер заказа",
                 "Наименование заказа",
                 "Плановая трудоемкость, ч",
                 "Фактическая трудоемкость, ч",
                 "Остаточная трудоемкость, ч",
-            ],
+            ]
+            bold_columns: List[str] = ["A", "B", "C", "D", "E"]
+            merge_columns: List[str] = ["A", "B"]
+        write_data_to_worksheet(
+            workbook,
+            column_headers,
             basic_orders_data,
             {"A": 22, "B": 66, "C": 22, "D": 22, "E": 22},
             style_columns=["C", "D", "E"],
             filter_columns=["A", "B"],
-            bold_columns=["A", "B", "C", "D", "E"],
-            merge_columns=["A", "B"],
+            bold_columns=bold_columns,
+            merge_columns=merge_columns,
         )
 
     file: BytesIO = BytesIO()

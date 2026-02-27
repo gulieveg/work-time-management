@@ -54,7 +54,7 @@ def get_tasks_data(tasks: Tasks) -> Data:
     return tasks_data
 
 
-def get_orders_data(tasks: Tasks) -> Data:
+def get_basic_orders_data(tasks: Tasks) -> Data:
     """
     Returns orders data including planned, spent, and remaining hours.
 
@@ -82,9 +82,8 @@ def get_orders_data(tasks: Tasks) -> Data:
 
     orders_data: Data = []
 
-    for (order_number, order_name), spent_hours in spent_hours_per_order:
+    for (order_number, order_name), spent_hours in spent_hours_per_order.items():
         orders_data.append([order_number, order_name, spent_hours])
-
     return orders_data
 
 
@@ -106,8 +105,9 @@ def tasks_table() -> Union[str, Response]:
 
     if request.args.get("export"):
         tasks_data: Tasks = get_tasks_data(tasks=tasks)
-        orders_data: Data = get_orders_data(tasks=tasks)
-        file: BytesIO = generate_report(tasks_data=tasks_data, orders_data=orders_data)
+        basic_orders_data: Data = get_basic_orders_data(tasks=tasks)
+        print(basic_orders_data)
+        file: BytesIO = generate_report(tasks_data=tasks_data, basic_orders_data=basic_orders_data)
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
 
