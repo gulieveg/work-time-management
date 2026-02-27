@@ -82,8 +82,9 @@ def get_orders_data(tasks: Tasks) -> Data:
 
     orders_data: Data = []
 
-    for key, spent_hours in spent_hours_per_order:
-        orders_data.append([key[0], key[1], spent_hours])
+    for (order_number, order_name), spent_hours in spent_hours_per_order:
+        orders_data.append([order_number, order_name, spent_hours])
+
     return orders_data
 
 
