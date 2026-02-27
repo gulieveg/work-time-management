@@ -82,7 +82,7 @@ def write_data_to_worksheet(
         style_last_row(worksheet, bold_columns, merge_columns)
 
 
-def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -> BytesIO:
+def generate_report(tasks_data: Data, employees_data: Data, basic_orders_data: Data) -> BytesIO:
     workbook: Workbook = Workbook()
 
     workbook.remove(workbook.active)
@@ -129,7 +129,7 @@ def generate_report(tasks_data: Data, employees_data: Data, orders_data: Data) -
             "Фактическая трудоемкость, ч",
             "Остаточная трудоемкость, ч",
         ],
-        orders_data,
+        basic_orders_data,
         {"A": 22, "B": 66, "C": 22, "D": 22, "E": 22},
         style_columns=["C", "D", "E"],
         filter_columns=["A", "B"],

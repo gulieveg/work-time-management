@@ -249,8 +249,6 @@ def reports() -> str:
         basic_orders_data: Data = get_basic_orders_data(tasks=tasks, start_date=start_date, end_date=end_date)
         detailed_orders_data: Data = get_detailed_orders_data(tasks=tasks, start_date=start_date, end_date=end_date)
 
-        print(detailed_orders_data)
-
         file: BytesIO = generate_report(tasks_data, employees_data, basic_orders_data)
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
