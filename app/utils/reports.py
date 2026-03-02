@@ -109,6 +109,7 @@ def generate_report(
             tasks_data,
             {"A": 28, "B": 18, "C": 18, "D": 22, "E": 22, "F": 44, "G": 44, "H": 18, "I": 24},
             style_columns=["H"],
+            sheet_name="Назначенные задания",
         )
 
     if employees_data:
@@ -125,6 +126,7 @@ def generate_report(
             employees_data,
             {"A": 28, "B": 18, "C": 18, "D": 22, "E": 24, "F": 18},
             style_columns=["F"],
+            sheet_name="Табель рабочего времени",
         )
 
     if basic_orders_data:
@@ -150,11 +152,12 @@ def generate_report(
             workbook,
             column_headers,
             basic_orders_data,
-            {"A": 22, "B": 66, "C": 22, "D": 22, "E": 22},
+            {"A": 22, "B": 44, "C": 22, "D": 22, "E": 22},
             style_columns=["C", "D", "E"],
             filter_columns=["A", "B"],
             bold_columns=bold_columns,
             merge_columns=merge_columns,
+            sheet_name="Сводка по заказам",
         )
 
     if detailed_orders_data:
@@ -163,14 +166,16 @@ def generate_report(
             [
                 "Номер заказа",
                 "Наименование заказа",
+                "Наименование работы",
                 "Плановая трудоемкость, ч",
                 "Фактическая трудоемкость, ч",
                 "Остаточная трудоемкость, ч",
             ],
             detailed_orders_data,
-            {"A": 22, "B": 66, "C": 22, "D": 22, "E": 22},
-            style_columns=["C", "D", "E"],
-            filter_columns=["A", "B"],
+            {"A": 22, "B": 44, "C": 44, "D": 22, "E": 22, "F": 22},
+            style_columns=["C", "D", "E", "F"],
+            filter_columns=["A", "B", "C"],
+            sheet_name="Детализация по заказам",
         )
 
     file: BytesIO = BytesIO()

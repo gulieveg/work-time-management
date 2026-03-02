@@ -234,6 +234,8 @@ def get_detailed_orders_data(tasks: Tasks) -> Data:
             work_names=work_names,
         )
 
+        print(planned_hours_per_work)
+
         for order_number, order_name, work_name, planned_hours in planned_hours_per_work:
             spent_hours: Decimal = spent_hours_per_work[(order_number, work_name)]
             remaining_hours: Decimal = planned_hours - spent_hours
@@ -247,7 +249,7 @@ def get_detailed_orders_data(tasks: Tasks) -> Data:
                     remaining_hours,
                 ]
             )
-    return orders_data
+        return orders_data
 
 
 @reports_bp.route("", methods=["GET"])

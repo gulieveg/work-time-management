@@ -181,7 +181,7 @@ class OrderManager(DatabaseConnection):
                 cursor.execute(query, (order_id,))
                 return cursor.fetchone()[0]
 
-    def get_planned_hours_per_order(self, order_numbers: Tuple[str]) -> List[Union[str, Decimal]]:
+    def get_planned_hours_per_order(self, order_numbers: Tuple[str]) -> List:
         if not order_numbers:
             return []
 
@@ -201,5 +201,4 @@ class OrderManager(DatabaseConnection):
         with self.get_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(query, order_numbers)
-                orders_data: List[Union[str, Decimal]] = cursor.fetchall()
-                return orders_data
+                return cursor.fetchall()
