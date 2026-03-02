@@ -161,7 +161,9 @@ def get_basic_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime
     order_numbers: Tuple[str] = tuple(spent_hours_per_order.keys())
 
     if order_numbers:
-        planned_hours_per_order: List = db_manager.orders.get_planned_hours_per_order(order_numbers=order_numbers)
+        planned_hours_per_order: List[Union[str, Decimal]] = db_manager.orders.get_planned_hours_per_order(
+            order_numbers=order_numbers
+        )
 
         for order_number, order_name, planned_hours in planned_hours_per_order:
             spent_hours: Decimal = spent_hours_per_order[order_number]
@@ -212,18 +214,16 @@ def get_detailed_orders_data(tasks: Tasks) -> Data:
     spent_hours_per_work: Dict[str, Decimal] = defaultdict(Decimal)
 
     for task in tasks:
-        key: Tuple[str, ...] = (
+        key: Tuple[str, str] = (
             task["order_number"],
-            task["order_name"],
             task["work_name"],
         )
         spent_hours_per_work[key] += task["hours"]
 
-    order_numbers, order_names, work_names = [], [], []
+    order_numbers, work_names = [], []
 
-    for order_number, order_name, work_name in spent_hours_per_work.keys():
+    for order_number, work_name in spent_hours_per_work.keys():
         order_numbers.append(order_number)
-        order_names.append(order_name)
         work_names.append(work_name)
 
     if order_numbers and work_names:
