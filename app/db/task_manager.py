@@ -151,7 +151,7 @@ class TaskManager(DatabaseConnection):
             query: str = f"{base_query} WHERE department IN ({placeholders})"
             params: List[str] = departments
         else:
-            query: str = f"{base_query} WHERE 0 = 0"
+            query: str = f"{base_query} WHERE 1 = 1"
             params: List[str] = []
 
         if start_date:
@@ -187,6 +187,8 @@ class TaskManager(DatabaseConnection):
         if order_name:
             query += " AND order_name = ?"
             params.append(order_name.strip())
+
+        query += " ORDER BY employee_name, personnel_number, operation_date"
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:

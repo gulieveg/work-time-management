@@ -196,6 +196,7 @@ class OrderManager(DatabaseConnection):
             LEFT JOIN works ON works.order_id = orders.id
             WHERE orders.number IN ({placeholders})
             GROUP BY orders.number, orders.name
+            ORDER BY orders.number
         """
 
         with self.get_connection() as connection:
