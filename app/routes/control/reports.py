@@ -228,7 +228,8 @@ def get_detailed_orders_data(tasks: Tasks) -> Data:
 
     if order_numbers and work_names:
         planned_hours_per_work: List = db_manager.works.get_planned_hours_per_work(
-            order_numbers=order_numbers, work_names=work_names
+            order_numbers=order_numbers,
+            work_names=work_names,
         )
 
 
