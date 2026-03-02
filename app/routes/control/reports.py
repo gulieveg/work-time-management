@@ -162,7 +162,7 @@ def get_basic_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime
 
     if order_numbers:
         planned_hours_per_order: List[Union[str, Decimal]] = db_manager.orders.get_planned_hours_per_order(
-            order_numbers=order_numbers
+            order_numbers=order_numbers,
         )
 
         for order_number, order_name, planned_hours in planned_hours_per_order:
