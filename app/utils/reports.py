@@ -90,7 +90,8 @@ def generate_report(
 ) -> BytesIO:
     workbook: Workbook = Workbook()
 
-    workbook.remove(workbook.active)
+    if tasks_data or basic_orders_data:
+        workbook.remove(workbook.active)
 
     if tasks_data:
         write_data_to_worksheet(
