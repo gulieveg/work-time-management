@@ -86,6 +86,7 @@ def generate_report(
     tasks_data: Optional[Data] = None,
     employees_data: Optional[Data] = None,
     basic_orders_data: Optional[Data] = None,
+    detailed_orders_data: Optional[Data] = None,
 ) -> BytesIO:
     workbook: Workbook = Workbook()
 
@@ -154,6 +155,22 @@ def generate_report(
             filter_columns=["A", "B"],
             bold_columns=bold_columns,
             merge_columns=merge_columns,
+        )
+
+    if detailed_orders_data:
+        write_data_to_worksheet(
+            workbook,
+            [
+                "Номер заказа",
+                "Наименование заказа",
+                "Плановая трудоемкость, ч",
+                "Фактическая трудоемкость, ч",
+                "Остаточная трудоемкость, ч",
+            ],
+            detailed_orders_data,
+            {"A": 22, "B": 66, "C": 22, "D": 22, "E": 22},
+            style_columns=["C", "D", "E"],
+            filter_columns=["A", "B"],
         )
 
     file: BytesIO = BytesIO()

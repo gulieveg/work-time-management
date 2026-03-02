@@ -226,11 +226,28 @@ def get_detailed_orders_data(tasks: Tasks) -> Data:
         order_numbers.append(order_number)
         work_names.append(work_name)
 
+    orders_data: Data = []
+
     if order_numbers and work_names:
         planned_hours_per_work: List = db_manager.works.get_planned_hours_per_work(
             order_numbers=order_numbers,
             work_names=work_names,
         )
+
+        for order_number, order_name, work_name, planned_hours in planned_hours_per_work:
+            spent_hours: Decimal = spent_hours_per_work[(order_number, work_name)]
+            remaining_hours: Decimal = planned_hours - spent_hours
+            orders_data.append(
+                [
+                    order_number,
+                    order_name,
+                    work_name,
+                    planned_hours,
+                    spent_hours,
+                    remaining_hours,
+                ]
+            )
+    return orders_data
 
 
 @reports_bp.route("", methods=["GET"])
@@ -254,7 +271,10 @@ def reports() -> str:
         detailed_orders_data: Data = get_detailed_orders_data(tasks=tasks)
 
         file: BytesIO = generate_report(
-            tasks_data=tasks_data, employees_data=employees_data, basic_orders_data=basic_orders_data
+            tasks_data=tasks_data,
+            employees_data=employees_data,
+            basic_orders_data=basic_orders_data,
+            detailed_orders_data=detailed_orders_data,
         )
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
