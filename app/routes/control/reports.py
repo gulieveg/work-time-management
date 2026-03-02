@@ -161,7 +161,7 @@ def get_basic_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime
     order_numbers: Tuple[str] = tuple(spent_hours_per_order.keys())
 
     if order_numbers:
-        planned_hours_per_order: List = db_manager.orders.get_planned_hours_per_order(order_numbers)
+        planned_hours_per_order: List = db_manager.orders.get_planned_hours_per_order(order_numbers=order_numbers)
 
         for order_number, order_name, planned_hours in planned_hours_per_order:
             spent_hours: Decimal = spent_hours_per_order[order_number]
@@ -226,7 +226,10 @@ def get_detailed_orders_data(tasks: Tasks) -> Data:
         order_names.append(order_name)
         work_names.append(work_name)
 
-    ...
+    if order_numbers and work_names:
+        planned_hours_per_work: List = db_manager.works.get_planned_hours_per_work(
+            order_numbers=order_numbers, work_names=work_names
+        )
 
 
 @reports_bp.route("", methods=["GET"])
@@ -247,6 +250,7 @@ def reports() -> str:
         tasks_data: Data = get_tasks_data(tasks=tasks)
         employees_data: Data = get_employees_data(tasks=tasks)
         basic_orders_data: Data = get_basic_orders_data(tasks=tasks, start_date=start_date, end_date=end_date)
+        detailed_orders_data: Data = get_detailed_orders_data(tasks=tasks)
 
         file: BytesIO = generate_report(
             tasks_data=tasks_data, employees_data=employees_data, basic_orders_data=basic_orders_data

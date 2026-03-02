@@ -182,6 +182,11 @@ class OrderManager(DatabaseConnection):
                 return cursor.fetchone()[0]
 
     def get_planned_hours_per_order(self, order_numbers: Tuple[str]) -> List[Union[str, Decimal]]:
+        if not order_numbers:
+            return []
+
+        placeholders: str = ",".join("?" for _ in order_numbers)
+
         query: str = f"""
             SELECT
                 orders.number,
@@ -189,7 +194,7 @@ class OrderManager(DatabaseConnection):
                 COALESCE(SUM(works.planned_hours), 0) AS planned_hours
             FROM orders
             LEFT JOIN works ON works.order_id = orders.id
-            WHERE orders.number IN ({", ".join("?" for _ in order_numbers)})
+            WHERE orders.number IN ({placeholders})
             GROUP BY orders.number, orders.name
         """
 
