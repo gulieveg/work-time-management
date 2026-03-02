@@ -81,8 +81,12 @@ def get_basic_orders_data(tasks: Tasks) -> Data:
         spent_hours_per_order[key] += task["hours"]
 
     orders_data: Data = [
-        [order_number, order_name, spent_hours]
-        for (order_number, order_name), spent_hours in spent_hours_per_order.items()
+        [
+            order_number,
+            order_name,
+            spent_hours,
+        ]
+        for [order_number, order_name], spent_hours in spent_hours_per_order.items()
     ]
 
     return sorted(orders_data)
