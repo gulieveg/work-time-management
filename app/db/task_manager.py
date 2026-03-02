@@ -60,8 +60,7 @@ class TaskManager(DatabaseConnection):
                     SET works.spent_hours = works.spent_hours + ?
                     FROM works
                     JOIN orders ON works.order_id = orders.id
-                    WHERE works.name = ?
-                    AND orders.number = ?;
+                    WHERE works.name = ? AND orders.number = ?
                 """
                 cursor.execute(query, (hours, work_name, order_number))
             connection.commit()
