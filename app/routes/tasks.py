@@ -80,11 +80,12 @@ def get_basic_orders_data(tasks: Tasks) -> Data:
         )
         spent_hours_per_order[key] += task["hours"]
 
-    orders_data: Data = []
+    orders_data: Data = [
+        [order_number, order_name, spent_hours]
+        for (order_number, order_name), spent_hours in spent_hours_per_order.items()
+    ]
 
-    for (order_number, order_name), spent_hours in spent_hours_per_order.items():
-        orders_data.append([order_number, order_name, spent_hours])
-    return orders_data
+    return sorted(orders_data)
 
 
 @tasks_bp.route("/table", methods=["GET"])
