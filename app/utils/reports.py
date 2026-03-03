@@ -83,7 +83,10 @@ def write_data_to_worksheet(
 
 
 def generate_report(
-    tasks_data: Data = [], employees_data: Data = [], basic_orders_data: Data = [], detailed_orders_data: Data = []
+    tasks_data: Data = [],
+    employees_data: Data = [],
+    basic_orders_data: Data = [],
+    detailed_orders_data: Data = [],
 ) -> BytesIO:
     workbook: Workbook = Workbook()
 
