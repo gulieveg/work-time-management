@@ -83,101 +83,83 @@ def write_data_to_worksheet(
 
 
 def generate_report(
-    tasks_data: Optional[Data] = None,
-    employees_data: Optional[Data] = None,
-    basic_orders_data: Optional[Data] = None,
-    detailed_orders_data: Optional[Data] = None,
+    tasks_data: Data = [], employees_data: Data = [], basic_orders_data: Data = [], detailed_orders_data: Data = []
 ) -> BytesIO:
     workbook: Workbook = Workbook()
 
-    if tasks_data or basic_orders_data:
-        workbook.remove(workbook.active)
+    workbook.remove(workbook.active)
 
-    if tasks_data:
-        write_data_to_worksheet(
-            workbook,
-            [
-                "ФИО сотрудника",
-                "Таб. номер",
-                "Категория сотрудника",
-                "Наименование подразделения",
-                "Номер заказа",
-                "Наименование заказа",
-                "Наименование работы",
-                "Затраченное время, ч",
-                "Дата выполнения",
-            ],
-            tasks_data,
-            {"A": 28, "B": 18, "C": 18, "D": 22, "E": 22, "F": 44, "G": 44, "H": 18, "I": 24},
-            style_columns=["H"],
-            sheet_name="Назначенные задания",
-        )
+    write_data_to_worksheet(
+        workbook,
+        [
+            "ФИО сотрудника",
+            "Таб. номер",
+            "Категория сотрудника",
+            "Наименование подразделения",
+            "Номер заказа",
+            "Наименование заказа",
+            "Наименование работы",
+            "Дата выполнения",
+            "Затраченное время, ч",
+        ],
+        tasks_data,
+        {"A": 28, "B": 18, "C": 18, "D": 22, "E": 22, "F": 44, "G": 44, "H": 24, "I": 18},
+        style_columns=["I"],
+        filter_columns=["A", "B", "C", "D", "E", "F", "G", "H"],
+        sheet_name="Назначенные задания",
+    )
 
-    if employees_data:
-        write_data_to_worksheet(
-            workbook,
-            [
-                "ФИО сотрудника",
-                "Таб. номер",
-                "Категория сотрудника",
-                "Наименование подразделения",
-                "Дата выполнения",
-                "Затраченное время, ч",
-            ],
-            employees_data,
-            {"A": 28, "B": 18, "C": 18, "D": 22, "E": 24, "F": 18},
-            style_columns=["F"],
-            sheet_name="Табель рабочего времени",
-        )
+    write_data_to_worksheet(
+        workbook,
+        [
+            "ФИО сотрудника",
+            "Таб. номер",
+            "Категория сотрудника",
+            "Наименование подразделения",
+            "Дата выполнения",
+            "Затраченное время, ч",
+        ],
+        employees_data,
+        {"A": 28, "B": 18, "C": 18, "D": 22, "E": 24, "F": 18},
+        style_columns=["F"],
+        filter_columns=["A", "B", "C", "D", "E"],
+        sheet_name="Табель рабочего времени",
+    )
 
-    if basic_orders_data:
-        if len(basic_orders_data[0]) == 3:
-            column_headers: List[str] = [
-                "Номер заказа",
-                "Наименование заказа",
-                "Фактическая трудоемкость, ч",
-            ]
-            bold_columns: List[str] = []
-            merge_columns: List[str] = []
-        if len(basic_orders_data[0]) == 5:
-            column_headers: List[str] = [
-                "Номер заказа",
-                "Наименование заказа",
-                "Плановая трудоемкость, ч",
-                "Фактическая трудоемкость, ч",
-                "Остаточная трудоемкость, ч",
-            ]
-            bold_columns: List[str] = ["A", "B", "C", "D", "E"]
-            merge_columns: List[str] = ["A", "B"]
-        write_data_to_worksheet(
-            workbook,
-            column_headers,
-            basic_orders_data,
-            {"A": 22, "B": 44, "C": 22, "D": 22, "E": 22},
-            style_columns=["C", "D", "E"],
-            filter_columns=["A", "B"],
-            bold_columns=bold_columns,
-            merge_columns=merge_columns,
-            sheet_name="Сводка по заказам",
-        )
+    write_data_to_worksheet(
+        workbook,
+        [
+            "Номер заказа",
+            "Наименование заказа",
+            "Плановая трудоемкость, ч",
+            "Фактическая трудоемкость, ч",
+            "Остаточная трудоемкость, ч",
+        ],
+        basic_orders_data,
+        {"A": 22, "B": 44, "C": 22, "D": 22, "E": 22},
+        style_columns=["C", "D", "E"],
+        filter_columns=["A", "B"],
+        bold_columns=["A", "B", "C", "D", "E"],
+        merge_columns=["A", "B"],
+        sheet_name="Сводка по заказам",
+    )
 
-    if detailed_orders_data:
-        write_data_to_worksheet(
-            workbook,
-            [
-                "Номер заказа",
-                "Наименование заказа",
-                "Наименование работы",
-                "Плановая трудоемкость, ч",
-                "Фактическая трудоемкость, ч",
-                "Остаточная трудоемкость, ч",
-            ],
-            detailed_orders_data,
-            {"A": 22, "B": 44, "C": 44, "D": 22, "E": 22, "F": 22},
-            style_columns=["C", "D", "E", "F"],
-            filter_columns=["A", "B", "C"],
-            sheet_name="Детализация по заказам",
-        )
+    write_data_to_worksheet(
+        workbook,
+        [
+            "Номер заказа",
+            "Наименование заказа",
+            "Наименование работы",
+            "Плановая трудоемкость, ч",
+            "Фактическая трудоемкость, ч",
+            "Остаточная трудоемкость, ч",
+        ],
+        detailed_orders_data,
+        {"A": 22, "B": 44, "C": 44, "D": 22, "E": 22, "F": 22},
+        style_columns=["C", "D", "E", "F"],
+        filter_columns=["A", "B", "C"],
+        sheet_name="Детализация по заказам",
+    )
 
     file: BytesIO = BytesIO()
     workbook.save(file)

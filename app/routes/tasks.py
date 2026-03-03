@@ -46,8 +46,8 @@ def get_tasks_data(tasks: Tasks) -> Data:
             task["order_number"],
             task["order_name"],
             task["work_name"],
-            task["hours"],
             task["operation_date"],
+            task["hours"],
         ]
         for task in tasks
     ]
