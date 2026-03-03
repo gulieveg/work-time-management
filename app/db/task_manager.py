@@ -161,7 +161,7 @@ class TaskManager(DatabaseConnection):
             query += " AND operation_date <= ?"
             params.append(end_date)
 
-        if start_date is None and end_date is None:
+        if not start_date and not end_date:
             query += " AND operation_date = ?"
             params.append(datetime.now().strftime("%Y-%m-%d"))
 
