@@ -7,7 +7,14 @@ from flask import Blueprint, render_template, request, send_file
 from flask_login import login_required
 
 from app.db import DatabaseManager
-from app.utils import get_report_file, get_tasks, permission_required
+from app.utils import (
+    get_basic_orders_data,
+    get_detailed_orders_data,
+    get_employees_data,
+    get_report_file,
+    get_tasks_data,
+    permission_required,
+)
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
 Data = List[List[Union[str, Decimal]]]
