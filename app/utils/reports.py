@@ -118,8 +118,9 @@ def get_report_file(
     )
 
     write_data_to_worksheet(
-        workbook,
-        [
+        workbook=workbook,
+        sheet_name="Табель рабочего времени",
+        headers=[
             "ФИО сотрудника",
             "Таб. номер",
             "Категория сотрудника",
@@ -127,34 +128,34 @@ def get_report_file(
             "Дата выполнения",
             "Затраченное время, ч",
         ],
-        employees_data,
-        {"A": 28, "B": 18, "C": 18, "D": 22, "E": 24, "F": 18},
+        data=employees_data,
+        column_widths={"A": 28, "B": 18, "C": 18, "D": 22, "E": 24, "F": 18},
         style_columns=["F"],
         filter_columns=["A", "B", "C", "D", "E"],
-        sheet_name="Табель рабочего времени",
     )
 
     write_data_to_worksheet(
-        workbook,
-        [
+        workbook=workbook,
+        sheet_name="Сводка по заказам",
+        headers=[
             "Номер заказа",
             "Наименование заказа",
             "Плановая трудоемкость, ч",
             "Фактическая трудоемкость, ч",
             "Остаточная трудоемкость, ч",
         ],
-        basic_orders_data,
-        {"A": 22, "B": 44, "C": 22, "D": 22, "E": 22},
+        data=basic_orders_data,
+        column_widths={"A": 22, "B": 44, "C": 22, "D": 22, "E": 22},
         style_columns=["C", "D", "E"],
         filter_columns=["A", "B"],
         bold_columns=["A", "B", "C", "D", "E"],
         merge_columns=["A", "B"],
-        sheet_name="Сводка по заказам",
     )
 
     write_data_to_worksheet(
-        workbook,
-        [
+        workbook=workbook,
+        sheet_name="Детализация по заказам",
+        headers=[
             "Номер заказа",
             "Наименование заказа",
             "Наименование работы",
@@ -162,11 +163,10 @@ def get_report_file(
             "Фактическая трудоемкость, ч",
             "Остаточная трудоемкость, ч",
         ],
-        detailed_orders_data,
-        {"A": 22, "B": 44, "C": 44, "D": 22, "E": 22, "F": 22},
+        data=detailed_orders_data,
+        column_widths={"A": 22, "B": 44, "C": 44, "D": 22, "E": 22, "F": 22},
         style_columns=["C", "D", "E", "F"],
         filter_columns=["A", "B", "C"],
-        sheet_name="Детализация по заказам",
     )
 
     file: BytesIO = BytesIO()
