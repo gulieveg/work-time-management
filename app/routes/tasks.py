@@ -18,44 +18,6 @@ tasks_bp: Blueprint = Blueprint("tasks", __name__, url_prefix="/tasks")
 db_manager: DatabaseManager = DatabaseManager()
 
 
-# def get_basic_orders_data(tasks: Tasks) -> Data:
-#     """
-#     Returns orders data including planned, spent, and remaining hours.
-
-#     This function calculates the total spent hours per order based on the provided tasks.
-
-#     Args:
-#         tasks (Tasks): List of task records, each containing employee details,
-#             order information, and work metrics.
-
-#     Returns:
-#         orders_data (Data): List of lists, where each inner list contains the data for one specific order,
-#             including its number, name, planned hours, spent hours, and remaining hours.
-#             The final inner list in the outer list contains the totals for planned hours, spent hours,
-#             and remaining hours calculated across all orders in the dataset.
-#     """
-
-#     spent_hours_per_order: Dict[str, Decimal] = defaultdict(Decimal)
-
-#     for task in tasks:
-#         key: Tuple[str, str] = (
-#             task["order_number"],
-#             task["order_name"],
-#         )
-#         spent_hours_per_order[key] += task["hours"]
-
-#     orders_data: Data = [
-#         [
-#             order_number,
-#             order_name,
-#             spent_hours,
-#         ]
-#         for (order_number, order_name), spent_hours in spent_hours_per_order.items()
-#     ]
-
-#     return sorted(orders_data)
-
-
 @tasks_bp.route("/table", methods=["GET"])
 @login_required
 def tasks_table() -> Union[str, Response]:
@@ -73,8 +35,8 @@ def tasks_table() -> Union[str, Response]:
     departments: List[str] = db_manager.employees.get_departments()
 
     if request.args.get("export"):
-        tasks_data: Tasks = get_tasks_data(tasks=tasks)
-        basic_orders_data: Data = get_basic_orders_data(tasks=tasks)
+        tasks_data: Tasks = db_manager.tasks.get_tasks_data(tasks=tasks)
+        basic_orders_data: Data = db_manager.orders.get_basic_orders_data(tasks=tasks)
         file: BytesIO = get_report_file(tasks_data=tasks_data, basic_orders_data=basic_orders_data)
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)

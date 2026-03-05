@@ -31,10 +31,12 @@ def reports() -> str:
     if request.args.get("export"):
         tasks: Tasks = db_manager.tasks.get_tasks(start_date=start_date, end_date=end_date)
 
-        tasks_data: Data = get_tasks_data(tasks=tasks)
-        employees_data: Data = get_employees_data(tasks=tasks)
-        basic_orders_data: Data = get_basic_orders_data(tasks=tasks, start_date=start_date, end_date=end_date)
-        detailed_orders_data: Data = get_detailed_orders_data(tasks=tasks)
+        tasks_data: Data = db_manager.tasks.get_tasks_data(tasks=tasks)
+        employees_data: Data = db_manager.employees.get_employees_data(tasks=tasks)
+        basic_orders_data: Data = db_manager.orders.get_basic_orders_data(
+            tasks=tasks, start_date=start_date, end_date=end_date
+        )
+        detailed_orders_data: Data = db_manager.orders.get_detailed_orders_data(tasks=tasks)
 
         file: BytesIO = get_report_file(
             tasks_data=tasks_data,
