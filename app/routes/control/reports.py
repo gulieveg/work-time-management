@@ -17,7 +17,7 @@ reports_bp: Blueprint = Blueprint("reports", __name__, url_prefix="/reports")
 db_manager: DatabaseManager = DatabaseManager()
 
 
-def does_period_contain_2025(start_date: datetime, end_date: datetime) -> bool:
+def period_contains_2025(start_date: datetime, end_date: datetime) -> bool:
     """
     Checks if the given period contains any date in the year 2025.
 
@@ -79,7 +79,7 @@ def get_tasks_data(tasks: Tasks) -> Data:
 
 def get_employees_data(tasks: Tasks) -> Data:
     """
-    Groups tasks by employee and date, summing hours for report generation.
+    Groups tasks by employee and date, aggregating hours for report generation.
 
     Creates unique key from employee details and date to aggregate hours,
     then formats the result with translated category names.
@@ -113,14 +113,20 @@ def get_employees_data(tasks: Tasks) -> Data:
 
     employees_data: Data = [
         [
-            key[0],
-            key[1],
-            employee_categories[key[2]],
-            key[3],
-            key[4],
-            value,
+            employee_name,
+            personnel_number,
+            employee_categories[employee_category],
+            department,
+            operation_date,
+            spent_hours,
         ]
-        for key, value in spent_hours_per_employee.items()
+        for (
+            employee_name,
+            personnel_number,
+            employee_category,
+            department,
+            operation_date,
+        ), spent_hours in spent_hours_per_employee.items()
     ]
     return employees_data
 
@@ -150,7 +156,7 @@ def get_basic_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime
     for task in tasks:
         spent_hours_per_order[task["order_number"]] += task["hours"]
 
-    if does_period_contain_2025(start_date=start_date, end_date=end_date):
+    if period_contains_2025(start_date=start_date, end_date=end_date):
         spent_hours_for_2025: Dict[str, Decimal] = db_manager.orders.get_spent_hours_for_2025()
 
         for order_number, spent_hours in spent_hours_for_2025.items():
