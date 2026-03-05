@@ -1,8 +1,12 @@
 from collections import defaultdict
+from datetime import datetime
 from decimal import Decimal
 from typing import Dict, List, Optional, Tuple, Union
 
 from .db_connection import DatabaseConnection
+
+Tasks = List[Dict[str, Union[str, Decimal]]]
+Data = List[List[Union[str, Decimal]]]
 
 
 class OrderManager(DatabaseConnection):
@@ -203,3 +207,88 @@ class OrderManager(DatabaseConnection):
             with connection.cursor() as cursor:
                 cursor.execute(query, order_numbers)
                 return cursor.fetchall()
+
+    def get_basic_orders_data(self, tasks: Tasks, start_date: datetime, end_date: datetime) -> Data:
+        """
+        Returns orders data including planned, spent, and remaining hours.
+
+        This function calculates the total spent hours per order based on the provided tasks,
+        optionally includes spent hours for the year 2025, if the specified date range requires it.
+
+        Args:
+            tasks (Tasks): List of task records, each containing employee details,
+                order information, and work metrics.
+            start_date (datetime): The start date for selecting tasks from the database.
+            end_date (datetime): The end date for selecting tasks from the database.
+
+        Returns:
+            orders_data (Data): List of lists, where each inner list contains the data for one specific order,
+                including its number, name, planned hours, spent hours, and remaining hours.
+                The final inner list in the outer list contains the totals for planned hours, spent hours,
+                and remaining hours calculated across all orders in the dataset.
+        """
+
+        def period_contains_2025(start_date: datetime, end_date: datetime) -> bool:
+            """
+            Checks if the given period contains any date in the year 2025.
+
+            Args:
+                start_date (datetime, optional): The start of the period.
+                end_date (datetime, optional): The end of the period.
+
+            Returns:
+                bool: True if the period includes any date in 2025, False otherwise.
+            """
+            lower_bound: datetime = datetime(2024, 12, 31)
+            upper_bound: datetime = datetime(2026, 1, 1)
+
+            if not start_date and not end_date:
+                return True
+            elif not start_date and end_date and end_date > lower_bound:
+                return True
+            elif start_date and end_date and lower_bound < start_date < upper_bound and end_date >= start_date:
+                return True
+            elif start_date and lower_bound < start_date < upper_bound and not end_date:
+                return True
+            return False
+
+        spent_hours_per_order: Dict[str, Decimal] = defaultdict(Decimal)
+
+        for task in tasks:
+            spent_hours_per_order[task["order_number"]] += task["hours"]
+
+        if period_contains_2025(start_date=start_date, end_date=end_date):
+            spent_hours_for_2025: Dict[str, Decimal] = self.get_spent_hours_for_2025()
+
+            for order_number, spent_hours in spent_hours_for_2025.items():
+                spent_hours_per_order[order_number] += spent_hours
+
+        orders_data: Data = []
+
+        order_numbers: Tuple[str] = tuple(spent_hours_per_order.keys())
+
+        if order_numbers:
+            planned_hours_per_order: List = self.get_planned_hours_per_order(order_numbers=order_numbers)
+
+            for order_number, order_name, planned_hours in planned_hours_per_order:
+                spent_hours: Decimal = spent_hours_per_order[order_number]
+                remaining_hours: Decimal = planned_hours - spent_hours
+                orders_data.append(
+                    [
+                        order_number,
+                        order_name,
+                        planned_hours,
+                        spent_hours,
+                        remaining_hours,
+                    ]
+                )
+
+        planned_hours, spent_hours, remaining_hours = Decimal(0), Decimal(0), Decimal(0)
+
+        for order_data in orders_data:
+            planned_hours += order_data[2]
+            spent_hours += order_data[3]
+            remaining_hours += order_data[4]
+
+        orders_data.append(["Итого", "", planned_hours, spent_hours, remaining_hours])
+        return orders_data
