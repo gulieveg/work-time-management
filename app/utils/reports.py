@@ -98,8 +98,9 @@ def get_report_file(
     workbook.remove(workbook.active)
 
     write_data_to_worksheet(
-        workbook,
-        [
+        workbook=workbook,
+        sheet_name="Назначенные задания",
+        headers=[
             "ФИО сотрудника",
             "Таб. номер",
             "Категория сотрудника",
@@ -110,11 +111,10 @@ def get_report_file(
             "Дата выполнения",
             "Затраченное время, ч",
         ],
-        tasks_data,
-        {"A": 28, "B": 18, "C": 18, "D": 22, "E": 22, "F": 44, "G": 44, "H": 24, "I": 18},
+        data=tasks_data,
+        column_widths={"A": 28, "B": 18, "C": 18, "D": 22, "E": 22, "F": 44, "G": 44, "H": 24, "I": 18},
         style_columns=["I"],
         filter_columns=["A", "B", "C", "D", "E", "F", "G", "H"],
-        sheet_name="Назначенные задания",
     )
 
     write_data_to_worksheet(
