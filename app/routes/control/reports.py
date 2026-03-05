@@ -34,7 +34,9 @@ def reports() -> str:
         tasks_data: Data = db_manager.tasks.get_tasks_data(tasks=tasks)
         employees_data: Data = db_manager.employees.get_employees_data(tasks=tasks)
         basic_orders_data: Data = db_manager.orders.get_basic_orders_data(
-            tasks=tasks, start_date=start_date, end_date=end_date
+            tasks=tasks,
+            start_date=start_date,
+            end_date=end_date,
         )
         detailed_orders_data: Data = db_manager.orders.get_detailed_orders_data(tasks=tasks)
 
