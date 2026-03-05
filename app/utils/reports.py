@@ -82,7 +82,7 @@ def write_data_to_worksheet(
         style_last_row(worksheet, bold_columns, merge_columns)
 
 
-def generate_report(
+def get_report_file(
     tasks_data: Data = [],
     employees_data: Data = [],
     basic_orders_data: Data = [],

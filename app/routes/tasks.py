@@ -9,7 +9,7 @@ from flask_login import login_required
 from werkzeug.wrappers import Response
 
 from app.db import DatabaseManager
-from app.utils import MESSAGES, generate_report, permission_required
+from app.utils import MESSAGES, get_report_file, permission_required
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
 Data = List[List[Union[str, Decimal]]]
@@ -17,41 +17,6 @@ GroupedData = Dict[str, Dict[str, Union[str, Dict[str, Decimal]]]]
 
 tasks_bp: Blueprint = Blueprint("tasks", __name__, url_prefix="/tasks")
 db_manager: DatabaseManager = DatabaseManager()
-
-
-def get_tasks_data(tasks: Tasks) -> Data:
-    """
-    Converts tasks object into list of lists for report generation.
-
-    Args:
-        tasks (Tasks): List of task records, each containing employee details,
-            order information, and work metrics.
-
-    Returns:
-        tasks_data (Data): List of lists, where each inner list contains the data for one specific task.
-    """
-
-    employee_categories: Dict[str, str] = {
-        "worker": "Рабочий",
-        "specialist": "Специалист",
-        "manager": "Руководитель",
-    }
-
-    tasks_data: Data = [
-        [
-            task["employee_name"],
-            task["personnel_number"],
-            employee_categories[task["employee_category"]],
-            task["department"],
-            task["order_number"],
-            task["order_name"],
-            task["work_name"],
-            task["operation_date"],
-            task["hours"],
-        ]
-        for task in tasks
-    ]
-    return tasks_data
 
 
 def get_basic_orders_data(tasks: Tasks) -> Data:
@@ -111,7 +76,7 @@ def tasks_table() -> Union[str, Response]:
     if request.args.get("export"):
         tasks_data: Tasks = get_tasks_data(tasks=tasks)
         basic_orders_data: Data = get_basic_orders_data(tasks=tasks)
-        file: BytesIO = generate_report(tasks_data=tasks_data, basic_orders_data=basic_orders_data)
+        file: BytesIO = get_report_file(tasks_data=tasks_data, basic_orders_data=basic_orders_data)
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
 

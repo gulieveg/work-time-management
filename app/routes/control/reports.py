@@ -8,7 +8,7 @@ from flask import Blueprint, render_template, request, send_file
 from flask_login import login_required
 
 from app.db import DatabaseManager
-from app.utils import generate_report, permission_required
+from app.utils import get_report_file, permission_required
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
 Data = List[List[Union[str, Decimal]]]
@@ -183,7 +183,7 @@ def get_basic_orders_data(tasks: Tasks, start_date: datetime, end_date: datetime
         spent_hours += order_data[3]
         remaining_hours += order_data[4]
 
-    orders_data.append(["ИТОГО", "", planned_hours, spent_hours, remaining_hours])
+    orders_data.append(["Итого", "", planned_hours, spent_hours, remaining_hours])
     return orders_data
 
 
@@ -268,7 +268,7 @@ def reports() -> str:
         basic_orders_data: Data = get_basic_orders_data(tasks=tasks, start_date=start_date, end_date=end_date)
         detailed_orders_data: Data = get_detailed_orders_data(tasks=tasks)
 
-        file: BytesIO = generate_report(
+        file: BytesIO = get_report_file(
             tasks_data=tasks_data,
             employees_data=employees_data,
             basic_orders_data=basic_orders_data,
@@ -277,4 +277,4 @@ def reports() -> str:
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
 
-    return render_template("control/reports/generate_report.html")
+    return render_template("control/reports/get_report_file.html")

@@ -3,7 +3,7 @@ from flask import Flask
 from .errors import handle_error_404
 from .messages import MESSAGES
 from .permissions import permission_required
-from .reports import generate_report
+from .reports import get_report_file
 from .template_filters import zip_iterables
 
 
