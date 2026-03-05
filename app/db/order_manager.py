@@ -214,8 +214,8 @@ class OrderManager(DatabaseConnection):
     def get_basic_orders_data(
         self,
         tasks: Tasks,
-        start_date: datetime,
-        end_date: datetime,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
         extended: bool = False,
     ) -> Data:
         """
