@@ -10,9 +10,10 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.worksheet import Worksheet
 from pandas import DataFrame
 
+from app.db import DatabaseManager
+
 Tasks = List[Dict[str, Union[str, Decimal]]]
 Data = List[List[Union[str, Decimal]]]
-from app.db import DatabaseManager
 
 db_manager: DatabaseManager = DatabaseManager()
 
