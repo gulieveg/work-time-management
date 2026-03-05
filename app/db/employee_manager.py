@@ -1,8 +1,12 @@
 import re
+from collections import defaultdict
 from decimal import Decimal
 from typing import Dict, List, Match, Optional, Tuple, Union
 
 from .db_connection import DatabaseConnection
+
+Tasks = List[Dict[str, Union[str, Decimal]]]
+Data = List[List[Union[str, Decimal]]]
 
 
 class EmployeeManager(DatabaseConnection):
@@ -255,3 +259,50 @@ class EmployeeManager(DatabaseConnection):
                         "employee_department": employee_data[3],
                         "employee_category": employee_data[4],
                     }
+
+    def get_employees_data(tasks: Tasks) -> Data:
+        """
+        Groups tasks by employee and date, aggregating hours for report generation.
+
+        Creates unique key from employee details and date to aggregate hours,
+        then formats the result with translated category names.
+
+        Args:
+            tasks (Tasks): List of task records, each containing employee details,
+                order information, and work metrics.
+
+        Returns:
+            employees_data (Data):  List of lists, where each inner list contains the data for one specific employee
+                on specific date.
+        """
+
+        spent_hours_per_employee: Dict[Tuple[str, ...], Decimal] = defaultdict(Decimal)
+
+        for task in tasks:
+            key: Tuple[str, ...] = (
+                task["employee_name"],
+                task["personnel_number"],
+                task["employee_category"],
+                task["department"],
+                task["operation_date"],
+            )
+            spent_hours_per_employee[key] += task["hours"]
+
+        employee_categories: Dict[str, str] = {
+            "worker": "Рабочий",
+            "specialist": "Специалист",
+            "manager": "Руководитель",
+        }
+
+        employees_data: Data = [
+            [
+                employee_details[0],
+                employee_details[1],
+                employee_categories[employee_details[2]],
+                employee_details[3],
+                operation_date,
+                spent_hours,
+            ]
+            for (*employee_details, operation_date), spent_hours in spent_hours_per_employee.items()
+        ]
+        return employees_data

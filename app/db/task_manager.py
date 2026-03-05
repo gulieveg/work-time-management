@@ -6,7 +6,7 @@ from .db_connection import DatabaseConnection
 from .employee_manager import EmployeeManager
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
-
+Data = List[List[Union[str, Decimal]]]
 employee_manager: EmployeeManager = EmployeeManager()
 
 
@@ -264,3 +264,37 @@ class TaskManager(DatabaseConnection):
             with connection.cursor() as cursor:
                 cursor.execute(query)
                 return cursor.fetchone()[0]
+
+    def get_tasks_data(tasks: Tasks) -> Data:
+        """
+        Converts tasks object into list of lists for report generation.
+
+        Args:
+            tasks (Tasks): List of task records, each containing employee details,
+                order information, and work metrics.
+
+        Returns:
+            tasks_data (Data): List of lists, where each inner list contains the data for one specific task.
+        """
+
+        employee_categories: Dict[str, str] = {
+            "worker": "Рабочий",
+            "specialist": "Специалист",
+            "manager": "Руководитель",
+        }
+
+        tasks_data: Data = [
+            [
+                task["employee_name"],
+                task["personnel_number"],
+                employee_categories[task["employee_category"]],
+                task["department"],
+                task["order_number"],
+                task["order_name"],
+                task["work_name"],
+                task["hours"],
+                task["operation_date"],
+            ]
+            for task in tasks
+        ]
+        return tasks_data
