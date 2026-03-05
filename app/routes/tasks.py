@@ -8,7 +8,7 @@ from flask_login import login_required
 from werkzeug.wrappers import Response
 
 from app.db import DatabaseManager
-from app.utils import MESSAGES, get_basic_orders_data, get_report_file, get_tasks_data, permission_required
+from app.utils import MESSAGES, get_report_file, permission_required
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
 Data = List[List[Union[str, Decimal]]]

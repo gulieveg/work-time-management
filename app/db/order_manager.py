@@ -4,9 +4,13 @@ from decimal import Decimal
 from typing import Dict, List, Optional, Tuple, Union
 
 from .db_connection import DatabaseConnection
+from .work_manager import WorkManager
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
 Data = List[List[Union[str, Decimal]]]
+
+
+work_manager: WorkManager = WorkManager()
 
 
 class OrderManager(DatabaseConnection):
@@ -292,3 +296,63 @@ class OrderManager(DatabaseConnection):
 
         orders_data.append(["Итого", "", planned_hours, spent_hours, remaining_hours])
         return orders_data
+
+    def get_detailed_orders_data(tasks: Tasks) -> Data:
+        """
+        Returns order data with detailed information by types of work.
+
+        This function extends the basic orders data by providing information on work types
+        associated with each order. For each order it displays list of work types with their planned,
+        spent and remaining hours.
+
+        The function calculates spent hours of work types from the provided tasks for each order and
+        displays all associated work types with their corresponding planned, spent and remaining hours.
+
+        This provides detailed view of hour distribution across different work types within each order.
+
+        Args:
+            tasks (Tasks): List of task records, each containing employee details,
+                order information, and work metrics.
+
+        Returns:
+            orders_data (Data): List of lists, where each inner list contains the data for one specific order,
+                including its number, name, work name, planned hours, spent hours, and remaining hours.
+        """
+
+        spent_hours_per_work: Dict[str, Decimal] = defaultdict(Decimal)
+
+        for task in tasks:
+            key: Tuple[str, str] = (
+                task["order_number"],
+                task["work_name"],
+            )
+            spent_hours_per_work[key] += task["hours"]
+
+        order_numbers, work_names = [], []
+
+        for order_number, work_name in spent_hours_per_work.keys():
+            order_numbers.append(order_number)
+            work_names.append(work_name)
+
+        orders_data: Data = []
+
+        if order_numbers and work_names:
+            planned_hours_per_work: List = work_manager.get_planned_hours_per_work(
+                order_numbers=order_numbers,
+                work_names=work_names,
+            )
+
+            for order_number, order_name, work_name, planned_hours in planned_hours_per_work:
+                spent_hours: Decimal = spent_hours_per_work[(order_number, work_name)]
+                remaining_hours: Decimal = planned_hours - spent_hours
+                orders_data.append(
+                    [
+                        order_number,
+                        order_name,
+                        work_name,
+                        planned_hours,
+                        spent_hours,
+                        remaining_hours,
+                    ]
+                )
+            return orders_data

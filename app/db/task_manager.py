@@ -7,6 +7,8 @@ from .employee_manager import EmployeeManager
 
 Tasks = List[Dict[str, Union[str, Decimal]]]
 
+employee_manager: EmployeeManager = EmployeeManager()
+
 
 class TaskManager(DatabaseConnection):
     def add_task(
@@ -166,7 +168,7 @@ class TaskManager(DatabaseConnection):
             params.append(datetime.now().strftime("%Y-%m-%d"))
 
         if employee_data:
-            employee_details: Optional[Tuple[str, str]] = EmployeeManager().get_employee_details(employee_data)
+            employee_details: Optional[Tuple[str, str]] = employee_manager.get_employee_details(employee_data)
             if employee_details is None:
                 query += " AND employee_name = ?"
                 params.append(employee_data)
@@ -221,7 +223,7 @@ class TaskManager(DatabaseConnection):
         operation_date: str,
         work_name: str,
     ) -> None:
-        department: str = EmployeeManager().get_employee_department(personnel_number)
+        department: str = employee_manager.get_employee_department(personnel_number)
 
         query: str = """
             UPDATE tasks
