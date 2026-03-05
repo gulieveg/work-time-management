@@ -11,7 +11,13 @@ from pandas import DataFrame
 Data = List[List[Union[str, Decimal]]]
 
 
-def set_column_styles(worksheet: Worksheet, column_widths: Dict[str, int], style_columns: List[str]) -> None:
+def configure_worksheet_columns(
+    worksheet: Worksheet,
+    column_widths: Optional[Dict[str, int]] = None,
+    style_columns: Optional[List[str]] = None,
+    bold_columns: Optional[List[str]] = None,
+    merge_columns: Optional[List[str]] = None,
+) -> None:
     border_style: Border = Border(
         Side(border_style="thin"),
         Side(border_style="thin"),
@@ -19,22 +25,18 @@ def set_column_styles(worksheet: Worksheet, column_widths: Dict[str, int], style
         Side(border_style="thin"),
     )
 
-    for column in worksheet.columns:
-        column_letter: str = column[0].column_letter
-        worksheet.column_dimensions[column_letter].width = column_widths[column_letter]
+    if column_widths:
+        for column in worksheet.columns:
+            column_letter: str = column[0].column_letter
+            worksheet.column_dimensions[column_letter].width = column_widths[column_letter]
 
-        for cell in column:
-            if cell.row > 1 and column_letter in style_columns:
-                cell.number_format = "0.00"
-            cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-            cell.border = border_style
+            if style_columns:
+                for cell in column:
+                    if cell.row > 1 and column_letter in style_columns:
+                        cell.number_format = "0.00"
+                    cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+                    cell.border = border_style
 
-
-def style_last_row(
-    worksheet: Worksheet,
-    bold_columns: Optional[List[str]] = None,
-    merge_columns: Optional[List[str]] = None,
-) -> None:
     last_row: int = worksheet.max_row
 
     if bold_columns:
@@ -48,11 +50,11 @@ def style_last_row(
 
 def write_data_to_worksheet(
     workbook: Workbook,
+    sheet_name: str,
     headers: List[str],
     data: Data,
-    column_widths: Dict[str, int],
-    style_columns: List[str],
-    sheet_name: Optional[str] = None,
+    column_widths: Optional[Dict[str, int]] = None,
+    style_columns: Optional[List[str]] = None,
     filter_columns: Optional[List[str]] = None,
     bold_columns: Optional[List[str]] = None,
     merge_columns: Optional[List[str]] = None,
@@ -76,10 +78,13 @@ def write_data_to_worksheet(
     for cell in worksheet[1]:
         cell.font = Font(bold=True)
 
-    set_column_styles(worksheet, column_widths, style_columns)
-
-    if bold_columns or merge_columns:
-        style_last_row(worksheet, bold_columns, merge_columns)
+    configure_worksheet_columns(
+        worksheet=worksheet,
+        column_widths=column_widths,
+        style_columns=style_columns,
+        bold_columns=bold_columns,
+        merge_columns=merge_columns,
+    )
 
 
 def get_report_file(
