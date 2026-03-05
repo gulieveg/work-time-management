@@ -9,7 +9,6 @@ from .work_manager import WorkManager
 Tasks = List[Dict[str, Union[str, Decimal]]]
 Data = List[List[Union[str, Decimal]]]
 
-
 work_manager: WorkManager = WorkManager()
 
 
