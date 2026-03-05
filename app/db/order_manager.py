@@ -211,7 +211,13 @@ class OrderManager(DatabaseConnection):
                 cursor.execute(query, order_numbers)
                 return cursor.fetchall()
 
-    def get_basic_orders_data(self, tasks: Tasks, start_date: datetime, end_date: datetime) -> Data:
+    def get_basic_orders_data(
+        self,
+        tasks: Tasks,
+        start_date: datetime,
+        end_date: datetime,
+        extended: bool = False,
+    ) -> Data:
         """
         Returns orders data including planned, spent, and remaining hours.
 
@@ -260,7 +266,7 @@ class OrderManager(DatabaseConnection):
         for task in tasks:
             spent_hours_per_order[task["order_number"]] += task["hours"]
 
-        if period_contains_2025(start_date=start_date, end_date=end_date):
+        if extended and period_contains_2025(start_date, end_date):
             spent_hours_for_2025: Dict[str, Decimal] = self.get_spent_hours_for_2025()
 
             for order_number, spent_hours in spent_hours_for_2025.items():
@@ -296,7 +302,7 @@ class OrderManager(DatabaseConnection):
         orders_data.append(["Итого", "", planned_hours, spent_hours, remaining_hours])
         return orders_data
 
-    def get_detailed_orders_data(tasks: Tasks) -> Data:
+    def get_detailed_orders_data(self, tasks: Tasks) -> Data:
         """
         Returns order data with detailed information by types of work.
 

@@ -260,7 +260,7 @@ class EmployeeManager(DatabaseConnection):
                         "employee_category": employee_data[4],
                     }
 
-    def get_employees_data(tasks: Tasks) -> Data:
+    def get_employees_data(self, tasks: Tasks) -> Data:
         """
         Groups tasks by employee and date, aggregating hours for report generation.
 

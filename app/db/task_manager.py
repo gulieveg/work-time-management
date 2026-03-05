@@ -265,7 +265,7 @@ class TaskManager(DatabaseConnection):
                 cursor.execute(query)
                 return cursor.fetchone()[0]
 
-    def get_tasks_data(tasks: Tasks) -> Data:
+    def get_tasks_data(self, tasks: Tasks) -> Data:
         """
         Converts tasks object into list of lists for report generation.
 

@@ -37,6 +37,7 @@ def reports() -> str:
             tasks=tasks,
             start_date=start_date,
             end_date=end_date,
+            extended=True,
         )
         detailed_orders_data: Data = db_manager.orders.get_detailed_orders_data(tasks=tasks)
 
