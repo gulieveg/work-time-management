@@ -83,7 +83,7 @@ class UserManager(DatabaseConnection):
         fields.extend(["is_factory_worker = ?", "is_account_enabled = ?"])
         params.extend([is_user_factory_worker, is_user_account_enabled, user_id])
 
-        query: str = "UPDATE users SET {} WHERE id = ?".format(", ".join(fields))
+        query: str = "UPDATE users SET {} WHERE id = ?".format(",".join(fields))
 
         with self.get_connection() as connection:
             with connection.cursor() as cursor:

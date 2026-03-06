@@ -148,7 +148,7 @@ class TaskManager(DatabaseConnection):
 
         if departments:
             departments: List[str] = list(filter(None, departments))
-            placeholders: str = ", ".join(["?"] * len(departments))
+            placeholders: str = ",".join(["?"] * len(departments))
             query: str = f"{base_query} WHERE department IN ({placeholders})"
             params: List[str] = departments
         else:
@@ -162,10 +162,6 @@ class TaskManager(DatabaseConnection):
         if end_date:
             query += " AND operation_date <= ?"
             params.append(end_date)
-
-        if not start_date and not end_date:
-            query += " AND operation_date = ?"
-            params.append(datetime.now().strftime("%Y-%m-%d"))
 
         if employee_data:
             employee_details: Optional[Tuple[str, str]] = employee_manager.get_employee_details(employee_data)

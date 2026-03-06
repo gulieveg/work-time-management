@@ -43,14 +43,14 @@
                         <input
                             type="date"
                             name="start_date"
-                            value="{{ request.args.get('start_date', today) }}"
+                            value="{{ request.args.get('start_date', default_date) }}"
                             style="cursor: pointer;"
                         />
                         <span style="margin: 10px;">по</span>
                         <input
                             type="date"
                             name="end_date"
-                            value="{{ request.args.get('end_date', today) }}"
+                            value="{{ request.args.get('end_date', default_date) }}"
                             style="cursor: pointer;"
                         />
                     </div>

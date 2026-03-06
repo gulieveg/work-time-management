@@ -21,10 +21,18 @@ db_manager: DatabaseManager = DatabaseManager()
 @tasks_bp.route("/table", methods=["GET"])
 @login_required
 def tasks_table() -> Union[str, Response]:
-    args: Dict[str, str] = {
+    start_date: str = request.args.get("start_date")
+    end_date: str = request.args.get("end_date")
+
+    default_date: str = datetime.today().strftime("%Y-%m-%d")
+
+    if not start_date and not end_date:
+        start_date = end_date = default_date
+
+    args: Dict[str, Union[str, List[str]]] = {
         "departments": request.args.getlist("departments[]"),
-        "start_date": request.args.get("start_date"),
-        "end_date": request.args.get("end_date"),
+        "start_date": start_date,
+        "end_date": end_date,
         "employee_data": request.args.get("employee_data"),
         "order_number": request.args.get("order_number"),
         "work_name": request.args.get("work_name"),
@@ -41,11 +49,10 @@ def tasks_table() -> Union[str, Response]:
         timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         return send_file(file, download_name=f"{timestamp}.xlsx", as_attachment=True)
 
-    today: str = datetime.today().strftime("%Y-%m-%d")
     context: Dict[str, Union[str, Tasks]] = {
         "tasks": tasks,
         "departments": departments,
-        "today": today,
+        "default_date": default_date,
     }
     return render_template("tasks/tasks_table.html", **context)
 
